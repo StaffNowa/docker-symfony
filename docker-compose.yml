@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  php:
+    build:
+      context: php7-fpm
+      args:
+        PHP_VERSION: ${PHP_VERSION}
+        TIMEZONE: ${TIMEZONE}
+    volumes:
+      - ${SYMFONY_APP_PATH}:/var/www/symfony
+
+  nginx:
+    build:
+      context: nginx
+      args:
+        DEBIAN_VERSION: ${DEBIAN_VERSION}
+        NGINX_VERSION: ${NGINX_VERSION}
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./logs/nginx/:/var/log/nginx
+      - ${SYMFONY_APP_PATH}:/var/www/symfony
+
+  db:
+    image: mysql:${MYSQL_VERSION}
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - 3306:3306
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8080:80"
