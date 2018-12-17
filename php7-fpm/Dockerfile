@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     git \
     unzip \
     libzip-dev \
-    nano
+    nano \
+    libpng-dev
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
@@ -24,7 +25,7 @@ RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo ${TIMEZONE} >
 
 # Type docker-php-ext-install to see available extensions
 RUN docker-php-ext-configure zip --with-libzip && \
-    docker-php-ext-install pdo pdo_mysql zip
+    docker-php-ext-install pdo pdo_mysql zip gd
 
 # install xdebug
 RUN pecl install xdebug \

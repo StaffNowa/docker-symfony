@@ -51,8 +51,10 @@ curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compo
         docker-compose exec db bash
         mysql -u root -p
         
+        mysql> use mysql;
         mysql> CREATE USER 'db_user'@'%' IDENTIFIED BY 'db_password';
         mysql> GRANT ALL PRIVILEGES ON db_name.* TO 'db_user'@'%';
+        mysql> FLUSH PRIVILEGES;
         ```
     2. Update
   
