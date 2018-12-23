@@ -4,24 +4,45 @@ Docker symfony gives you everything you need for developing Symfony application.
 
 # Installation
 
-Install the latest Docker CE version
+## Install the latest Docker CE version
+If you are running on Linux:
 ```
 curl -fsSL https://get.docker.com -o get-docker.sh &&
 sh get-docker.sh
 ```
 
+If you are running on Windows:
+```
+https://hub.docker.com/editions/community/docker-ce-desktop-windows
+```
+
 Install the latest Docker Machine
+
+If you are running on Linux:
 ```
 base=https://github.com/docker/machine/releases/download/v0.16.0 &&
 curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
 install /tmp/docker-machine /usr/local/bin/docker-machine
 ```
 
-Install the latest Docker Compose
+If you are running on Windows:
+```
+$ base=https://github.com/docker/machine/releases/download/v0.16.0 &&
+  mkdir -p "$HOME/bin" &&
+  curl -L $base/docker-machine-Windows-x86_64.exe > "$HOME/bin/docker-machine.exe" &&
+  chmod +x "$HOME/bin/docker-machine.exe"
+```
 
+
+## Install the latest Docker Compose
+
+If you are running on Linux:
 ```
 curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
 ```
+
+If you are running on Windows:
+Docker for Windows and Docker Toolbox already include Compose with other Docker apps, so most Windows users do not need to install Compose separately.
 
 # Configuration
 1. Create a `.env` from the `.env.dist` file. Adapt it according to your symfony application
