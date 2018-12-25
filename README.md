@@ -4,7 +4,7 @@ Docker symfony gives you everything you need for developing Symfony application.
 
 # Installation
 
-# Install the latest Docker CE version
+## Install the latest Docker CE version
 If you are running on Linux:
 ```
 curl -fsSL https://get.docker.com -o get-docker.sh &&
@@ -16,7 +16,7 @@ If you are running on Windows:
 https://hub.docker.com/editions/community/docker-ce-desktop-windows
 ```
 
-Install the latest Docker Machine
+## Install the latest Docker Machine
 
 If you are running on Linux:
 ```
