@@ -3,40 +3,53 @@ version: '3'
 services:
   php:
     build:
-      context: php7-fpm
+      context: config/php
       args:
+        USER_ID: ${USER_ID}
+        GROUP_ID: ${GROUP_ID}
         PHP_VERSION: ${PHP_VERSION}
-        TIMEZONE: ${TIMEZONE}
+        PHP_TIMEZONE: ${PHP_TIMEZONE}
     volumes:
-      - ${SYMFONY_APP_PATH}:/var/www/symfony
+      - ${PROJECT_PATH}:/var/www/project:cached
+      - ${SYMFONY_LOG_PATH}:/var/www/project/var/logs:cached
+      - ${COMPOSER_PATH}/cache:/var/www/.composer/cache:cached
+      - ${SSH_KEY_PATH}/id_rsa:/var/www/.ssh/id_rsa
+      - ${SSH_KEY_PATH}/id_rsa.pub:/var/www/.ssh/id_rsa.pub
+      - ${SSH_KEY_PATH}/known_hosts:/var/www/.ssh/known_hosts
 
   nginx:
     build:
-      context: nginx
+      context: config/nginx
       args:
+        PROJECT_DOMAIN: ${PROJECT_DOMAIN}
         DEBIAN_VERSION: ${DEBIAN_VERSION}
         NGINX_VERSION: ${NGINX_VERSION}
     ports:
-      - 80:80
-      - 443:443
+      - ${PORT_NGINX}:80
+    networks:
+      default:
+        aliases:
+          - ${PROJECT_DOMAIN}
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./logs/nginx/:/var/log/nginx
-      - ${SYMFONY_APP_PATH}:/var/www/symfony
+      - ${PROJECT_PATH}:/var/www/project:cached
+      - ${NGINX_LOG_PATH}:/var/log/nginx
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
 
-  db:
+  mysql:
     image: mysql:${MYSQL_VERSION}
-    volumes:
-      - ./data/db:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - 3306:3306
+      - ${PORT_MYSQL}:3306
+    volumes:
+      - ${MYSQL_DATA_PATH}:/var/lib/mysql:cached
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_HOST=mysql
     ports:
-      - "8080:80"
+      - ${PORT_PHPMYADMIN}:80

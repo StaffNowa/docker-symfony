@@ -1,0 +1,66 @@
+ARG PHP_VERSION
+
+FROM php:${PHP_VERSION}-fpm
+
+ARG PHP_TIMEZONE
+ARG PHP_MEMORY_LIMIT
+ARG USER_ID
+ARG GROUP_ID
+
+MAINTAINER Vasilij Dusko <vasilij@prado.lt>
+
+RUN apt-get update && apt-get install -y \
+    openssl \
+    git \
+    unzip \
+    libzip-dev \
+    nano \
+    libpng-dev \
+    libmagickwand-dev
+
+# Install PHP extensions. Type docker-php-ext-install to see available extensions
+RUN docker-php-ext-configure zip --with-libzip && \
+    docker-php-ext-install -j$(nproc) \
+    pdo \
+    pdo_mysql \
+    opcache \
+    zip
+
+RUN apt-get install -y libicu-dev \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl
+
+RUN pecl install \
+    xdebug \
+    imagick
+
+RUN docker-php-ext-enable \
+    xdebug \
+    imagick
+
+# Set timezone
+RUN ln -snf /usr/share/zoneinfo/${PHP_TIMEZONE} /etc/localtime && echo ${PHP_TIMEZONE} > /etc/timezone \
+&& printf '[PHP]\ndate.timezone = "%s"\n', ${PHP_TIMEZONE} > /usr/local/etc/php/conf.d/tzone.ini \
+&& "date"
+
+# Install composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
+RUN mv composer.phar /usr/local/bin/composer
+COPY composer/config.json /var/www/.composer/config.json
+
+# Copy xdebug and php config.
+#COPY conf.d/* /usr/local/etc/php/conf.d/
+
+# Map user id from host user when it's provided
+RUN if [ ! -z ${USER_ID} ]; then usermod -u ${USER_ID} www-data; fi
+RUN if [ ! -z ${GROUP_ID} ]; then groupmod -g ${GROUP_ID} www-data; fi
+
+RUN echo 'alias sf="php app/console"' >> ~/.bashrc \
+&& echo 'alias sf3="php bin/console"' >> ~/.bashrc \
+&& echo 'alias sf4="php bin/console"' >> ~/.bashrc
+
+# set default user and working directory
+USER ${USER_ID}
+WORKDIR /var/www/project

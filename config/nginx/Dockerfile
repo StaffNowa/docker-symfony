@@ -3,6 +3,7 @@ ARG DEBIAN_VERSION
 FROM debian:${DEBIAN_VERSION}
 
 ARG NGINX_VERSION
+ARG PROJECT_DOMAIN
 
 MAINTAINER Vasilij Dusko <vasilij@prado.lt>
 
@@ -43,17 +44,13 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 RUN mkdir -p /etc/nginx/sites-available && \
     mkdir -p /etc/nginx/sites-enabled
 
-ADD symfony.conf /etc/nginx/sites-available/
+ADD project.conf /etc/nginx/sites-available/
 
-RUN ln -s /etc/nginx/sites-available/symfony.conf /etc/nginx/sites-enabled/symfony
+RUN sed -i 's#__PROJECT_DOMAIN__#'"${PROJECT_DOMAIN}"'#g' /etc/nginx/sites-available/project.conf
+
+RUN ln -s /etc/nginx/sites-available/project.conf /etc/nginx/sites-enabled/project.conf
 
 RUN echo "upstream php-upstream { server php:9000; }" > /etc/nginx/conf.d/upstream.conf
-
-RUN usermod -u 1000 www-data
-
-EXPOSE 80 443
-# expose these ports on the docker virtual network
-# you still need to use -p or -P to open/forward these ports on host
 
 CMD ["nginx", "-g", "daemon off;"]
 # required: run this command when container is launched
