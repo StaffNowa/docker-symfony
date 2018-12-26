@@ -40,7 +40,6 @@ $ base=https://github.com/docker/machine/releases/download/v0.16.0 &&
   chmod +x "$HOME/bin/docker-machine.exe"
 ```
 
-
 ## Install the latest Docker Compose
 
 If you are running on Linux:
