@@ -75,7 +75,7 @@ Docker for Windows and Docker Toolbox already include Compose with other Docker 
     
     1. Create a new user
         ```
-        docker-compose exec db bash
+        docker-compose exec mysql bash
         mysql -u root -p
         
         mysql> use mysql;
@@ -90,7 +90,7 @@ Docker for Windows and Docker Toolbox already include Compose with other Docker 
         ```
         # ./project/app/config/parameters.yml
         parameters:
-            database_host:     db
+            database_host:     mysql
             database_port:     ~
             database_name:     db_name
             database_user:     db_user
@@ -99,7 +99,7 @@ Docker for Windows and Docker Toolbox already include Compose with other Docker 
     
         b) SF4: .env
         ```
-        DATABASE_URL=mysql://db_user:db_password@172.18.0.4:3306/db_name
+        DATABASE_URL=mysql://db_user:db_password@mysql:3306/db_name
         ```
     3. Composer install & create database
         ```bash
@@ -144,7 +144,7 @@ Docker for Windows and Docker Toolbox already include Compose with other Docker 
     
     Have a look at the `docker-compose.yml` file, here are the `docker-compose` built images:
     
-    * `db`: This is the MySQL database container,
+    * `mysql`: This is the MySQL database container,
     * `php`: This is the PHP-FPM container in which the application volume is mounted,
     * `nginx`: This is the Nginx webserver container in which application volume is mounted too,
     
@@ -154,7 +154,7 @@ Docker for Windows and Docker Toolbox already include Compose with other Docker 
     $ docker-compose ps
                   Name                             Command               State                    Ports                  
     ---------------------------------------------------------------------------------------------------------------------
-    symfony_db_1_f0586075033b           docker-entrypoint.sh mysqld      Up      0.0.0.0:3306->3306/tcp, 33060/tcp       
+    symfony_mysql_1_f0586075033b           docker-entrypoint.sh mysqld      Up      0.0.0.0:3306->3306/tcp, 33060/tcp       
     symfony_nginx_1_3c244ea6ff7b        nginx -g daemon off;             Up      0.0.0.0:443->443/tcp, 0.0.0.0:80->80/tcp
     symfony_php_1_916d0314f3e0          docker-php-entrypoint php-fpm    Up      9000/tcp                                
     symfony_phpmyadmin_1_a5ce79ef63bd   /run.sh supervisord -n -j  ...   Up      0.0.0.0:8080->80/tcp, 9000/tcp 
