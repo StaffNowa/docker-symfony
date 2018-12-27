@@ -48,7 +48,9 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 RUN php composer-setup.php
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
+RUN mkdir -p /var/www/.composer
 COPY composer/config.json /var/www/.composer/config.json
+RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/.composer
 
 # Copy xdebug and php config.
 #COPY conf.d/* /usr/local/etc/php/conf.d/

@@ -15,6 +15,7 @@ mkdir -p ${PROJECT_PATH}
 mkdir -p ${PROJECT_PATH}/${SYMFONY_LOG_PATH}
 mkdir -p ${SYMFONY_LOG_PATH}
 mkdir -p ${COMPOSER_PATH}
+mkdir -p ${COMPOSER_PATH}/cache
 mkdir -p ${SSH_KEY_PATH}
 mkdir -p ${NGINX_LOG_PATH}
 mkdir -p ${MYSQL_DATA_PATH}
