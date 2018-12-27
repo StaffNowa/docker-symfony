@@ -134,6 +134,12 @@ Docker for Windows and Docker Toolbox already include Compose with other Docker 
     * Symfony dev mode: visit [symfony.local/app_dev.php](http://symfony.local/app_dev.php)  
     * Logs (files location): logs/nginx and logs/symfony
     
+    Alternative option is to use prepared bash script:
+    
+    ```./up.sh``` create and start containers
+    
+    ```./down.sh``` stop and remove containers, networks, images, and volumes
+    
     ## How it works?
     
     Have a look at the `docker-compose.yml` file, here are the `docker-compose` built images:
