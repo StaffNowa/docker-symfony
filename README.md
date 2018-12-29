@@ -79,8 +79,8 @@ Docker for Windows and Docker Toolbox already include Compose with other Docker 
         mysql -u root -p
         
         mysql> use mysql;
-        mysql> CREATE USER 'db_user'@'%' IDENTIFIED BY 'db_password';
-        mysql> GRANT ALL PRIVILEGES ON db_name.* TO 'db_user'@'%';
+        mysql> CREATE USER 'db_user'@'mysql' IDENTIFIED BY 'db_password';
+        mysql> GRANT ALL PRIVILEGES ON db_name.* TO 'db_user'@'mysql';
         mysql> FLUSH PRIVILEGES;
         ```
     2. Update
