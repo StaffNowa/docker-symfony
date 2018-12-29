@@ -40,7 +40,7 @@ RUN docker-php-ext-enable \
 
 # Set timezone
 RUN ln -snf /usr/share/zoneinfo/${PHP_TIMEZONE} /etc/localtime && echo ${PHP_TIMEZONE} > /etc/timezone \
-&& printf '[PHP]\ndate.timezone = "%s"\n', ${PHP_TIMEZONE} > /usr/local/etc/php/conf.d/tzone.ini \
+&& printf '[PHP]\ndate.timezone = "%s"\n' ${PHP_TIMEZONE} > $PHP_INI_DIR/conf.d/tzone.ini \
 && "date"
 
 # Install composer
