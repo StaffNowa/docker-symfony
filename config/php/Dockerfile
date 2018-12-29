@@ -9,14 +9,16 @@ ARG GROUP_ID
 
 MAINTAINER Vasilij Dusko <vasilij@prado.lt>
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && \
+    apt-get install --no-install-recommends --no-install-suggests -y gnupg1 \
     openssl \
     git \
     unzip \
     libzip-dev \
     nano \
     libpng-dev \
-    libmagickwand-dev
+    libmagickwand-dev \
+    curl
 
 # Install PHP extensions. Type docker-php-ext-install to see available extensions
 RUN docker-php-ext-configure zip --with-libzip && \
@@ -50,7 +52,24 @@ RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
 RUN mkdir -p /var/www/.composer
 COPY composer/config.json /var/www/.composer/config.json
-RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/.composer
+RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/.composer && \
+    chown ${USER_ID}:${GROUP_ID} /var/www
+
+# npm & node
+RUN curl -sL https://deb.nodesource.com/setup_9.x | bash && \
+    apt-get install -y nodejs npm && \
+    update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10
+
+# bugfix: remove cmdtest to install yarn correctly.
+RUN apt-get remove -y cmdtest
+
+# yarn package manager
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    apt-get update && \
+    apt-get install -y yarn
+
+RUN apt-get remove --purge -y gnupg1 && apt-get -y --purge autoremove && rm -rf /var/lib/apt/lists/*
 
 # Copy xdebug and php config.
 #COPY conf.d/* /usr/local/etc/php/conf.d/
