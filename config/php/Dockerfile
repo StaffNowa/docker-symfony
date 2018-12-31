@@ -78,9 +78,10 @@ RUN apt-get remove --purge -y gnupg1 && apt-get -y --purge autoremove && rm -rf 
 RUN if [ ! -z ${USER_ID} ]; then usermod -u ${USER_ID} www-data; fi
 RUN if [ ! -z ${GROUP_ID} ]; then groupmod -g ${GROUP_ID} www-data; fi
 
-RUN echo 'alias sf="php app/console"' >> ~/.bashrc \
-&& echo 'alias sf3="php bin/console"' >> ~/.bashrc \
-&& echo 'alias sf4="php bin/console"' >> ~/.bashrc
+RUN echo 'alias sf="php bin/console"' >> /var/www/.bashrc && \
+    echo 'alias sf2="php app/console"' >> /var/www/.bashrc && \
+    echo 'alias sf3="php bin/console"' >> /var/www/.bashrc && \
+    echo 'alias sf4="php bin/console"' >> /var/www.bashrc
 
 # set default user and working directory
 USER ${USER_ID}
