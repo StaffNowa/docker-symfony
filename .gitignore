@@ -1,0 +1,13 @@
+# Core files
+.env
+/project
+/var
+
+# IDEs
+/.idea
+*.iml
+/.vscode
+*~
+
+# System files
+.DS_Store
