@@ -2,6 +2,7 @@
 .env
 /project
 /var
+/.composer/cache
 
 # IDEs
 /.idea
