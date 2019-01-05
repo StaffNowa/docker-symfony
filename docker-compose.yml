@@ -16,6 +16,7 @@ services:
       - ${SSH_KEY_PATH}/id_rsa:/var/www/.ssh/id_rsa
       - ${SSH_KEY_PATH}/id_rsa.pub:/var/www/.ssh/id_rsa.pub
       - ${SSH_KEY_PATH}/known_hosts:/var/www/.ssh/known_hosts
+      - ${USER_CONFIG_PATH}/.bash_history:/var/www/.bash_history
 
   nginx:
     build:

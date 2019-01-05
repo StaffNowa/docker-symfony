@@ -19,6 +19,8 @@ mkdir -p ${COMPOSER_PATH}/cache
 mkdir -p ${SSH_KEY_PATH}
 mkdir -p ${NGINX_LOG_PATH}
 mkdir -p ${MYSQL_DATA_PATH}
+mkdir -p ${USER_CONFIG_PATH}
+touch ${USER_CONFIG_PATH}/.bash_history
 
 docker-compose build
 docker-compose up -d
