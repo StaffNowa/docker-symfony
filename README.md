@@ -100,6 +100,7 @@ Docker for Windows and Docker Toolbox already include Compose with other Docker 
         b) SF4: .env
         ```
         DATABASE_URL=mysql://db_user:db_password@mysql:3306/db_name
+        MAILER_URL=smtp://mailhog:1025
         ```
     3. Composer install & create database
         ```bash
