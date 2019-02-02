@@ -13,9 +13,7 @@ services:
       - ${PROJECT_PATH}:/var/www/project:cached
       - ${SYMFONY_LOG_PATH}:/var/www/project/var/logs:cached
       - ${COMPOSER_PATH}/cache:/var/www/.composer/cache:cached
-      - ${SSH_KEY_PATH}/id_rsa:/var/www/.ssh/id_rsa
-      - ${SSH_KEY_PATH}/id_rsa.pub:/var/www/.ssh/id_rsa.pub
-      - ${SSH_KEY_PATH}/known_hosts:/var/www/.ssh/known_hosts
+      - ${SSH_KEY_PATH}:/var/www/.ssh
       - ${USER_CONFIG_PATH}/.bash_history:/var/www/.bash_history
 
   nginx:
