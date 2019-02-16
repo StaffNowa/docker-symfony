@@ -26,7 +26,8 @@ RUN docker-php-ext-configure zip --with-libzip && \
     pdo \
     pdo_mysql \
     opcache \
-    zip
+    zip \
+    gd
 
 RUN apt-get install -y libicu-dev \
     && docker-php-ext-configure intl \
