@@ -4,8 +4,12 @@ FROM php:${PHP_VERSION}-fpm
 
 ARG PHP_TIMEZONE
 ARG PHP_MEMORY_LIMIT
+
+ARG NODE_JS_VERSION
+
 ARG USER_ID
 ARG GROUP_ID
+
 
 MAINTAINER Vasilij Dusko <vasilij@prado.lt>
 
@@ -57,8 +61,8 @@ RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/.composer && \
     chown ${USER_ID}:${GROUP_ID} /var/www
 
 # npm & node
-RUN curl -sL https://deb.nodesource.com/setup_9.x | bash && \
-    apt-get install -y nodejs npm && \
+RUN curl -sL https://deb.nodesource.com/setup_${NODE_JS_VERSION} | bash && \
+    apt-get install -y nodejs npm node-uglify && \
     update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10
 
 # bugfix: remove cmdtest to install yarn correctly.

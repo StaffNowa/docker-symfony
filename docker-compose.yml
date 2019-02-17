@@ -9,12 +9,14 @@ services:
         GROUP_ID: ${GROUP_ID}
         PHP_VERSION: ${PHP_VERSION}
         PHP_TIMEZONE: ${PHP_TIMEZONE}
+        NODE_JS_VERSION: ${NODE_JS_VERSION}
     volumes:
       - ${PROJECT_PATH}:/var/www/project:cached
       - ${SYMFONY_LOG_PATH}:/var/www/project/var/logs:cached
       - ${COMPOSER_PATH}/cache:/var/www/.composer/cache:cached
       - ${SSH_KEY_PATH}:/var/www/.ssh
       - ${USER_CONFIG_PATH}/.bash_history:/var/www/.bash_history
+      - ./config/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
 
   nginx:
     build:
