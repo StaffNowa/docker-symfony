@@ -39,11 +39,13 @@ RUN apt-get install -y libicu-dev \
 
 RUN pecl install \
     xdebug \
-    imagick
+    imagick \
+    apcu
 
 RUN docker-php-ext-enable \
     xdebug \
-    imagick
+    imagick \
+    apcu
 
 # Set timezone
 RUN ln -snf /usr/share/zoneinfo/${PHP_TIMEZONE} /etc/localtime && echo ${PHP_TIMEZONE} > /etc/timezone \
