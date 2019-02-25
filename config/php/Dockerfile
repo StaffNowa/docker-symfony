@@ -10,7 +10,6 @@ ARG NODE_JS_VERSION
 ARG USER_ID
 ARG GROUP_ID
 
-
 MAINTAINER Vasilij Dusko <vasilij@prado.lt>
 
 RUN apt-get update && \
@@ -40,7 +39,8 @@ RUN apt-get install -y libicu-dev \
 RUN pecl install \
     xdebug \
     imagick \
-    apcu
+    apcu \
+    apcu_bc
 
 RUN docker-php-ext-enable \
     xdebug \
@@ -51,6 +51,8 @@ RUN docker-php-ext-enable \
 RUN ln -snf /usr/share/zoneinfo/${PHP_TIMEZONE} /etc/localtime && echo ${PHP_TIMEZONE} > /etc/timezone \
 && printf '[PHP]\ndate.timezone = "%s"\n' ${PHP_TIMEZONE} > $PHP_INI_DIR/conf.d/tzone.ini \
 && "date"
+
+RUN echo 'extension=apc.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini
 
 # Install composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -65,7 +67,8 @@ RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/.composer && \
 # npm & node
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_JS_VERSION} | bash && \
     apt-get install -y nodejs npm node-uglify && \
-    update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10
+    update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10 && \
+    npm install -g yargs async sass
 
 # bugfix: remove cmdtest to install yarn correctly.
 RUN apt-get remove -y cmdtest
@@ -79,7 +82,7 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
 RUN apt-get remove --purge -y gnupg1 && apt-get -y --purge autoremove && rm -rf /var/lib/apt/lists/*
 
 # Copy xdebug and php config.
-#COPY conf.d/* /usr/local/etc/php/conf.d/
+COPY conf.d/* /usr/local/etc/php/conf.d/
 
 # Map user id from host user when it's provided
 RUN if [ ! -z ${USER_ID} ]; then usermod -u ${USER_ID} www-data; fi

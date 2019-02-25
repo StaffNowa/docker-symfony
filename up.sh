@@ -17,6 +17,17 @@ mkdir -p ${SYMFONY_LOG_PATH}
 mkdir -p ${COMPOSER_PATH}
 mkdir -p ${COMPOSER_PATH}/cache
 mkdir -p ${SSH_KEY_PATH}
+
+if [ ! -f "${SSH_KEY_PATH}/id_rsa" ]
+then
+    ssh-keygen -b 4096 -t rsa -f ${SSH_KEY_PATH}/id_rsa -q -P ""
+fi
+
+if [ ! -f "${SSH_KEY_PATH}/known_hosts" ]
+then
+    touch ${SSH_KEY_PATH}/known_hosts
+fi
+
 mkdir -p ${NGINX_LOG_PATH}
 mkdir -p ${MYSQL_DATA_PATH}
 mkdir -p ${USER_CONFIG_PATH}
