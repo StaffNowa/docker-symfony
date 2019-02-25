@@ -85,8 +85,8 @@ RUN apt-get remove --purge -y gnupg1 && apt-get -y --purge autoremove && rm -rf 
 COPY conf.d/* /usr/local/etc/php/conf.d/
 
 # Map user id from host user when it's provided
-RUN if [ ! -z ${USER_ID} ]; then usermod -u ${USER_ID} www-data; fi
-RUN if [ ! -z ${GROUP_ID} ]; then groupmod -g ${GROUP_ID} www-data; fi
+RUN if [ ! -z ${USER_ID} ] && [ ${USER_ID} -ne 0 ]; then usermod -u ${USER_ID} www-data; fi
+RUN if [ ! -z ${GROUP_ID} ] && [ ${GROUP_ID} -ne 0 ]; then groupmod -g ${GROUP_ID} www-data; fi
 
 RUN echo 'alias sf="php bin/console"' >> /var/www/.bashrc && \
     echo 'alias sf2="php app/console"' >> /var/www/.bashrc && \
