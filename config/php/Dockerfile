@@ -10,6 +10,12 @@ ARG NODE_JS_VERSION
 ARG USER_ID
 ARG GROUP_ID
 
+ARG XDEBUG_REMOTE_PORT
+ARG XDEBUG_REMOTE_AUTOSTART
+ARG XDEBUG_REMOTE_ENABLE
+ARG XDEBUG_REMOTE_HOST
+ARG XDEBUG_REMOTE_CONNECT_BACK
+
 MAINTAINER Vasilij Dusko <vasilij@prado.lt>
 
 RUN apt-get update && \
@@ -83,6 +89,12 @@ RUN apt-get remove --purge -y gnupg1 && apt-get -y --purge autoremove && rm -rf 
 
 # Copy xdebug and php config.
 COPY conf.d/* /usr/local/etc/php/conf.d/
+
+RUN sed -i 's#${XDEBUG_REMOTE_PORT}#'"${XDEBUG_REMOTE_PORT}"'#g' $PHP_INI_DIR/conf.d/xdebug.ini && \
+    sed -i 's#${XDEBUG_REMOTE_AUTOSTART}#'"${XDEBUG_REMOTE_AUTOSTART}"'#g' $PHP_INI_DIR/conf.d/xdebug.ini && \
+    sed -i 's#${XDEBUG_REMOTE_ENABLE}#'"${XDEBUG_REMOTE_ENABLE}"'#g' $PHP_INI_DIR/conf.d/xdebug.ini && \
+    if [ ! -z ${XDEBUG_REMOTE_HOST} ]; then printf '\nxdebug.remote_host = %s\n' ${XDEBUG_REMOTE_HOST} >> $PHP_INI_DIR/conf.d/xdebug.ini; fi && \
+    if [ ! -z ${XDEBUG_REMOTE_CONNECT_BACK} ]; then printf '\nxdebug.remote_connect_back = %s\n' ${XDEBUG_REMOTE_CONNECT_BACK} >> $PHP_INI_DIR/conf.d/xdebug.ini; fi
 
 # Map user id from host user when it's provided
 RUN if [ ! -z ${USER_ID} ] && [ ${USER_ID} -ne 0 ]; then usermod -u ${USER_ID} www-data; fi
