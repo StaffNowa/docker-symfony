@@ -29,7 +29,7 @@ If you are running on Linux:
 ```
 base=https://github.com/docker/machine/releases/download/v0.16.0 &&
 curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
-install /tmp/docker-machine /usr/local/bin/docker-machine
+sudo install /tmp/docker-machine /usr/local/bin/docker-machine
 ```
 
 If you are running on Windows:
@@ -44,7 +44,7 @@ $ base=https://github.com/docker/machine/releases/download/v0.16.0 &&
 
 If you are running on Linux:
 ```
-curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
 ```
 
 If you are running on Windows:
