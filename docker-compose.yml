@@ -30,6 +30,7 @@ services:
       context: config/nginx
       args:
         PROJECT_DOMAIN: ${PROJECT_DOMAIN}
+        DOCUMENT_ROOT: ${DOCUMENT_ROOT}
         DEBIAN_VERSION: ${DEBIAN_VERSION}
         NGINX_VERSION: ${NGINX_VERSION}
     ports:

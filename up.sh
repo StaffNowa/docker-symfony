@@ -59,12 +59,23 @@ touch ${USER_CONFIG_PATH}/.bash_history
 
 docker-compose build
 
+# Clears the screen.
+clear
+
 # Start server
 echo "Starting docker containers..."
 docker-compose up -d
 
 # Documentation for end user
-
-echo "URLs"
-echo "Website: http://${PROJECT_DOMAIN}"
+echo ""
+echo "The following information has been set:"
+echo ""
+echo "Server IP: 127.0.0.1"
+echo "Server Hostname: ${PROJECT_DOMAIN}"
+echo ""
+echo "To login now, follow this link:"
+echo ""
+echo "Project URL: http://${PROJECT_DOMAIN}"
 echo "phpMyAdmin: http://${PROJECT_DOMAIN}:8080"
+echo ""
+echo "Thank you for using Docker Symfony. Should you have any questions, don't hesitate to contact us at support@prado.lt"

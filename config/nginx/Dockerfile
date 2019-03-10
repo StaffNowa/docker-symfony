@@ -4,6 +4,7 @@ FROM debian:${DEBIAN_VERSION}
 
 ARG NGINX_VERSION
 ARG PROJECT_DOMAIN
+ARG DOCUMENT_ROOT
 
 MAINTAINER Vasilij Dusko <vasilij@prado.lt>
 
@@ -46,11 +47,10 @@ RUN mkdir -p /etc/nginx/sites-available && \
 
 ADD project.conf /etc/nginx/sites-available/
 
-RUN sed -i 's#__PROJECT_DOMAIN__#'"${PROJECT_DOMAIN}"'#g' /etc/nginx/sites-available/project.conf
-
-RUN ln -s /etc/nginx/sites-available/project.conf /etc/nginx/sites-enabled/project.conf
-
-RUN echo "upstream php-upstream { server php:9000; }" > /etc/nginx/conf.d/upstream.conf
+RUN sed -i 's#__PROJECT_DOMAIN__#'"${PROJECT_DOMAIN}"'#g' /etc/nginx/sites-available/project.conf && \
+    sed -i 's#__DOCUMENT_ROOT__#'"${DOCUMENT_ROOT}"'#g' /etc/nginx/sites-available/project.conf && \
+    ln -s /etc/nginx/sites-available/project.conf /etc/nginx/sites-enabled/project.conf && \
+    echo "upstream php-upstream { server php:9000; }" > /etc/nginx/conf.d/upstream.conf
 
 CMD ["nginx", "-g", "daemon off;"]
 # required: run this command when container is launched
