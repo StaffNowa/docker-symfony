@@ -25,7 +25,6 @@ if [ ! -f "${WORK_DIR}/.env" ]; then
         echo >&2 "The .env file does not exist. Project setup will not work"
         exit 1
     fi
-    exit;
 fi
 
 source ${WORK_DIR}/.env
