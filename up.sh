@@ -36,6 +36,7 @@ mkdir -p ${SYMFONY_LOG_PATH}
 mkdir -p ${COMPOSER_PATH}
 mkdir -p ${COMPOSER_PATH}/cache
 mkdir -p ${SSH_KEY_PATH}
+mkdir -p ${MYSQL_DUMP_PATH}
 
 # Create an SSH private and public keys if we do not have it
 if [ ! -f "${SSH_KEY_PATH}/id_rsa" ]; then

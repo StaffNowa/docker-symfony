@@ -3,6 +3,8 @@
 /project
 /var
 /.composer/cache
+/db
+/user
 
 # IDEs
 /.idea
