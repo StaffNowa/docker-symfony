@@ -2,7 +2,7 @@ ARG PHP_VERSION
 
 FROM php:${PHP_VERSION}-fpm
 
-ARG PHP_TIMEZONE
+ARG DEFAULT_TIMEZONE
 ARG PHP_MEMORY_LIMIT
 
 ARG NODE_JS_VERSION
@@ -54,9 +54,8 @@ RUN docker-php-ext-enable \
     apcu
 
 # Set timezone
-RUN ln -snf /usr/share/zoneinfo/${PHP_TIMEZONE} /etc/localtime && echo ${PHP_TIMEZONE} > /etc/timezone \
-&& printf '[PHP]\ndate.timezone = "%s"\n' ${PHP_TIMEZONE} > $PHP_INI_DIR/conf.d/tzone.ini \
-&& "date"
+RUN ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEFAULT_TIMEZONE} > /etc/timezone && \
+    printf '[PHP]\ndate.timezone = "%s"\n' ${DEFAULT_TIMEZONE} > $PHP_INI_DIR/conf.d/tzone.ini
 
 RUN echo 'extension=apc.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini
 

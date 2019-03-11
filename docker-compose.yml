@@ -21,6 +21,8 @@ services:
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - php
+    environment:
+      - TZ=${DEFAULT_TIMEZONE}
 
   php:
     build:
@@ -29,7 +31,7 @@ services:
         USER_ID: ${USER_ID}
         GROUP_ID: ${GROUP_ID}
         PHP_VERSION: ${PHP_VERSION}
-        PHP_TIMEZONE: ${PHP_TIMEZONE}
+        DEFAULT_TIMEZONE: ${DEFAULT_TIMEZONE}
         NODE_JS_VERSION: ${NODE_JS_VERSION}
         XDEBUG_REMOTE_PORT: ${XDEBUG_REMOTE_PORT}
         XDEBUG_REMOTE_AUTOSTART: ${XDEBUG_REMOTE_AUTOSTART}
@@ -55,6 +57,8 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: ${DEFAULT_TIMEZONE}
+
     ports:
       - ${PORT_MYSQL}:3306
     volumes:
@@ -69,9 +73,11 @@ services:
         PMA_MEMORY_LIMIT: ${PMA_MEMORY_LIMIT}
         PMA_POST_MAX_SIZE: ${PMA_POST_MAX_SIZE}
         PMA_UPLOAD_MAX_FILESIZE: ${PMA_UPLOAD_MAX_FILESIZE}
+        DEFAULT_TIMEZONE: ${DEFAULT_TIMEZONE}
 
     environment:
       - PMA_HOST=mysql
+      - TZ=${DEFAULT_TIMEZONE}
     ports:
       - ${PORT_PHPMYADMIN}:80
     volumes:
@@ -85,3 +91,5 @@ services:
 
   redis:
     image: redis:latest
+    environment:
+      TZ: ${DEFAULT_TIMEZONE}
