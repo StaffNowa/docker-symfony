@@ -13,20 +13,21 @@ docker-compose --version > /dev/null 2>&1 || { echo >&2 "Docker compose not foun
 if [ ! -f "${WORK_DIR}/.env" ]; then
     if [ -f "${WORK_DIR}/.env.dist" ]; then
         cp "${WORK_DIR}/.env.dist" "${WORK_DIR}/.env"
-
-        # Identification of an existing user system
-        TMP_USER_ID=`id -u`
-        TMP_GROUP_ID=`id -g`
-
-        # Changes are made to the file
-        sed -i 's#USER_ID=#'"USER_ID=${TMP_USER_ID}"'#g' ${WORK_DIR}/.env
-        sed -i 's#GROUP_ID=#'"GROUP_ID=${TMP_GROUP_ID}"'#g' ${WORK_DIR}/.env
     else
         echo >&2 "The .env file does not exist. Project setup will not work"
         exit 1
     fi
 fi
 
+# Assign user id and group id into variables
+TMP_USER_ID=`id -u`
+TMP_GROUP_ID=`id -g`
+
+# Always validate user id and group id before start using .env file
+sed -i 's#USER_ID=.*#'"USER_ID=${TMP_USER_ID}"'#g' ${WORK_DIR}/.env
+sed -i 's#GROUP_ID=.*#'"GROUP_ID=${TMP_USER_ID}"'#g' ${WORK_DIR}/.env
+
+# Load .env file into the current shell script
 source ${WORK_DIR}/.env
 
 # Ensure all folders exists
