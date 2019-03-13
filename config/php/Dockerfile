@@ -57,6 +57,8 @@ RUN docker-php-ext-enable \
 RUN ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEFAULT_TIMEZONE} > /etc/timezone && \
     printf '[PHP]\ndate.timezone = "%s"\n' ${DEFAULT_TIMEZONE} > $PHP_INI_DIR/conf.d/tzone.ini
 
+RUN printf '[CUSTOM]\nmemory_limit = "%s"\n' ${PHP_MEMORY_LIMIT} >> $PHP_INI_DIR/conf.d/custom.ini
+
 RUN echo 'extension=apc.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini
 
 # Install composer
