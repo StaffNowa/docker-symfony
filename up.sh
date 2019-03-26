@@ -28,6 +28,7 @@ TMP_GROUP_ID=`id -g`
 sed -i 's#USER_ID=.*#'"USER_ID=${TMP_USER_ID}"'#g' ${WORK_DIR}/.env
 sed -i 's#GROUP_ID=.*#'"GROUP_ID=${TMP_USER_ID}"'#g' ${WORK_DIR}/.env
 sed -i 's#MYSQL_ROOT_PASSWORD=root#'"MYSQL_ROOT_PASSWORD=`pwgen -s 20 1`"'#g' ${WORK_DIR}/.env
+sed -i 's#MYSQL_PASSWORD=db_password#'"MYSQL_PASSWORD=`pwgen -s 20 1`"'#g' ${WORK_DIR}/.env
 
 # Load .env file into the current shell script
 source ${WORK_DIR}/.env
