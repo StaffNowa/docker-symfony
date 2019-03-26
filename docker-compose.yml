@@ -59,12 +59,12 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: ${DEFAULT_TIMEZONE}
-
     ports:
       - ${PORT_MYSQL}:3306
     volumes:
       - ${MYSQL_DATA_PATH}:/var/lib/mysql:cached
       - ${MYSQL_DUMP_PATH}:/tmp/db
+    command: ['--character-set-server=${MYSQL_CHARACTER_SET_SERVER}', '--collation-server=${MYSQL_COLLATION_SERVER}']
 
   phpmyadmin:
     build:
