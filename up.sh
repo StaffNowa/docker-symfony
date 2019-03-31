@@ -6,7 +6,7 @@ WORK_DIR=`pwd`
 popd > /dev/null
 
 # Prerequisites
-pwgen --help > /dev/null 2>&1 || { echo >&2 "pwgen not found."; exit 1; }
+pwgen > /dev/null 2>&1 || { echo >&2 "pwgen not found."; exit 1; }
 docker --version > /dev/null 2>&1 || { echo >&2 "Docker not found. Please install it via https://docs.docker.com/install/"; exit 1; }
 docker-machine --version > /dev/null 2>&1 || { echo >&2 "Docker machine not found. https://docs.docker.com/machine/install-machine/"; exit 1; }
 docker-compose --version > /dev/null 2>&1 || { echo >&2 "Docker compose not found. Please install it via https://docs.docker.com/compose/install/"; exit 1; }
