@@ -28,6 +28,7 @@ RUN apt-get update && \
     libpng-dev \
     libmagickwand-dev \
     curl \
+    xauth \
     xvfb
 
 # Install PHP extensions. Type docker-php-ext-install to see available extensions
