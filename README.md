@@ -161,7 +161,8 @@ Docker for Windows and Docker Toolbox already include Compose with other Docker 
     symfony_phpmyadmin_1_a5ce79ef63bd   /run.sh supervisord -n -j  ...   Up      0.0.0.0:8080->80/tcp, 9000/tcp 
     ```
 
-#Jetbrains support us! 
+
+# Jetbrains support us! 
 
 <p align="center">
   <img src="https://account.jetbrains.com/static/images/jetbrains-logo-inv.svg" width="350" title="hover text">
