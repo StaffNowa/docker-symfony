@@ -1,4 +1,4 @@
-# Docker Symfony (PHP-FPM - NGINX - MySQL)
+# Docker for Symfony (PHP-FPM - NGINX - MySQL)
 
 Docker symfony gives you everything you need for developing Symfony application. This complete stack run with docker and docker-compose.
 
@@ -160,3 +160,9 @@ Docker for Windows and Docker Toolbox already include Compose with other Docker 
     symfony_php_1_916d0314f3e0          docker-php-entrypoint php-fpm    Up      9000/tcp                                
     symfony_phpmyadmin_1_a5ce79ef63bd   /run.sh supervisord -n -j  ...   Up      0.0.0.0:8080->80/tcp, 9000/tcp 
     ```
+
+#Jetbrains support us! 
+
+<p align="center">
+  <img src="https://account.jetbrains.com/static/images/jetbrains-logo-inv.svg" width="350" title="hover text">
+</p>
