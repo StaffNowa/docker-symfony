@@ -50,6 +50,16 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-
 If you are running on Windows:
 Docker for Windows and Docker Toolbox already include Compose with other Docker apps, so most Windows users do not need to install Compose separately.
 
+## Install PWGen
+### Debian / Ubuntu
+```
+sudo apt-get install pwgen
+``` 
+### CentOS
+```
+wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2.08-1.el7.x86_64.rpm && rpm -ivh pwgen-2.08-1.el7.x86_64.rpm
+```
+
 # Configuration
 1. Create a `.env` from the `.env.dist` file. Adapt it according to your symfony application
 
