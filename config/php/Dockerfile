@@ -77,7 +77,7 @@ RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/.composer && \
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_JS_VERSION} | bash && \
     apt-get install -y nodejs npm node-uglify && \
     update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10 && \
-    npm install -g yargs async sass
+    npm install -g yargs async sass gulp
 
 # bugfix: remove cmdtest to install yarn correctly.
 RUN apt-get remove -y cmdtest
