@@ -29,7 +29,9 @@ RUN apt-get update && \
     libmagickwand-dev \
     curl \
     xauth \
-    xvfb
+    xvfb \
+    openssh-client \
+    less
 
 # Install PHP extensions. Type docker-php-ext-install to see available extensions
 RUN docker-php-ext-configure zip --with-libzip && \
