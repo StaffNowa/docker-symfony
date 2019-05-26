@@ -155,8 +155,7 @@ stop() {
 doMysqlDump() {
     # Load .env file into the current shell script
     source ${WORK_DIR}/.env
-#    MYSQL_USER=$(eval_var ${MYSQL_USER})
-#    MYSQL_PASSWORD=$(eval_var ${MYSQL_PASSWORD})
+
     docker-compose exec mysql mysqldump  --all-databases -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" | gzip > "${MYSQL_DUMP_PATH}/backup_all_databases_$(date +%Y%m%d).sql.gz";
 }
 
