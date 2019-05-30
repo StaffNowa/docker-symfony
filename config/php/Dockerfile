@@ -40,7 +40,8 @@ RUN docker-php-ext-configure zip --with-libzip && \
     pdo_mysql \
     opcache \
     zip \
-    gd
+    gd \
+    mysqli
 
 RUN apt-get install -y libicu-dev \
     && docker-php-ext-configure intl \
@@ -55,7 +56,8 @@ RUN pecl install \
 RUN docker-php-ext-enable \
     xdebug \
     imagick \
-    apcu
+    apcu \
+    mysqli
 
 # Set timezone
 RUN ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEFAULT_TIMEZONE} > /etc/timezone && \
