@@ -40,7 +40,8 @@ RUN docker-php-ext-configure zip --with-libzip && \
     pdo_mysql \
     opcache \
     zip \
-    gd
+    gd \
+    mysqli
 
 RUN apt-get install -y libicu-dev \
     && docker-php-ext-configure intl \
@@ -55,7 +56,8 @@ RUN pecl install \
 RUN docker-php-ext-enable \
     xdebug \
     imagick \
-    apcu
+    apcu \
+    mysqli
 
 # Set timezone
 RUN ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEFAULT_TIMEZONE} > /etc/timezone && \
@@ -79,7 +81,7 @@ RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/.composer && \
 RUN curl -sL https://deb.nodesource.com/setup_${NODE_JS_VERSION} | bash && \
     apt-get install -y nodejs npm node-uglify && \
     update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10 && \
-    npm install -g grunt-cli yargs async sass gulp
+    npm install -g grunt-cli yargs async sass gulp requirejs
 
 # bugfix: remove cmdtest to install yarn correctly.
 RUN apt-get remove -y cmdtest
