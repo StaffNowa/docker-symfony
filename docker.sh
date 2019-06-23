@@ -145,7 +145,7 @@ start() {
     echo "Project URL: http://${PROJECT_DOMAIN}"
     echo "phpMyAdmin: http://${PROJECT_DOMAIN}:8080"
     echo ""
-    echo "Thank you for using Docker Symfony. Should you have any questions, don't hesitate to contact us at support@prado.lt"
+    echo "Thank you for using Docker for Symfony. Should you have any questions, don't hesitate to contact us at support@prado.lt"
 }
 
 stop() {
