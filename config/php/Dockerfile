@@ -31,7 +31,9 @@ RUN apt-get update && \
     xauth \
     xvfb \
     openssh-client \
-    less
+    less \
+    inkscape \
+    cron
 
 # Install PHP extensions. Type docker-php-ext-install to see available extensions
 RUN docker-php-ext-configure zip --with-libzip && \
