@@ -5,6 +5,7 @@ FROM debian:${DEBIAN_VERSION}
 ARG NGINX_VERSION
 ARG PROJECT_DOMAIN
 ARG DOCUMENT_ROOT
+ARG SYMFONY_FRONT_CONTROLLER
 
 MAINTAINER Vasilij Dusko <vasilij@prado.lt>
 
@@ -49,6 +50,7 @@ ADD project.conf /etc/nginx/sites-available/
 
 RUN sed -i 's#__PROJECT_DOMAIN__#'"${PROJECT_DOMAIN}"'#g' /etc/nginx/sites-available/project.conf && \
     sed -i 's#__DOCUMENT_ROOT__#'"${DOCUMENT_ROOT}"'#g' /etc/nginx/sites-available/project.conf && \
+        sed -i 's#__SYMFONY_FRONT_CONTROLLER__#'"${SYMFONY_FRONT_CONTROLLER}"'#g' /etc/nginx/sites-available/project.conf && \
     ln -s /etc/nginx/sites-available/project.conf /etc/nginx/sites-enabled/project.conf && \
     echo "upstream php-upstream { server php:9000; }" > /etc/nginx/conf.d/upstream.conf
 

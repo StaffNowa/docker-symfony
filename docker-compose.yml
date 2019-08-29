@@ -9,6 +9,7 @@ services:
         DOCUMENT_ROOT: ${DOCUMENT_ROOT}
         DEBIAN_VERSION: ${DEBIAN_VERSION}
         NGINX_VERSION: ${NGINX_VERSION}
+        SYMFONY_FRONT_CONTROLLER: ${SYMFONY_FRONT_CONTROLLER}
     ports:
       - ${PORT_NGINX}:80
     networks:
