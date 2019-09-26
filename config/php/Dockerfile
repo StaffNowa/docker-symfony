@@ -33,7 +33,8 @@ RUN apt-get update && \
     openssh-client \
     less \
     inkscape \
-    cron
+    cron \
+    libmcrypt-dev
 
 # Install PHP extensions. Type docker-php-ext-install to see available extensions
 RUN docker-php-ext-configure zip --with-libzip && \
@@ -53,13 +54,15 @@ RUN pecl install \
     xdebug \
     imagick \
     apcu \
-    apcu_bc
+    apcu_bc \
+    mcrypt
 
 RUN docker-php-ext-enable \
     xdebug \
     imagick \
     apcu \
-    mysqli
+    mysqli \
+    mcrypt
 
 # Set timezone
 RUN ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEFAULT_TIMEZONE} > /etc/timezone && \
