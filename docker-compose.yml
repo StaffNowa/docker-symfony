@@ -71,7 +71,6 @@ services:
     build:
       context: config/phpmyadmin
       args:
-        PMA_CLIENT_MAX_BODY_SIZE: ${PMA_CLIENT_MAX_BODY_SIZE}
         PMA_MEMORY_LIMIT: ${PMA_MEMORY_LIMIT}
         PMA_POST_MAX_SIZE: ${PMA_POST_MAX_SIZE}
         PMA_UPLOAD_MAX_FILESIZE: ${PMA_UPLOAD_MAX_FILESIZE}
