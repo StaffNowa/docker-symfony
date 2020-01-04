@@ -20,13 +20,17 @@ boldoff="`tput -Txterm sgr0`"
 HELP_SECTIONS="DOCKER MYSQL"
 DOCKER_SET="start stop logs"
 DOCKER_DESC="Docker for Symfony (PHP-FPM - NGINX - MySQL)"
-DOCKER_REQADD=""
-MYSQL_ADDIT=""
+DOCKER_REQADD="start stop logs"
+START_ADDIT=""
+STOP_ADDIT=""
+LOGS_ADDIT=""
 
 MYSQL_SET="mysql_dump mysql_restore"
-MYSQL_DESC="MySQL"
-MYSQL_REQADD=""
-MYSQL_ADDIT=""
+MYSQL_DESC="Backup and Restore a MySQL Database"
+MYSQL_REQADD="mysql_dump mysql_restore"
+DUMP_ADDIT=""
+RESTORE_ADDIT=""
+
 ##################################################
 
 # Emulate ${!variable}
@@ -122,6 +126,10 @@ doChecks() {
     # Create a file if it does not exist
     touch ${USER_CONFIG_PATH}/.bash_history
 
+    if [ ! -f "${USER_CONFIG_PATH}/.my.cnf" ]; then
+        printf "[client]\nuser=${MYSQL_USER}\npassword=${MYSQL_PASSWORD}\n" >> ${USER_CONFIG_PATH}/.my.cnf
+    fi
+
     docker-compose build
 
     # Clears the screen.
@@ -156,7 +164,7 @@ doMysqlDump() {
     # Load .env file into the current shell script
     source ${WORK_DIR}/.env
 
-    docker-compose exec mysql mysqldump  --all-databases -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" | gzip > "${MYSQL_DUMP_PATH}/backup_all_databases_$(date +%Y%m%d).sql.gz";
+    docker-compose exec mysql bash /tmp/db/mysql_dump.sh
 }
 
 showHelp() {
