@@ -18,11 +18,12 @@ boldoff="`tput -Txterm sgr0`"
 
 # Help sections
 HELP_SECTIONS="DOCKER MYSQL"
-DOCKER_SET="start stop logs"
+DOCKER_SET="start stop exec logs"
 DOCKER_DESC="Docker for Symfony (PHP-FPM - NGINX - MySQL)"
-DOCKER_REQADD="start stop logs"
+DOCKER_REQADD="start stop exec logs"
 START_ADDIT=""
 STOP_ADDIT=""
+EXEC_ADDIT=""
 LOGS_ADDIT=""
 
 MYSQL_SET="mysql_dump mysql_restore"
@@ -160,6 +161,11 @@ stop() {
     docker-compose down
 }
 
+dockerComposeExec() {
+    # $1 command
+    docker-compose exec $1 bash
+}
+
 doMysqlDump() {
     # Load .env file into the current shell script
     source ${WORK_DIR}/.env
@@ -181,6 +187,8 @@ case "$1" in
     start) doChecks; start
         ;;
     stop) stop
+        ;;
+    exec) dockerComposeExec $2
         ;;
     mysql_dump) doMysqlDump
         ;;
