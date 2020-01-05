@@ -177,3 +177,9 @@ wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2
 <p align="center">
   <img src="https://account.jetbrains.com/static/images/jetbrains-logo-inv.svg" width="350" title="hover text">
 </p>
+
+# Hostinger.lt support us!
+
+<p align="center">
+  <img src="https://www.prado.lt/wp-content/uploads/banners/hostinger.png" width="120" title="hover text">
+</p>
