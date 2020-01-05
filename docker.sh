@@ -17,7 +17,7 @@ boldoff="`tput -Txterm sgr0`"
 ##################################################
 
 # Help sections
-HELP_SECTIONS="DOCKER MYSQL"
+HELP_SECTIONS="DOCKER MYSQL PASSWD"
 DOCKER_SET="start stop exec logs"
 DOCKER_DESC="Docker for Symfony (PHP-FPM - NGINX - MySQL)"
 DOCKER_REQADD="start stop exec logs"
@@ -31,6 +31,11 @@ MYSQL_DESC="Backup and Restore a MySQL Database"
 MYSQL_REQADD="mysql_dump mysql_restore"
 DUMP_ADDIT=""
 RESTORE_ADDIT=""
+
+PASSWD_SET="passwd"
+PASSWD_DESC="Show password sensitive information"
+PASSWD_REQADD="passwd"
+PASSWD_ADDIT="show"
 
 ##################################################
 
@@ -173,12 +178,41 @@ doMysqlDump() {
     docker-compose exec mysql bash /tmp/db/mysql_dump.sh
 }
 
-showHelp() {
+doPasswd() {
+    # $1 command
+    COMMAND=$1
+
+    if [ "${COMMAND}" = "show" ]; then
+        showPasswords
+    fi
+}
+
+mainHeader() {
     printf " +%-55s+\n" "-----------------------------------------------------------"
     printf " | %-55s %-2s|\n" "Docker for Symfony (PHP-FPM - NGINX - MySQL)"
     printf " | %-55s %-2s|\n" "Written by Vasilij Dusko"
     printf " | %-55s %-2s|\n" "Version: $(showVersion)"
     printf " +%-55s+\n" "-----------------------------------------------------------"
+}
+
+showPasswords() {
+    source ${WORK_DIR}/.env
+
+    mainHeader
+    printf " +%-55s+\n" "-----------------------------------------------------------"
+    printf " | %-55s %-2s|\n" "The following information has been set:"
+    printf " +%-55s+\n" "-----------------------------------------------------------"
+    printf " | %-55s %-2s|\n" "MySQL root username: root"
+    printf " | %-55s %-2s|\n" "MySQL root password: ${MYSQL_ROOT_PASSWORD}"
+    printf " +%-55s+\n" "-----------------------------------------------------------"
+    printf " | %-55s %-2s|\n" "MySQL database name: ${MYSQL_DATABASE}"
+    printf " | %-55s %-2s|\n" "MySQL username: ${MYSQL_USER}"
+    printf " | %-55s %-2s|\n" "MySQL password: ${MYSQL_PASSWORD}"
+    printf " +%-55s+\n" "-----------------------------------------------------------"
+}
+
+showHelp() {
+    mainHeader
     generateHelp
     printf " +%-55s+\n" "-----------------------------------------------------------"
 }
@@ -191,6 +225,8 @@ case "$1" in
     exec) dockerComposeExec $2
         ;;
     mysql_dump) doMysqlDump
+        ;;
+    passwd) doPasswd $2
         ;;
     * ) showHelp
         exit 0
