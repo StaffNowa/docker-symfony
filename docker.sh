@@ -10,34 +10,12 @@ cd ${WORK_DIR}
 chmod 700 ${WORK_DIR}/docker.sh >/dev/null 2>&1
 chmod 700 ${WORK_DIR} >/dev/null 2>&1
 
-##################################################
-# Variables for bolded text
-boldon="`tput -Txterm bold`"
-boldoff="`tput -Txterm sgr0`"
-##################################################
+ENV=${WORK_DIR}/.env
+ENV_DIST=${WORK_DIR}/.env.dist
 
-# Help sections
-HELP_SECTIONS="DOCKER MYSQL PASSWD"
-DOCKER_SET="start stop exec logs"
-DOCKER_DESC="Docker for Symfony (PHP-FPM - NGINX - MySQL)"
-DOCKER_REQADD="start stop exec logs"
-START_ADDIT=""
-STOP_ADDIT=""
-EXEC_ADDIT=""
-LOGS_ADDIT=""
-
-MYSQL_SET="mysql_dump mysql_restore"
-MYSQL_DESC="Backup and Restore a MySQL Database"
-MYSQL_REQADD="mysql_dump mysql_restore"
-DUMP_ADDIT=""
-RESTORE_ADDIT=""
-
-PASSWD_SET="passwd"
-PASSWD_DESC="Show password sensitive information"
-PASSWD_REQADD="passwd"
-PASSWD_ADDIT="show"
-
-##################################################
+if [ ! -e ${ENV} ]; then
+  cp "${WORK_DIR}/${ENV_DIST}" "${WORK_DIR}/${ENV}"
+fi
 
 # Emulate ${!variable}
 eval_var() {
@@ -49,6 +27,109 @@ eval_var() {
             echo $newval
         fi
 }
+
+HIDE_CHANGES=0
+
+getOpt() {
+	#$1 is option name
+	#$2 is default value
+
+  source ${WORK_DIR}/.env
+
+	GET_OPTION="$(eval_var $1)"
+	if [ "${GET_OPTION}" = "" ]; then
+		echo "$1=$2" >> ${ENV}
+		GET_OPTION="${2}"
+		eval `echo "${1}=${2}"`
+	fi
+
+	echo ${GET_OPTION}
+}
+
+##################################################
+# Variables for bolded text
+boldon="`tput -Txterm bold`"
+boldoff="`tput -Txterm sgr0`"
+##################################################
+
+setOpt() {
+	#$1 is option name
+	#$2 is value
+	READ_OPTION_NAME="$1"
+	READ_OPTION_VALUE="`echo \"$2\" | perl -p0 -e 's|@|\\\\@|g'`"
+
+	VAR=`echo ${READ_OPTION_NAME} | tr "[a-z]" "[A-Z]"`
+	if [ -z "$(eval_var ${VAR}_DEF)" ]; then
+		echo "${READ_OPTION_NAME} is not a valid option."
+		EXIT_CODE=50
+		return
+	fi
+
+	VALID="no"
+	for i in $(eval_var ${VAR}_SET); do
+		if [ "${i}" = "${READ_OPTION_VALUE}" ] || [ "${i}" = "userinput" ]; then
+			VALID="yes"
+			break
+		fi
+	done
+
+	if [ "${VALID}" = "no" ]; then
+		echo "${READ_OPTION_VALUE} is not a valid setting for ${READ_OPTION_NAME} option."
+		EXIT_CODE=51
+		return
+	fi
+	OPT_VALUE="`grep -m1 "^${READ_OPTION_NAME}=" ${WORK_DIR}/${ENV} | cut -d= -f2 | perl -p0 -e 's|@|\\\\@|g'`"
+	perl -pi -e "s#${READ_OPTION_NAME}=${OPT_VALUE}#${READ_OPTION_NAME}=${READ_OPTION_VALUE}#" ${WORK_DIR}/${ENV}
+	if [ "${HIDE_CHANGES}" = "0" ]; then
+		echo "Changed ${boldon}${READ_OPTION_NAME}${boldoff} option from ${boldon}${OPT_VALUE}${boldoff} to ${boldon}${READ_OPTION_VALUE}${boldoff}" | perl -p0 -e 's|\\\@|\@|g'
+	fi
+}
+
+##################################################
+
+PHP_VERSION_SET="5.6 7.0 7.1 7.2 7.3"
+
+PHP_VERSION_DEF="7.3"
+
+# PHP
+PHP_VERSION_OPT=`getOpt PHP_VERSION ${PHP_VERSION_DEF}`
+
+##################################################
+
+# Help sections
+HELP_SECTIONS="DOCKER_RUN DOCKER_MYSQL DOCKER_PASSWD DOCKER_D4D"
+DOCKER_RUN_SET="start stop exec logs"
+DOCKER_RUN_DESC="Docker for Symfony (PHP-FPM - NGINX - MySQL)"
+DOCKER_RUN_REQADD="start stop exec logs"
+START_ADDIT=""
+STOP_ADDIT=""
+EXEC_ADDIT=""
+LOGS_ADDIT=""
+
+DOCKER_MYSQL_SET="mysql_dump mysql_restore"
+DOCKER_MYSQL_DESC="Backup and Restore a MySQL Database"
+DOCKER_MYSQL_REQADD="mysql_dump mysql_restore"
+DOCKER_MYSQL_DUMP_ADDIT=""
+DOCKER_MYSQL_RESTORE_ADDIT=""
+
+DOCKER_PASSWD_SET="passwd"
+DOCKER_PASSWD_DESC="Show password sensitive information"
+DOCKER_PASSWD_REQADD="passwd"
+PASSWD_ADDIT="show"
+
+DOCKER_D4D_SET="opt_help set"
+DOCKER_D4D_DESC="Docker related options/functions"
+DOCKER_D4D_REQADD="opt_help set"
+OPT_HELP_ADDIT="(full)"
+SET_ADDIT="option_name value"
+
+##################################################
+
+# ALL SETTINGS
+# SECTIONS OF OPTIONS
+ALL_SECTIONS="PHP_SETTINGS"
+
+PHP_SETTINGS="PHP_VERSION"
 
 showVersion() {
     echo "${DOCKER_SCRIPT_VER} (rev: 0001)"
@@ -82,11 +163,11 @@ doChecks() {
     docker-machine --version > /dev/null 2>&1 || { echo >&2 "Docker machine not found. https://docs.docker.com/machine/install-machine/"; exit 1; }
     docker-compose --version > /dev/null 2>&1 || { echo >&2 "Docker compose not found. Please install it via https://docs.docker.com/compose/install/"; exit 1; }
 
-    if [ ! -f "${WORK_DIR}/.env" ]; then
-        if [ -f "${WORK_DIR}/.env.dist" ]; then
-            cp "${WORK_DIR}/.env.dist" "${WORK_DIR}/.env"
+    if [ ! -f "${WORK_DIR}/${ENV}" ]; then
+        if [ -f "${WORK_DIR}/${ENV_DIST}" ]; then
+            cp "${WORK_DIR}/{$ENV_DIST}}" "${WORK_DIR}/${ENV}"
         else
-            echo >&2 "The .env file does not exist. Project setup will not work"
+            echo >&2 "The ${ENV} file does not exist. Project setup will not work"
             exit 1
         fi
     fi
@@ -135,6 +216,9 @@ doChecks() {
     if [ ! -f "${USER_CONFIG_PATH}/.my.cnf" ]; then
         printf "[client]\nuser=${MYSQL_USER}\npassword=${MYSQL_PASSWORD}\n" >> ${USER_CONFIG_PATH}/.my.cnf
     fi
+
+    #
+#    ./config/php/build.sh
 
     docker-compose build
 
@@ -188,6 +272,30 @@ doPasswd() {
     fi
 }
 
+allSettings() {
+	for section in $ALL_SECTIONS; do
+		DESC=${section}_DESC
+		echo "------------------------------------------"
+		echo "$(eval_var ${DESC})"
+		echo "------------------------------------------"
+		for setting in $(eval_var ${section}); do
+			SETTING_NAME=`echo $setting | tr "[A-Z]" "[a-z]"`
+			POSSIBLE_VALUES_VAR=${setting}_SET
+			POSSIBLE_VALUES="`echo $(eval_var ${POSSIBLE_VALUES_VAR}) | awk -v OFS=", " '$1=$1'`"
+			DEFAULT_VALUE=${setting}_DEF
+			CURRENT_VALUE=${setting}_OPT
+			echo -n "${SETTING_NAME}: ${POSSIBLE_VALUES}. Current value: $(eval_var ${CURRENT_VALUE}). Default value: $(eval_var ${DEFAULT_VALUE})."
+			if [ "$1" = "full" ]; then
+				DESCRIPTION="${setting}_DESC"
+				echo " Description: $(eval_var ${DESCRIPTION})"
+			else
+				echo ""
+			fi
+		done
+		echo ""
+	done
+}
+
 mainHeader() {
     printf " +%-55s+\n" "-----------------------------------------------------------"
     printf " | %-55s %-2s|\n" "Docker for Symfony (PHP-FPM - NGINX - MySQL)"
@@ -237,6 +345,10 @@ case "$1" in
     mysql_dump) doMysqlDump
         ;;
     passwd) doPasswd $2
+        ;;
+#    set) setOpt $2 $3
+#        ;;
+    opt_help) allSettings $2
         ;;
     * ) showHelp
         exit 0
