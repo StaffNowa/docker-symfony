@@ -78,8 +78,8 @@ setOpt() {
 		EXIT_CODE=51
 		return
 	fi
-	OPT_VALUE="`grep -m1 "^${READ_OPTION_NAME}=" ${WORK_DIR}/${ENV} | cut -d= -f2 | perl -p0 -e 's|@|\\\\@|g'`"
-	perl -pi -e "s#${READ_OPTION_NAME}=${OPT_VALUE}#${READ_OPTION_NAME}=${READ_OPTION_VALUE}#" ${WORK_DIR}/${ENV}
+	OPT_VALUE="`grep -m1 "^${READ_OPTION_NAME}=" ${ENV} | cut -d= -f2 | perl -p0 -e 's|@|\\\\@|g'`"
+	perl -pi -e "s#${READ_OPTION_NAME}=${OPT_VALUE}#${READ_OPTION_NAME}=${READ_OPTION_VALUE}#" ${ENV}
 	if [ "${HIDE_CHANGES}" = "0" ]; then
 		echo "Changed ${boldon}${READ_OPTION_NAME}${boldoff} option from ${boldon}${OPT_VALUE}${boldoff} to ${boldon}${READ_OPTION_VALUE}${boldoff}" | perl -p0 -e 's|\\\@|\@|g'
 	fi
@@ -346,8 +346,8 @@ case "$1" in
         ;;
     passwd) doPasswd $2
         ;;
-#    set) setOpt $2 $3
-#        ;;
+    set) setOpt $2 $3
+        ;;
     opt_help) allSettings $2
         ;;
     * ) showHelp
