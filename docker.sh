@@ -14,7 +14,7 @@ ENV=${WORK_DIR}/.env
 ENV_DIST=${WORK_DIR}/.env.dist
 
 if [ ! -e ${ENV} ]; then
-  cp "${WORK_DIR}/${ENV_DIST}" "${WORK_DIR}/${ENV}"
+  cp "${ENV_DIST}" "${ENV}"
 fi
 
 # Emulate ${!variable}
@@ -163,9 +163,9 @@ doChecks() {
     docker-machine --version > /dev/null 2>&1 || { echo >&2 "Docker machine not found. https://docs.docker.com/machine/install-machine/"; exit 1; }
     docker-compose --version > /dev/null 2>&1 || { echo >&2 "Docker compose not found. Please install it via https://docs.docker.com/compose/install/"; exit 1; }
 
-    if [ ! -f "${WORK_DIR}/${ENV}" ]; then
-        if [ -f "${WORK_DIR}/${ENV_DIST}" ]; then
-            cp "${WORK_DIR}/{$ENV_DIST}}" "${WORK_DIR}/${ENV}"
+    if [ ! -f "${ENV}" ]; then
+        if [ -f "${ENV_DIST}" ]; then
+            cp "{$ENV_DIST}" "${ENV}"
         else
             echo >&2 "The ${ENV} file does not exist. Project setup will not work"
             exit 1
