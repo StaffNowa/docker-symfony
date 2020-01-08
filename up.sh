@@ -61,6 +61,10 @@ mkdir -p ${USER_CONFIG_PATH}
 # Create a file if it does not exist
 touch ${USER_CONFIG_PATH}/.bash_history
 
+if [ ! -f "${USER_CONFIG_PATH}/.my.cnf" ]; then
+    printf "[client]\nuser=${MYSQL_USER}\npassword=${MYSQL_PASSWORD}\n" >> ${USER_CONFIG_PATH}/.my.cnf
+fi
+
 docker-compose build
 
 # Clears the screen.
