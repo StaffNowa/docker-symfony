@@ -15,19 +15,19 @@ source ${WORK_DIR}/.env
 cp config/php/Dockerfile.build config/php/Dockerfile.tmp
 
 PACKAGE_LIST=('gnupg1' 'openssl' 'git' 'unzip' 'libzip-dev' 'nano' 'libpng-dev' 'libmagickwand-dev' 'curl' 'xauth' 'xvfb' 'openssh-client' 'less' 'inkscape' 'cron')
-PHP_EXT_INSTALL=('pdo' 'pdo_mysql' 'opcache' 'zip' 'gd' 'mysqli')
-PHP_EXT_ENABLE=('imagick' 'mysqli')
+PHP_EXT_INSTALL=('pdo' 'pdo_mysql' 'opcache' 'zip' 'gd' 'mysqli' 'exif' 'bcmath' 'calendar')
+PHP_EXT_ENABLE=('imagick' 'mysqli' 'calendar' 'exif' 'bcmath')
 PECL_INSTALL=('imagick')
 
 if [ "${PHP_VERSION}" != "5.6" ]; then
-  PHP_EXT_ENABLE+=('xdebug' 'apcu')
-  PECL_INSTALL+=('xdebug' 'apcu' 'apcu_bc')
+    PHP_EXT_ENABLE+=('xdebug' 'apcu')
+    PECL_INSTALL+=('xdebug' 'apcu' 'apcu_bc')
 fi
 
 if [ "${PHP_VERSION}" != "5.6" ] && [ "${PHP_VERSION}" != "7.0" ] && [ "${PHP_VERSION}" != "7.1" ]; then
-  PACKAGE_LIST+=('libmcrypt-dev')
-  PHP_EXT_ENABLE+=('mcrypt')
-  PECL_INSTALL+=('mcrypt')
+    PACKAGE_LIST+=('libmcrypt-dev')
+    PHP_EXT_ENABLE+=('mcrypt')
+    PECL_INSTALL+=('mcrypt')
 fi
 
 sed -i 's#__PACKAGE_LIST__#'"${PACKAGE_LIST[*]}"'#g' config/php/Dockerfile.tmp
