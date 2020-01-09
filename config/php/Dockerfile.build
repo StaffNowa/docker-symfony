@@ -19,50 +19,23 @@ ARG XDEBUG_REMOTE_CONNECT_BACK
 MAINTAINER Vasilij Dusko <vasilij@prado.lt>
 
 RUN apt-get update && \
-    apt-get install --no-install-recommends --no-install-suggests -y gnupg1 \
-    openssl \
-    git \
-    unzip \
-    libzip-dev \
-    nano \
-    libpng-dev \
-    libmagickwand-dev \
-    curl \
-    xauth \
-    xvfb \
-    openssh-client \
-    less \
-    inkscape \
-    cron \
-    libmcrypt-dev
+    apt-get install --no-install-recommends --no-install-suggests -y \
+    __PACKAGE_LIST__
 
 # Install PHP extensions. Type docker-php-ext-install to see available extensions
 RUN docker-php-ext-configure zip --with-libzip && \
     docker-php-ext-install -j$(nproc) \
-    pdo \
-    pdo_mysql \
-    opcache \
-    zip \
-    gd \
-    mysqli
+    __PHP_EXT_INSTALL__
 
 RUN apt-get install -y libicu-dev \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl
 
 RUN pecl install \
-    xdebug \
-    imagick \
-    apcu \
-    apcu_bc \
-    mcrypt
+    __PECL_INSTALL__
 
 RUN docker-php-ext-enable \
-    xdebug \
-    imagick \
-    apcu \
-    mysqli \
-    mcrypt
+    __PHP_EXT_ENABLE__
 
 # Set timezone
 RUN ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEFAULT_TIMEZONE} > /etc/timezone && \
