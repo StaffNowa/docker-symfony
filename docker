@@ -111,9 +111,9 @@ NODE_JS_VERSION_OPT=`getOpt NODE_JS_VERSION ${NODE_JS_VERSION_DEF}`
 
 # Help sections
 HELP_SECTIONS="DOCKER_RUN DOCKER_MYSQL DOCKER_PASSWD DOCKER_D4D"
-DOCKER_RUN_SET="start stop exec logs"
+DOCKER_RUN_SET="start stop exec logs prune"
 DOCKER_RUN_DESC="Docker for Symfony (PHP-FPM - NGINX - MySQL)"
-DOCKER_RUN_REQADD="start stop exec logs"
+DOCKER_RUN_REQADD="start stop exec logs prune"
 START_ADDIT=""
 STOP_ADDIT=""
 EXEC_ADDIT=""
@@ -280,6 +280,11 @@ doMysqlDump() {
     docker-compose exec mysql bash /tmp/db/mysql_dump.sh
 }
 
+doPrune() {
+    # Remove all unused containers, networks, images (both dangling and unreferenced), and optionally, volumes.
+    docker system prune
+}
+
 doPasswd() {
     # $1 command
     COMMAND=$1
@@ -358,6 +363,8 @@ case "$1" in
     stop) stop
         ;;
     exec) dockerComposeExec $2
+        ;;
+    prune) doPrune
         ;;
     mysql_dump) doMysqlDump
         ;;
