@@ -55,7 +55,7 @@ boldoff="`tput -Txterm sgr0`"
 setOpt() {
 	#$1 is option name
 	#$2 is value
-	READ_OPTION_NAME="$1"
+	READ_OPTION_NAME="`echo \"$1\" | tr '[:lower:]' '[:upper:]'`"
 	READ_OPTION_VALUE="`echo \"$2\" | perl -p0 -e 's|@|\\\\@|g'`"
 
 	VAR=`echo ${READ_OPTION_NAME} | tr "[a-z]" "[A-Z]"`
