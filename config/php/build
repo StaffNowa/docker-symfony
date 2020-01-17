@@ -14,8 +14,8 @@ source ${WORK_DIR}/.env
 
 cp config/php/Dockerfile.build config/php/Dockerfile.tmp
 
-PACKAGE_LIST=('gnupg1' 'openssl' 'git' 'unzip' 'libzip-dev' 'nano' 'libpng-dev' 'libmagickwand-dev' 'curl' 'xauth' 'xvfb' 'openssh-client' 'less' 'inkscape' 'cron' 'exiftool')
-PHP_EXT_INSTALL=('pdo' 'pdo_mysql' 'opcache' 'zip' 'gd' 'mysqli' 'exif' 'bcmath' 'calendar')
+PACKAGE_LIST=('gnupg1' 'openssl' 'git' 'unzip' 'libzip-dev' 'nano' 'libpng-dev' 'libmagickwand-dev' 'curl' 'xauth' 'xvfb' 'openssh-client' 'less' 'inkscape' 'cron' 'exiftool' 'libicu-dev')
+PHP_EXT_INSTALL=('pdo' 'pdo_mysql' 'opcache' 'zip' 'gd' 'mysqli' 'exif' 'bcmath' 'calendar' 'intl')
 PHP_EXT_ENABLE=('imagick' 'mysqli' 'calendar' 'exif' 'bcmath')
 PECL_INSTALL=('imagick')
 
@@ -28,6 +28,10 @@ if [ "${PHP_VERSION}" != "5.6" ] && [ "${PHP_VERSION}" != "7.0" ] && [ "${PHP_VE
     PACKAGE_LIST+=('libmcrypt-dev')
     PHP_EXT_ENABLE+=('mcrypt')
     PECL_INSTALL+=('mcrypt')
+fi
+
+if [ "${PHP_VERSION}" = "7.4" ]; then
+    sed -i 's#docker-php-ext-configure zip --with-libzip && #'""'#g' config/php/Dockerfile.tmp
 fi
 
 NPM_INSTALL_GLOBAL=('grunt-cli' 'yargs' 'async' 'sass' 'gulp' 'requirejs')
