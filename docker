@@ -88,7 +88,7 @@ setOpt() {
 ##################################################
 
 # PHP
-PHP_VERSION_SET="5.6 7.0 7.1 7.2 7.3"
+PHP_VERSION_SET="5.6 7.0 7.1 7.2 7.3 7.4"
 PHP_VERSION_DEF="7.2"
 PHP_VERSION_OPT=`getOpt PHP_VERSION ${PHP_VERSION_DEF}`
 
