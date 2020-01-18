@@ -18,11 +18,6 @@ adding your user to the "docker" group with something like:
 sudo usermod -aG docker ${USER}
 ```
 
-If you are running on Windows:
-```
-https://hub.docker.com/editions/community/docker-ce-desktop-windows
-```
-
 ## Install the latest Docker Machine
 
 If you are running on Linux:
@@ -32,23 +27,12 @@ curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
 sudo install /tmp/docker-machine /usr/local/bin/docker-machine
 ```
 
-If you are running on Windows:
-```
-$ base=https://github.com/docker/machine/releases/download/v0.16.0 &&
-  mkdir -p "$HOME/bin" &&
-  curl -L $base/docker-machine-Windows-x86_64.exe > "$HOME/bin/docker-machine.exe" &&
-  chmod +x "$HOME/bin/docker-machine.exe"
-```
-
 ## Install the latest Docker Compose
 
 If you are running on Linux:
 ```
 sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
 ```
-
-If you are running on Windows:
-Docker for Windows and Docker Toolbox already include Compose with other Docker apps, so most Windows users do not need to install Compose separately.
 
 ## Install PWGen
 ### Debian / Ubuntu
@@ -75,11 +59,11 @@ wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2
 
 3. Update your system host file (add symfony.local)
    ```bash
-   # UNIX only: get containers IP address and update host (replace IP according to your configuration) (on Windows, edit C:\Windows\System32\drivers\etc\hosts)
+   # UNIX only: get containers IP address and update host (replace IP according to your configuration)
    $ sudo echo $(docker network inspect bridge | grep Gateway | grep -o -E '[0-9\.]+') "symfony.local" >> /etc/hosts
    ```
    
-   **Note:** For **OS X**, please take a look [here](https://docs.docker.com/docker-for-mac/networking/) and for **Windows** read [this](https://docs.docker.com/docker-for-windows/#/step-4-explore-the-application-and-run-examples) (4th step).
+   **Note:** For **OS X**, please take a look [here](https://docs.docker.com/docker-for-mac/networking/).
    
 4. Prepare Symfony app
     
