@@ -283,7 +283,7 @@ doCheckPackage() {
                 fi
                 ;;
             docker)
-                if [ ${OS_CENTOS_VERSION} ! "8" ]; then
+                if [ ${OS_CENTOS_VERSION} != "8" ]; then
                     curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh && sudo usermod -aG docker ${USER}
                 else
                     sudo dnf -y install docker-ce --nobest && sudo usermod -aG docker ${USER}
