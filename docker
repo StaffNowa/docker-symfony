@@ -304,6 +304,15 @@ doRemovePackage() {
     which $1 > /dev/null 2>&1
     if [ $? == 0 ]; then
         case "$1" in
+            docker)
+                if [ ${OS} = "FreeBSD" ]; then
+			              pkg remove docker-ce docker-ce-cli
+		            elif [ -e ${DEBIAN_VERSION} ]; then
+			              apt-get remove docker-ce docker-ce-cli
+		            else
+			              yum remove docker-ce docker-ce-cli
+		            fi
+                ;;
             docker-machine)
                 rm /usr/local/bin/docker-machine
                 ;;
@@ -362,10 +371,7 @@ doUninstall() {
     doRemovePackage pwgen
 
     # Remove Docker CE
-    doRemovePackage docker-ce
-
-    # Remove Docker CE cli
-    doRemovePackage docker-ce-cli
+    doRemovePackage docker
 
     # Remove Docker Machine
     doRemovePackage docker-machine
