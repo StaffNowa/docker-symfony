@@ -127,7 +127,7 @@ NODE_JS_VERSION_OPT=`getOpt NODE_JS_VERSION ${NODE_JS_VERSION_DEF}`
 
 # Help sections
 HELP_SECTIONS="DOCKER_RUN DOCKER_MYSQL DOCKER_PASSWD DOCKER_D4D"
-DOCKER_RUN_SET="install start stop exec logs prune"
+DOCKER_RUN_SET="install uninstall start stop exec logs prune"
 DOCKER_RUN_DESC="Docker for Symfony (PHP-FPM - NGINX - MySQL)"
 DOCKER_RUN_REQADD="start stop exec logs prune"
 START_ADDIT=""
@@ -261,6 +261,68 @@ doChecks() {
     clear
 }
 
+doCheckPackage() {
+    # $1 package name
+
+    which $1 > /dev/null 2>&1
+    if [ $? != 0 ]; then
+        case "$1" in
+            pwgen)
+                if [ ${OS} = "FreeBSD" ]; then
+            		    pkg install $1
+                elif [ -e ${DEBIAN_VERSION} ]; then
+                    apt-get install $1
+                else
+                    wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2.08-1.el7.x86_64.rpm && rpm -ivh pwgen-2.08-1.el7.x86_64.rpm && rm pwgen-2.08-1.el7.x86_64.rpm
+                fi
+                ;;
+            docker)
+                curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh && sudo usermod -aG docker ${USER}
+                ;;
+            docker-machine)
+                base=https://github.com/docker/machine/releases/download/v0.16.0 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine && sudo install /tmp/docker-machine /usr/local/bin/docker-machine
+                ;;
+            docker-compose)
+                sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
+                ;;
+            * )
+                if [ ${OS} = "FreeBSD" ]; then
+			              pkg install $1
+		            elif [ -e ${DEBIAN_VERSION} ]; then
+			              apt-get install $1
+		            else
+			              yum install $1
+		            fi
+                ;;
+        esac
+    fi
+}
+
+doRemovePackage() {
+    # $1 package name
+
+    which $1 > /dev/null 2>&1
+    if [ $? == 0 ]; then
+        case "$1" in
+            docker-machine)
+                rm /usr/local/bin/docker-machine
+                ;;
+            docker-compose)
+                rm /usr/local/bin/docker-compose
+                ;;
+            * )
+                if [ ${OS} = "FreeBSD" ]; then
+			              pkg remove $1
+		            elif [ -e ${DEBIAN_VERSION} ]; then
+			              apt-get remove $1
+		            else
+			              yum remove $1
+		            fi
+                ;;
+        esac
+    fi
+}
+
 doInstall() {
     if [ "$(id -u)" != "0" ]; then
 	      echo "You must be root to execute the script. Exiting."
@@ -271,6 +333,45 @@ doInstall() {
         echo "Unsupported distribution. Exiting."
         exit 1
     fi
+
+    # Install PWGen
+    doCheckPackage pwgen
+
+    # Install the latest Docker CE version
+    doCheckPackage docker
+
+    # Install the latest Docker Machine
+    doCheckPackage docker-machine
+
+    # Install the latest Docker Compose
+    doCheckPackage docker-compose
+}
+
+doUninstall() {
+    if [ "$(id -u)" != "0" ]; then
+	      echo "You must be root to execute the script. Exiting."
+        exit 1
+    fi
+
+    if [ "${OS_CENTOS_VERSION}" = "6" ]; then
+        echo "Unsupported distribution. Exiting."
+        exit 1
+    fi
+
+		# Remove PWGen
+    doRemovePackage pwgen
+
+    # Remove Docker CE
+    doRemovePackage docker-ce
+
+    # Remove Docker CE cli
+    doRemovePackage docker-ce-cli
+
+    # Remove Docker Machine
+    doRemovePackage docker-machine
+
+    # Remove Docker Compose
+    doRemovePackage docker-compose
 }
 
 start() {
@@ -389,6 +490,8 @@ showHelp() {
 
 case "$1" in
     install) doInstall;
+        ;;
+    uninstall) doUninstall;
         ;;
     start) doChecks; start
         ;;
