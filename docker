@@ -29,17 +29,18 @@ eval_var() {
         fi
 }
 
+# Get OS version
 DEBIAN_VERSION=/etc/debian_version
 if [ "${OS}" = "FreeBSD" ]; then
-    OS_VER=`uname -r | cut -d- -f1`
-	  OS_FREEBSD_VER=`echo ${OS_VER} | cut -d. -f1`
+    OS_VERSION=`uname -r | cut -d- -f1`
+	  OS_FREEBSD_VERSION=`echo ${OS_VER} | cut -d. -f1`
 elif [ -e ${DEBIAN_VERSION} ]; then
-	  OS_DEBIAN_VER=`grep -m1 -o '^[^\.]*' ${DEBIAN_VERSION}`
+	  OS_DEBIAN_VERSION=`grep -m1 -o '^[^\.]*' ${DEBIAN_VERSION}`
 else
     if [ -s /etc/os-release ]; then
-		    OS_CENTOS_VER=`grep -m1 '^VERSION_ID=' /etc/os-release | cut -d. -f1 | cut -d'"' -f2`
+		    OS_CENTOS_VERSION=`grep -m1 '^VERSION_ID=' /etc/os-release | cut -d. -f1 | cut -d'"' -f2`
 	  else
-		    OS_CENTOS_VER=`grep -m1 -o '[0-9]*\.[0-9]*' /etc/redhat-release | cut -d. -f1`
+		    OS_CENTOS_VERSION=`grep -m1 -o '[0-9]*\.[0-9]*' /etc/redhat-release | cut -d. -f1`
 	  fi
 fi
 
@@ -266,7 +267,7 @@ doInstall() {
         exit 1
     fi
 
-    if [ "${OS_CENTOS_VER}" = "6" ]; then
+    if [ "${OS_CENTOS_VERSION}" = "6" ]; then
         echo "Unsupported distribution. Exiting."
         exit 1
     fi
