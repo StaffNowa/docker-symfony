@@ -283,10 +283,16 @@ doCheckPackage() {
                 fi
                 ;;
             docker)
-                if [ ${OS_CENTOS_VERSION} != "8" ]; then
+                if [ ${OS} = "FreeBSD" ]; then
+            		    curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh && sudo usermod -aG docker ${USER}
+                elif [ -e ${DEBIAN_VERSION} ]; then
                     curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh && sudo usermod -aG docker ${USER}
                 else
-                    curl -fsSL https://get.docker.com -o get-docker.sh && sudo dnf -y install docker-ce --nobest && sudo usermod -aG docker ${USER}
+                    if [ ${OS_CENTOS_VERSION} != "8" ]; then
+                        curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh && sudo usermod -aG docker ${USER}
+                    else
+                        curl -fsSL https://get.docker.com -o get-docker.sh && sudo dnf -y install docker-ce --nobest && sudo usermod -aG docker ${USER}
+                    fi
                 fi
                 ;;
             docker-machine)
