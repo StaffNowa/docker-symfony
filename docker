@@ -273,7 +273,13 @@ doCheckPackage() {
                 elif [ -e ${DEBIAN_VERSION} ]; then
                     apt-get install $1
                 else
-                    wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2.08-1.el7.x86_64.rpm && rpm -ivh pwgen-2.08-1.el7.x86_64.rpm && rm pwgen-2.08-1.el7.x86_64.rpm
+                    if [ ${OS_CENTOS_VERSION} = "7" ]; then
+                        wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2.08-1.el7.x86_64.rpm && rpm -ivh pwgen-2.08-1.el7.x86_64.rpm && rm pwgen-2.08-1.el7.x86_64.rpm
+                    fi
+
+                    if [ ${OS_CENTOS_VERSION} = "8" ]; then
+                        wget https://download-ib01.fedoraproject.org/pub/epel/8/Everything/x86_64/Packages/p/pwgen-2.08-3.el8.x86_64.rpm && rpm -ivh pwgen-2.08-3.el8.x86_64.rpm && rm pwgen-2.08-3.el8.x86_64.rpm
+                    fi
                 fi
                 ;;
             docker)
