@@ -34,7 +34,7 @@ if [ "${PHP_VERSION}" = "7.4" ]; then
     sed -i 's#docker-php-ext-configure zip --with-libzip && #'""'#g' config/php/Dockerfile.tmp
 fi
 
-NPM_INSTALL_GLOBAL=('grunt-cli' 'yargs' 'async' 'sass' 'gulp' 'requirejs' 'pm2')
+NPM_INSTALL_GLOBAL=('grunt-cli' 'yargs' 'async' 'sass' 'gulp' 'requirejs' 'pm2' 'uglify-js')
 
 sed -i 's#__PACKAGE_LIST__#'"${PACKAGE_LIST[*]}"'#g' config/php/Dockerfile.tmp
 sed -i 's#__PHP_EXT_INSTALL__#'"${PHP_EXT_INSTALL[*]}"'#g' config/php/Dockerfile.tmp
