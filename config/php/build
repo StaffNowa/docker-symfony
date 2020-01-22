@@ -32,7 +32,7 @@ fi
 
 if [ "${PHP_VERSION}" = "7.4" ]; then
     sed -i 's#docker-php-ext-configure zip --with-libzip && #'""'#g' config/php/Dockerfile.tmp
-    sed -i 's#docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ &&#'""'#g' config/php/Dockerfile.tmp
+    sed -i 's#docker-php-ext-configure gd \-\-with\-freetype\-dir\=\/usr\/include\/ \-\-with\-jpeg\-dir\=\/usr\/include\/ \&\& #'"docker\-php\-ext\-configure gd \-\-with\-freetype \-\-with\-jpeg \&\& "'#g' config/php/Dockerfile.tmp
 fi
 
 if [ "${PHP_VERSION}" != "5.6" ] && [ "${PHP_VERSION}" != "7.0" ]; then
