@@ -20,8 +20,8 @@ PHP_EXT_ENABLE=('imagick' 'mysqli' 'calendar' 'exif' 'bcmath')
 PECL_INSTALL=('imagick')
 
 if [ "${PHP_VERSION}" != "5.6" ]; then
-    PHP_EXT_ENABLE+=('xdebug' 'apcu')
-    PECL_INSTALL+=('xdebug' 'apcu' 'apcu_bc')
+    PHP_EXT_ENABLE+=('apcu')
+    PECL_INSTALL+=('apcu' 'apcu_bc')
 fi
 
 if [ "${PHP_VERSION}" != "5.6" ] && [ "${PHP_VERSION}" != "7.0" ] && [ "${PHP_VERSION}" != "7.1" ]; then
@@ -32,6 +32,14 @@ fi
 
 if [ "${PHP_VERSION}" = "7.4" ]; then
     sed -i 's#docker-php-ext-configure zip --with-libzip && #'""'#g' config/php/Dockerfile.tmp
+    sed -i 's#docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ &&#'""'#g' config/php/Dockerfile.tmp
+fi
+
+
+
+if [ "${PHP_VERSION}" != "5.6" ] && [ "${PHP_VERSION}" != "7.0" ]; then
+    PHP_EXT_ENABLE+=('xdebug')
+    PECL_INSTALL+=('xdebug')
 fi
 
 NPM_INSTALL_GLOBAL=('grunt-cli' 'yargs' 'async' 'sass' 'gulp' 'requirejs' 'pm2' 'uglify-js')
