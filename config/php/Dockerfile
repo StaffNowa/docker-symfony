@@ -23,7 +23,7 @@ RUN apt-get update && \
     gnupg1 openssl git unzip libzip-dev nano libpng-dev libmagickwand-dev curl xauth xvfb openssh-client less inkscape cron exiftool libicu-dev libmcrypt-dev
 
 # Install PHP extensions. Type docker-php-ext-install to see available extensions
-RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure intl && docker-php-ext-install -j$(nproc) pdo pdo_mysql opcache zip gd mysqli exif bcmath calendar intl
+RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-configure intl && docker-php-ext-install -j$(nproc) pdo pdo_mysql opcache zip gd mysqli exif bcmath calendar intl
 
 RUN pecl install \
     imagick xdebug apcu apcu_bc mcrypt
@@ -56,7 +56,7 @@ RUN mkdir -p /var/www/.npm && \
     curl -sL https://deb.nodesource.com/setup_${NODE_JS_VERSION} | bash && \
     apt-get install -y nodejs && \
     update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10 && \
-    npm install -g grunt-cli yargs async sass gulp requirejs
+    npm install -g grunt-cli yargs async sass gulp requirejs pm2 uglify-js
 
 # bugfix: remove cmdtest to install yarn correctly.
 RUN apt-get remove -y cmdtest
