@@ -14,18 +14,26 @@ source ${WORK_DIR}/.env
 
 cp config/php/Dockerfile.build config/php/Dockerfile.tmp
 
-PACKAGE_LIST=('gnupg1' 'openssl' 'git' 'unzip' 'libzip-dev' 'nano' 'libpng-dev' 'libmagickwand-dev' 'curl' 'xauth' 'xvfb' 'openssh-client' 'less' 'inkscape' 'cron' 'exiftool' 'libicu-dev')
+PACKAGE_LIST=('gnupg1' 'openssl' 'git' 'unzip' 'libzip-dev' 'nano' 'libpng-dev' 'libmagickwand-dev' 'curl' 'xauth' 'xvfb' 'openssh-client' 'less' 'inkscape' 'cron' 'exiftool' 'libicu-dev' 'libmcrypt-dev')
 PHP_EXT_INSTALL=('pdo' 'pdo_mysql' 'opcache' 'zip' 'gd' 'mysqli' 'exif' 'bcmath' 'calendar' 'intl')
 PHP_EXT_ENABLE=('imagick' 'mysqli' 'calendar' 'exif' 'bcmath')
 PECL_INSTALL=('imagick')
+
+if [ "${PHP_VERSION}" = "5.6" ]; then
+    sed -i "s#RUN echo 'extension=apc.so' >> \$PHP_INI_DIR\/conf.d\/docker\-php\-ext\-apcu.ini##g" config/php/Dockerfile.tmp
+fi
 
 if [ "${PHP_VERSION}" != "5.6" ]; then
     PHP_EXT_ENABLE+=('apcu')
     PECL_INSTALL+=('apcu' 'apcu_bc')
 fi
 
-if [ "${PHP_VERSION}" != "5.6" ] && [ "${PHP_VERSION}" != "7.0" ] && [ "${PHP_VERSION}" != "7.1" ]; then
-    PACKAGE_LIST+=('libmcrypt-dev')
+if [ "${PHP_VERSION}" = "5.6" ] || [ "${PHP_VERSION}" = "7.0" ] || [ "${PHP_VERSION}" = "7.1" ]; then
+    PHP_EXT_INSTALL+=('mcrypt')
+    PHP_EXT_ENABLE+=('mcrypt')
+fi
+
+if [ "${PHP_VERSION}" = "7.2" ] || [ "${PHP_VERSION}" = "7.3" ] || [ "${PHP_VERSION}" = "7.4" ]; then
     PHP_EXT_ENABLE+=('mcrypt')
     PECL_INSTALL+=('mcrypt')
 fi
