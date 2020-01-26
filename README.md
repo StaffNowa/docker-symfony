@@ -52,7 +52,9 @@ wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2
     ```
    
 2. Build / run containers
-`./d4d start`  
+    ```
+    ./d4d start
+    ```  
 
 3. Update your system host file (add symfony.local)
    ```bash
@@ -118,36 +120,35 @@ wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2
     
     ## Usage
     
-    Just run `docker-compose up -d`, then:
+    Just run `./d4d start`, then:
     
     * Symfony app: visit [symfony.local](http://symfony.local)  
     * Symfony dev mode: visit [symfony.local/app_dev.php](http://symfony.local/app_dev.php)  
     * Logs (files location): logs/nginx and logs/symfony
     
-    Alternative option is to use prepared bash script:
-    
-    ```./up.sh``` create and start containers
-    
-    ```./down.sh``` stop and remove containers, networks, images, and volumes
-    
     ## How it works?
     
     Have a look at the `docker-compose.yml` file, here are the `docker-compose` built images:
-    
-    * `mysql`: This is the MySQL database container,
-    * `php`: This is the PHP-FPM container in which the application volume is mounted,
-    * `nginx`: This is the Nginx webserver container in which application volume is mounted too,
-    
+ 
+    * `nginx`: Nginx is one of the most popular web servers in the world and responsible for hosting some of the largest and highest-traffic sites on the internet. It is more resource-friendly than Apache in most cases and can be used as a web server or reverse proxy.
+    * `php`: PHP is a popular general-purpose scripting language that is especially suited to web development.
+    * `mysql:` MySQL is the most popular relational database management system.
+    * `phpmyadmin`: phpMyAdmin was created so that users can interact with MySQL / MariaDB through a web interface.
+    * `mailhog`: MailHog is an email testing tool for developers.
+    * `redis`: Redis is an open source (BSD licensed), in-memory data structure store, used as a database, cache and message broker. It supports data structures such as strings, hashes, lists, sets, sorted sets with range queries, bitmaps, hyperloglogs, geospatial indexes with radius queries and streams. Redis has built-in replication, Lua scripting, LRU eviction, transactions and different levels of on-disk persistence, and provides high availability via Redis Sentinel and automatic partitioning with Redis Cluster. 
+     
     This results in the following running containers:
     
     ```bash
     $ docker-compose ps
-                  Name                             Command               State                    Ports                  
+               Name                          Command               State                       Ports                     
     ---------------------------------------------------------------------------------------------------------------------
-    symfony_mysql_1_f0586075033b           docker-entrypoint.sh mysqld      Up      0.0.0.0:3306->3306/tcp, 33060/tcp       
-    symfony_nginx_1_3c244ea6ff7b        nginx -g daemon off;             Up      0.0.0.0:443->443/tcp, 0.0.0.0:80->80/tcp
-    symfony_php_1_916d0314f3e0          docker-php-entrypoint php-fpm    Up      9000/tcp                                
-    symfony_phpmyadmin_1_a5ce79ef63bd   /run.sh supervisord -n -j  ...   Up      0.0.0.0:8080->80/tcp, 9000/tcp 
+    docker-symfony_mailhog_1      MailHog                          Up      0.0.0.0:1025->1025/tcp, 0.0.0.0:8025->8025/tcp
+    docker-symfony_mysql_1        docker-entrypoint.sh --cha ...   Up      0.0.0.0:3306->3306/tcp                        
+    docker-symfony_nginx_1        nginx -g daemon off;             Up      0.0.0.0:80->80/tcp                            
+    docker-symfony_php_1          docker-php-entrypoint php-fpm    Up      9000/tcp                                      
+    docker-symfony_phpmyadmin_1   /docker-entrypoint.sh apac ...   Up      0.0.0.0:8080->80/tcp                          
+    docker-symfony_redis_1        docker-entrypoint.sh redis ...   Up      6379/tcp          
     ```
 
 
