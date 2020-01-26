@@ -5,6 +5,7 @@
 /.composer/cache
 /db
 /user
+/config/php/conf.d/xdebug.ini
 
 # IDEs
 /.idea
