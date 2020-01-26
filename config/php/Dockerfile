@@ -82,8 +82,6 @@ RUN curl -o wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -sL https://github.com/w
     chmod a+x /usr/bin/wkhtmltopdf && \
     chmod a+x /usr/bin/wkhtmltoimage
 
-RUN curl -fsSL 'https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz' -o ioncube.tar.gz && mkdir -p /tmp/ioncube && tar -xvvzf ioncube.tar.gz && mv ioncube/ioncube_loader_lin_7.2.so `php-config --extension-dir` && rm -Rf ioncube.tar.gz ioncube && docker-php-ext-enable ioncube_loader_lin_7.2
-
 # Map user id from host user when it's provided
 RUN if [ ! -z ${USER_ID} ] && [ ${USER_ID} -ne 0 ]; then usermod -u ${USER_ID} www-data; fi
 RUN if [ ! -z ${GROUP_ID} ] && [ ${GROUP_ID} -ne 0 ]; then groupmod -g ${GROUP_ID} www-data; fi

@@ -123,6 +123,17 @@ NODE_JS_VERSION_SET="4.x 6.x 7.x 8.x 9.x 10.x 11.x 12.x 13.x"
 NODE_JS_VERSION_DEF="9.x"
 NODE_JS_VERSION_OPT=`getOpt NODE_JS_VERSION ${NODE_JS_VERSION_DEF}`
 
+# Optional configuration
+IONCUBE_SET="yes no"
+IONCUBE_DEF="no"
+IONCUBE_OPT=`getOpt IONCUBE ${IONCUBE_DEF}`
+IONCUBE_DESC="ionCube is a PHP module extension that loads encrypted PHP files and speeds up webpages. It is often required for PHP-based applications."
+
+XDEBUG_SET="yes no"
+XDEBUG_DEF="no"
+XDEBUG_OPT=`getOpt XDEBUG ${XDEBUG_DEF}`
+XDEBUG_DESC="Xdebug - Debugger and Profiler Tool for PHP"
+
 ##################################################
 
 # Help sections
@@ -158,7 +169,7 @@ SET_ADDIT="option_name value"
 # SECTIONS OF OPTIONS
 ALL_SECTIONS="PHP_SETTINGS MYSQL_SETTINGS DEBIAN_SETTINGS NODE_JS_SETTINGS"
 
-PHP_SETTINGS="PHP_VERSION"
+PHP_SETTINGS="PHP_VERSION XDEBUG IONCUBE"
 
 MYSQL_SETTINGS="MYSQL_VERSION"
 
