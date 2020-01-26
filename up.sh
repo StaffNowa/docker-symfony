@@ -65,6 +65,10 @@ if [ ! -f "${USER_CONFIG_PATH}/.my.cnf" ]; then
     printf "[client]\nuser=${MYSQL_USER}\npassword=${MYSQL_PASSWORD}\n" >> ${USER_CONFIG_PATH}/.my.cnf
 fi
 
+if [ ! -f "config/php/conf.d/xdebug.ini" ]; then
+    cp config/php/conf.d/xdebug.d4d config/php/conf.d/xdebug.ini
+fi
+
 docker-compose build
 
 # Clears the screen.
