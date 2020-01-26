@@ -88,6 +88,8 @@ RUN curl -o wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -sL https://github.com/w
     chmod a+x /usr/bin/wkhtmltopdf && \
     chmod a+x /usr/bin/wkhtmltoimage
 
+__PHP_IONCUBE__
+
 # Map user id from host user when it's provided
 RUN if [ ! -z ${USER_ID} ] && [ ${USER_ID} -ne 0 ]; then usermod -u ${USER_ID} www-data; fi
 RUN if [ ! -z ${GROUP_ID} ] && [ ${GROUP_ID} -ne 0 ]; then groupmod -g ${GROUP_ID} www-data; fi

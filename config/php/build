@@ -56,5 +56,15 @@ sed -i 's#__PHP_EXT_ENABLE__#'"${PHP_EXT_ENABLE[*]}"'#g' config/php/Dockerfile.t
 sed -i 's#__PECL_INSTALL__#'"${PECL_INSTALL[*]}"'#g' config/php/Dockerfile.tmp
 sed -i 's#__NPM_INSTALL_GLOBAL__#'"${NPM_INSTALL_GLOBAL[*]}"'#g' config/php/Dockerfile.tmp
 
+if [ "${IONCUBE_ENABLE}" = "1" ]; then
+  sed -i 's#__PHP_IONCUBE__#'"RUN curl -fsSL 'https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz' -o ioncube.tar.gz \&\& mkdir -p /tmp/ioncube \&\& tar -xvvzf ioncube.tar.gz \&\& mv ioncube/ioncube_loader_lin_${PHP_VERSION}.so \`php-config --extension-dir\` \&\& rm -Rf ioncube.tar.gz ioncube \&\& docker-php-ext-enable ioncube_loader_lin_${PHP_VERSION}"'#g' config/php/Dockerfile.tmp
+
+else
+  sed -i 's#__PHP_IONCUBE__#'""'#g' config/php/Dockerfile.tmp
+fi
+
+# Remove duplicate
+sed -i '$!N; /^\(.*\)\n\1$/!P; D' config/php/Dockerfile.tmp
+
 cp config/php/Dockerfile.tmp config/php/Dockerfile
 rm config/php/Dockerfile.tmp
