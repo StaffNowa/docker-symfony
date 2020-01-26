@@ -56,11 +56,26 @@ sed -i 's#__PHP_EXT_ENABLE__#'"${PHP_EXT_ENABLE[*]}"'#g' config/php/Dockerfile.t
 sed -i 's#__PECL_INSTALL__#'"${PECL_INSTALL[*]}"'#g' config/php/Dockerfile.tmp
 sed -i 's#__NPM_INSTALL_GLOBAL__#'"${NPM_INSTALL_GLOBAL[*]}"'#g' config/php/Dockerfile.tmp
 
-if [ "${IONCUBE_ENABLE}" = "1" ]; then
-  sed -i 's#__PHP_IONCUBE__#'"RUN curl -fsSL 'https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz' -o ioncube.tar.gz \&\& mkdir -p /tmp/ioncube \&\& tar -xvvzf ioncube.tar.gz \&\& mv ioncube/ioncube_loader_lin_${PHP_VERSION}.so \`php-config --extension-dir\` \&\& rm -Rf ioncube.tar.gz ioncube \&\& docker-php-ext-enable ioncube_loader_lin_${PHP_VERSION}"'#g' config/php/Dockerfile.tmp
+if [ "${XDEBUG_ENABLE}" = "1" ]; then
+    cp config/php/conf.d/xdebug.d4d config/php/conf.d/xdebug.ini
 
+    sed -i 's#__PHP_XDEBUG_REMOTE_PORT__#'"${XDEBUG_REMOTE_PORT}"'#g' config/php/conf.d/xdebug.ini
+    sed -i 's#__PHP_XDEBUG_REMOTE_AUTOSTART__#'"${XDEBUG_REMOTE_AUTOSTART}"'#g' config/php/conf.d/xdebug.ini
+    sed -i 's#__PHP_XDEBUG_REMOTE_ENABLE__#'"${XDEBUG_REMOTE_ENABLE}"'#g' config/php/conf.d/xdebug.ini
+    if [ ! -z ${XDEBUG_REMOTE_HOST} ]; then
+        printf '\nxdebug.remote_host = %s' ${XDEBUG_REMOTE_HOST} >> config/php/conf.d/xdebug.ini;
+    fi
+    if [ ! -z ${XDEBUG_REMOTE_CONNECT_BACK} ]; then
+        printf '\nxdebug.remote_connect_back = %s\n' ${XDEBUG_REMOTE_CONNECT_BACK} >> config/php/conf.d/xdebug.ini
+    fi
 else
-  sed -i 's#__PHP_IONCUBE__#'""'#g' config/php/Dockerfile.tmp
+    sed -i 's#__PHP_XDEBUG__#'""'#g' config/php/Dockerfile.tmp
+fi
+
+if [ "${IONCUBE_ENABLE}" = "1" ]; then
+    sed -i 's#__PHP_IONCUBE__#'"RUN curl -fsSL 'https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz' -o ioncube.tar.gz \&\& mkdir -p /tmp/ioncube \&\& tar -xvvzf ioncube.tar.gz \&\& mv ioncube/ioncube_loader_lin_${PHP_VERSION}.so \`php-config --extension-dir\` \&\& rm -Rf ioncube.tar.gz ioncube \&\& docker-php-ext-enable ioncube_loader_lin_${PHP_VERSION}"'#g' config/php/Dockerfile.tmp
+else
+    sed -i 's#__PHP_IONCUBE__#'""'#g' config/php/Dockerfile.tmp
 fi
 
 # Remove duplicate

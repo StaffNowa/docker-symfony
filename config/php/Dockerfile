@@ -72,12 +72,6 @@ RUN apt-get remove --purge -y gnupg1 && apt-get -y --purge autoremove && rm -rf 
 # Copy xdebug and php config.
 COPY conf.d/* /usr/local/etc/php/conf.d/
 
-RUN sed -i 's#${XDEBUG_REMOTE_PORT}#'"${XDEBUG_REMOTE_PORT}"'#g' $PHP_INI_DIR/conf.d/xdebug.ini && \
-    sed -i 's#${XDEBUG_REMOTE_AUTOSTART}#'"${XDEBUG_REMOTE_AUTOSTART}"'#g' $PHP_INI_DIR/conf.d/xdebug.ini && \
-    sed -i 's#${XDEBUG_REMOTE_ENABLE}#'"${XDEBUG_REMOTE_ENABLE}"'#g' $PHP_INI_DIR/conf.d/xdebug.ini && \
-    if [ ! -z ${XDEBUG_REMOTE_HOST} ]; then printf '\nxdebug.remote_host = %s\n' ${XDEBUG_REMOTE_HOST} >> $PHP_INI_DIR/conf.d/xdebug.ini; fi && \
-    if [ ! -z ${XDEBUG_REMOTE_CONNECT_BACK} ]; then printf '\nxdebug.remote_connect_back = %s\n' ${XDEBUG_REMOTE_CONNECT_BACK} >> $PHP_INI_DIR/conf.d/xdebug.ini; fi
-
 # Install wkhtmltopdf
 RUN curl -o wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -sL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz  && \
     echo '3f923f425d345940089e44c1466f6408b9619562 wkhtmltox-0.12.4_linux-generic-amd64.tar.xz' | sha1sum -c - && \
@@ -87,6 +81,8 @@ RUN curl -o wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -sL https://github.com/w
     cp -r wkhtmltox/share/man/man1 /usr/share/man/ && \
     chmod a+x /usr/bin/wkhtmltopdf && \
     chmod a+x /usr/bin/wkhtmltoimage
+
+RUN curl -fsSL 'https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz' -o ioncube.tar.gz && mkdir -p /tmp/ioncube && tar -xvvzf ioncube.tar.gz && mv ioncube/ioncube_loader_lin_7.2.so `php-config --extension-dir` && rm -Rf ioncube.tar.gz ioncube && docker-php-ext-enable ioncube_loader_lin_7.2
 
 # Map user id from host user when it's provided
 RUN if [ ! -z ${USER_ID} ] && [ ${USER_ID} -ne 0 ]; then usermod -u ${USER_ID} www-data; fi
