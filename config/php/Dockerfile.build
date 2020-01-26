@@ -91,7 +91,8 @@ RUN if [ ! -z ${GROUP_ID} ] && [ ${GROUP_ID} -ne 0 ]; then groupmod -g ${GROUP_I
 RUN echo 'alias sf="php bin/console"' >> /var/www/.bashrc && \
     echo 'alias sf2="php app/console"' >> /var/www/.bashrc && \
     echo 'alias sf3="php bin/console"' >> /var/www/.bashrc && \
-    echo 'alias sf4="php bin/console"' >> /var/www.bashrc
+    echo 'alias sf4="php bin/console"' >> /var/www/.bashrc && \
+    echo 'alias sf5="php bin/console"' >> /var/www.bashrc
 
 # set default user and working directory
 USER ${USER_ID}

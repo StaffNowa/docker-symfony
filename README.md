@@ -50,12 +50,9 @@ wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2
     ```bash
     cp .env.dist .env
     ```
-
-2. Build / run containers with (with and without detached mode)
-    ```
-    docker-compose build
-    docker-compose up -d
-    ```
+   
+2. Build / run containers
+`./d4d start`  
 
 3. Update your system host file (add symfony.local)
    ```bash
@@ -66,17 +63,9 @@ wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2
    **Note:** For **OS X**, please take a look [here](https://docs.docker.com/docker-for-mac/networking/).
    
 4. Prepare Symfony app
+    1. Get your logins to access MySQL server
+    `./d4d passwd show`
     
-    1. Create a new user
-        ```
-        docker-compose exec mysql bash
-        mysql -u root -p
-        
-        mysql> use mysql;
-        mysql> CREATE USER 'db_user'@'mysql' IDENTIFIED BY 'db_password';
-        mysql> GRANT ALL PRIVILEGES ON db_name.* TO 'db_user'@'mysql';
-        mysql> FLUSH PRIVILEGES;
-        ```
     2. Update
   
         a) SF2, SF3: app/config/parameters.yml
@@ -88,7 +77,7 @@ wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2
             database_port:     ~
             database_name:     db_name
             database_user:     db_user
-            database_password: db_password
+            database_password: db_password (random password)
         ```
     
         b) SF4: .env
@@ -101,24 +90,30 @@ wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2
         $ docker-compose exec php bash
         $ composer create-project symfony/website-skeleton my-project
             
-        # Symfony2
+        # Symfony 2
         $ sf doctrine:database:create
         $ sf doctrine:schema:update --force
         # Only if you have `doctrine/doctrine-fixtures-bundle` installed
         $ sf doctrine:fixtures:load --no-interaction
             
-        # Symfony3
+        # Symfony 3
         $ sf3 doctrine:database:create
         $ sf3 doctrine:schema:update --force
         # Only if you have `doctrine/doctrine-fixtures-bundle` installed
         $ sf3 doctrine:fixtures:load --no-interaction
     
-        # Symfony4
+        # Symfony 4
         $ sf4 doctrine:database:create
         $ sf4 doctrine:schema:update --force
         # Only if you have `doctrine/doctrine-fixtures-bundle` installed
         $ sf4 doctrine:fixtures:load --no-interaction
-        ```
+        
+        #Symfony 5
+        $ sf5 doctrine:database:create
+        $ sf5 doctrine:schema:update --force
+        # Only if you have `doctrine/doctrine-fixtures-bundle` installed
+        $ sf5 doctrine:fixtures:load --no-interaction
+       ```
 5. Enjoy :-)
     
     ## Usage
