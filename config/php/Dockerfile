@@ -26,10 +26,10 @@ RUN apt-get update && \
 RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-configure intl && docker-php-ext-install -j$(nproc) pdo pdo_mysql opcache zip gd mysqli exif bcmath calendar intl
 
 RUN pecl install \
-    imagick apcu apcu_bc mcrypt xdebug
+    imagick apcu apcu_bc mcrypt
 
 RUN docker-php-ext-enable \
-    imagick mysqli calendar exif bcmath apcu mcrypt xdebug
+    imagick mysqli calendar exif bcmath apcu mcrypt
 
 # Set timezone
 RUN ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEFAULT_TIMEZONE} > /etc/timezone && \

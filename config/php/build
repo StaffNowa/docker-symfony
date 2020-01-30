@@ -43,11 +43,6 @@ if [ "${PHP_VERSION}" = "7.4" ]; then
     sed -i 's#docker-php-ext-configure gd \-\-with\-freetype\-dir\=\/usr\/include\/ \-\-with\-jpeg\-dir\=\/usr\/include\/ \&\& #'"docker\-php\-ext\-configure gd \-\-with\-freetype \-\-with\-jpeg \&\& "'#g' config/php/Dockerfile.tmp
 fi
 
-if [ "${PHP_VERSION}" != "5.6" ] && [ "${PHP_VERSION}" != "7.0" ]; then
-    PHP_EXT_ENABLE+=('xdebug')
-    PECL_INSTALL+=('xdebug')
-fi
-
 NPM_INSTALL_GLOBAL=('grunt-cli' 'yargs' 'async' 'sass' 'gulp' 'requirejs' 'pm2' 'uglify-js')
 
 sed -i 's#__PACKAGE_LIST__#'"${PACKAGE_LIST[*]}"'#g' config/php/Dockerfile.tmp
@@ -57,6 +52,11 @@ sed -i 's#__PECL_INSTALL__#'"${PECL_INSTALL[*]}"'#g' config/php/Dockerfile.tmp
 sed -i 's#__NPM_INSTALL_GLOBAL__#'"${NPM_INSTALL_GLOBAL[*]}"'#g' config/php/Dockerfile.tmp
 
 if [ "${XDEBUG}" = "yes" ]; then
+    if [ "${PHP_VERSION}" != "5.6" ] && [ "${PHP_VERSION}" != "7.0" ]; then
+        PHP_EXT_ENABLE+=('xdebug')
+        PECL_INSTALL+=('xdebug')
+    fi
+
     cp config/php/conf.d/xdebug.d4d config/php/conf.d/xdebug.ini
 
     sed -i 's#__PHP_XDEBUG_REMOTE_PORT__#'"${XDEBUG_REMOTE_PORT}"'#g' config/php/conf.d/xdebug.ini
