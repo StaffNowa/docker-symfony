@@ -4,6 +4,7 @@ FROM php:${PHP_VERSION}-fpm
 
 ARG DEFAULT_TIMEZONE
 ARG PHP_MEMORY_LIMIT
+ARG PHP_MAX_EXECUTION_TIME
 
 ARG NODE_JS_VERSION
 
@@ -31,11 +32,10 @@ RUN pecl install \
 RUN docker-php-ext-enable \
     imagick mysqli calendar exif bcmath apcu mcrypt
 
-# Set timezone
 RUN ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEFAULT_TIMEZONE} > /etc/timezone && \
-    printf '[PHP]\ndate.timezone = "%s"\n' ${DEFAULT_TIMEZONE} > $PHP_INI_DIR/conf.d/tzone.ini
-
-RUN printf '[CUSTOM]\nmemory_limit = "%s"\n' ${PHP_MEMORY_LIMIT} >> $PHP_INI_DIR/conf.d/custom.ini
+    printf '[PHP]\ndate.timezone = "%s"\n' ${DEFAULT_TIMEZONE} > $PHP_INI_DIR/conf.d/tzone.ini && \
+    printf '[CUSTOM]\nmemory_limit = "%s"\n' ${PHP_MEMORY_LIMIT} >> $PHP_INI_DIR/conf.d/custom.ini && \
+    printf '\nmax_execution_time = %s\n' ${PHP_MAX_EXECUTION_TIME} >> $PHP_INI_DIR/conf.d/custom.ini
 
 RUN echo 'extension=apc.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini
 

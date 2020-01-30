@@ -9,6 +9,7 @@ ARG PROJECT_DOMAIN_3
 ARG PROJECT_DOMAIN_4
 ARG DOCUMENT_ROOT
 ARG SYMFONY_FRONT_CONTROLLER
+ARG PHP_MAX_EXECUTION_TIME
 
 MAINTAINER Vasilij Dusko <vasilij@prado.lt>
 
@@ -56,7 +57,8 @@ RUN sed -i 's#__PROJECT_DOMAIN_1__#'"${PROJECT_DOMAIN_1}"'#g' /etc/nginx/sites-a
     sed -i 's#__PROJECT_DOMAIN_3__#'"${PROJECT_DOMAIN_3}"'#g' /etc/nginx/sites-available/project.conf && \
     sed -i 's#__PROJECT_DOMAIN_4__#'"${PROJECT_DOMAIN_4}"'#g' /etc/nginx/sites-available/project.conf && \
     sed -i 's#__DOCUMENT_ROOT__#'"${DOCUMENT_ROOT}"'#g' /etc/nginx/sites-available/project.conf && \
-        sed -i 's#__SYMFONY_FRONT_CONTROLLER__#'"${SYMFONY_FRONT_CONTROLLER}"'#g' /etc/nginx/sites-available/project.conf && \
+    sed -i 's#__SYMFONY_FRONT_CONTROLLER__#'"${SYMFONY_FRONT_CONTROLLER}"'#g' /etc/nginx/sites-available/project.conf && \
+    sed -i 's#__PHP_MAX_EXECUTION_TIME__#'"${PHP_MAX_EXECUTION_TIME}"'#g' /etc/nginx/sites-available/project.conf && \
     ln -s /etc/nginx/sites-available/project.conf /etc/nginx/sites-enabled/project.conf && \
     echo "upstream php-upstream { server php:9000; }" > /etc/nginx/conf.d/upstream.conf
 
