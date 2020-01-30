@@ -3,7 +3,10 @@ ARG DEBIAN_VERSION
 FROM debian:${DEBIAN_VERSION}
 
 ARG NGINX_VERSION
-ARG PROJECT_DOMAIN
+ARG PROJECT_DOMAIN_1
+ARG PROJECT_DOMAIN_2
+ARG PROJECT_DOMAIN_3
+ARG PROJECT_DOMAIN_4
 ARG DOCUMENT_ROOT
 ARG SYMFONY_FRONT_CONTROLLER
 
@@ -48,7 +51,10 @@ RUN mkdir -p /etc/nginx/sites-available && \
 
 ADD project.conf /etc/nginx/sites-available/
 
-RUN sed -i 's#__PROJECT_DOMAIN__#'"${PROJECT_DOMAIN}"'#g' /etc/nginx/sites-available/project.conf && \
+RUN sed -i 's#__PROJECT_DOMAIN_1__#'"${PROJECT_DOMAIN_1}"'#g' /etc/nginx/sites-available/project.conf && \
+    sed -i 's#__PROJECT_DOMAIN_2__#'"${PROJECT_DOMAIN_2}"'#g' /etc/nginx/sites-available/project.conf && \
+    sed -i 's#__PROJECT_DOMAIN_3__#'"${PROJECT_DOMAIN_3}"'#g' /etc/nginx/sites-available/project.conf && \
+    sed -i 's#__PROJECT_DOMAIN_4__#'"${PROJECT_DOMAIN_4}"'#g' /etc/nginx/sites-available/project.conf && \
     sed -i 's#__DOCUMENT_ROOT__#'"${DOCUMENT_ROOT}"'#g' /etc/nginx/sites-available/project.conf && \
         sed -i 's#__SYMFONY_FRONT_CONTROLLER__#'"${SYMFONY_FRONT_CONTROLLER}"'#g' /etc/nginx/sites-available/project.conf && \
     ln -s /etc/nginx/sites-available/project.conf /etc/nginx/sites-enabled/project.conf && \

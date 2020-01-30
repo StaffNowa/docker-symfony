@@ -5,7 +5,10 @@ services:
     build:
       context: config/nginx
       args:
-        PROJECT_DOMAIN: ${PROJECT_DOMAIN}
+        PROJECT_DOMAIN_1: ${PROJECT_DOMAIN_1}
+        PROJECT_DOMAIN_2: ${PROJECT_DOMAIN_2}
+        PROJECT_DOMAIN_3: ${PROJECT_DOMAIN_3}
+        PROJECT_DOMAIN_4: ${PROJECT_DOMAIN_4}
         DOCUMENT_ROOT: ${DOCUMENT_ROOT}
         DEBIAN_VERSION: ${DEBIAN_VERSION}
         NGINX_VERSION: ${NGINX_VERSION}
@@ -15,7 +18,7 @@ services:
     networks:
       default:
         aliases:
-          - ${PROJECT_DOMAIN}
+          - ${PROJECT_DOMAIN_1}
     volumes:
       - ${PROJECT_PATH}:/var/www/project:cached
       - ${NGINX_LOG_PATH}:/var/log/nginx
