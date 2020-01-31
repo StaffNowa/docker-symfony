@@ -1,0 +1,8 @@
+location / {
+    index __SYMFONY_FRONT_CONTROLLER__;
+    try_files $uri @rewriteapp;
+}
+
+location @rewriteapp {
+    rewrite ^(.*)$ /__SYMFONY_FRONT_CONTROLLER__/$1 last;
+}
