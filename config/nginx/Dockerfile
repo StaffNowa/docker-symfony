@@ -49,10 +49,13 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 
 RUN mkdir -p /etc/nginx/sites-available && \
     mkdir -p /etc/nginx/sites-enabled && \
+    mkdir -p /etc/nginx/d4d && \
     mkdir -p /etc/nginx/rewrite
 
 ADD project.conf /etc/nginx/sites-available/
 ADD rewrite/project.conf /etc/nginx/rewrite/
+ADD d4d/sf.conf /etc/nginx/d4d/
+ADD d4d/pwa.conf /etc/nginx/d4d/
 
 RUN sed -i 's#__PROJECT_DOMAIN_1__#'"${PROJECT_DOMAIN_1}"'#g' /etc/nginx/sites-available/project.conf && \
     sed -i 's#__PROJECT_DOMAIN_2__#'"${PROJECT_DOMAIN_2}"'#g' /etc/nginx/sites-available/project.conf && \

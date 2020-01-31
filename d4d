@@ -134,6 +134,10 @@ XDEBUG_DEF="no"
 XDEBUG_OPT=`getOpt XDEBUG ${XDEBUG_DEF}`
 XDEBUG_DESC="Xdebug - Debugger and Profiler Tool for PHP"
 
+PROJECT_TYPE_SET="SF SF_PWA"
+PROJECT_TYPE_DEF="SF"
+PROJECT_TYPE_OPT=`getOpt PROJECT_TYPE ${PROJECT_TYPE_DEF}`
+
 ##################################################
 
 # Help sections
@@ -167,7 +171,9 @@ SET_ADDIT="option_name value"
 
 # ALL SETTINGS
 # SECTIONS OF OPTIONS
-ALL_SECTIONS="PHP_SETTINGS MYSQL_SETTINGS DEBIAN_SETTINGS NODE_JS_SETTINGS"
+ALL_SECTIONS="D4D_SETTINGS PHP_SETTINGS MYSQL_SETTINGS DEBIAN_SETTINGS NODE_JS_SETTINGS"
+
+D4D_SETTINGS="PROJECT_TYPE"
 
 PHP_SETTINGS="PHP_VERSION XDEBUG IONCUBE"
 
@@ -265,11 +271,41 @@ doChecks() {
 
     #
     ./config/php/build
+}
 
+doBuild() {
     docker-compose build
 
     # Clears the screen.
     clear
+}
+
+doBuildNginxConf() {
+    source ${WORK_DIR}/.env
+
+    cp config/nginx/project.conf.default config/nginx/project.conf.tmp
+
+    if [ "${PROJECT_TYPE}" = "SF" ]; then
+        sed -i 's#__INCLUDE__#'"/etc/nginx/d4d/sf.conf"'#g' config/nginx/project.conf.tmp
+    fi
+
+    if [ "${PROJECT_TYPE}" = "SF_PWA" ]; then
+        sed -i 's#__INCLUDE__#'"/etc/nginx/d4d/pwa.conf"'#g' config/nginx/project.conf.tmp
+    fi
+
+    cp config/nginx/project.conf.tmp config/nginx/project.conf
+    rm config/nginx/project.conf.tmp
+
+    cp config/nginx/d4d/pwa.conf.default config/nginx/d4d/pwa.conf.default.tmp
+    sed -i 's#__SF_PATH__#'"${SF_PATH}"'#g' config/nginx/d4d/pwa.conf.default.tmp
+    sed -i 's#__SYMFONY_FRONT_CONTROLLER__#'"${SYMFONY_FRONT_CONTROLLER}"'#g' config/nginx/d4d/pwa.conf.default.tmp
+    cp config/nginx/d4d/pwa.conf.default.tmp config/nginx/d4d/pwa.conf
+    rm config/nginx/d4d/pwa.conf.default.tmp
+
+    cp config/nginx/d4d/sf.conf.default config/nginx/d4d/sf.conf.default.tmp
+    sed -i 's#__SYMFONY_FRONT_CONTROLLER__#'"${SYMFONY_FRONT_CONTROLLER}"'#g' config/nginx/d4d/sf.conf.default.tmp
+    cp config/nginx/d4d/sf.conf.default.tmp config/nginx/d4d/sf.conf
+    rm config/nginx/d4d/sf.conf.default.tmp
 }
 
 doCheckPackage() {
@@ -417,13 +453,13 @@ start() {
     echo "The following information has been set:"
     echo ""
     echo "Server IP: 127.0.0.1"
-    echo "Server Hostname: ${PROJECT_DOMAIN}"
+    echo "Server Hostname: ${PROJECT_DOMAIN_1}"
     echo ""
     echo "To login now, follow this link:"
     echo ""
-    echo "Project URL: http://${PROJECT_DOMAIN}"
-    echo "phpMyAdmin: http://${PROJECT_DOMAIN}:8080"
-    echo "MailHog: http://${PROJECT_DOMAIN}:8025"
+    echo "Project URL: http://${PROJECT_DOMAIN_1}"
+    echo "phpMyAdmin: http://${PROJECT_DOMAIN_1}:8080"
+    echo "MailHog: http://${PROJECT_DOMAIN_1}:8025"
     echo ""
     echo "Thank you for using Docker for Symfony. Should you have any questions, don't hesitate to contact us at support@prado.lt"
 }
@@ -526,7 +562,7 @@ case "$1" in
         ;;
     uninstall) doUninstall;
         ;;
-    start) doChecks; start
+    start) doChecks; doBuildNginxConf; doBuild; start
         ;;
     stop) stop
         ;;
