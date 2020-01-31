@@ -5,6 +5,10 @@
 /.composer/cache
 /db
 /user
+
+/config/nginx/d4d/*.conf
+/config/nginx/project.conf
+
 /config/php/conf.d/xdebug.ini
 
 # IDEs
