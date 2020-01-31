@@ -48,9 +48,11 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 # forward request and error logs to docker log collector
 
 RUN mkdir -p /etc/nginx/sites-available && \
-    mkdir -p /etc/nginx/sites-enabled
+    mkdir -p /etc/nginx/sites-enabled && \
+    mkdir -p /etc/nginx/rewrite
 
 ADD project.conf /etc/nginx/sites-available/
+ADD rewrite/project.conf /etc/nginx/rewrite/
 
 RUN sed -i 's#__PROJECT_DOMAIN_1__#'"${PROJECT_DOMAIN_1}"'#g' /etc/nginx/sites-available/project.conf && \
     sed -i 's#__PROJECT_DOMAIN_2__#'"${PROJECT_DOMAIN_2}"'#g' /etc/nginx/sites-available/project.conf && \
