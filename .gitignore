@@ -11,6 +11,8 @@
 
 /config/php/conf.d/xdebug.ini
 
+/config/phpmyadmin/config.user.inc.php
+
 # IDEs
 /.idea
 *.iml
