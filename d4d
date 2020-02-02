@@ -279,14 +279,24 @@ doChecks() {
     ./config/php/build
 
     # phpMyAdmin configuration
-    if [ ! -f "config/phpmyadmin/config.user.inc.php" ]; then
-        cp config/phpmyadmin/config.user.inc.php.d4d config/phpmyadmin/config.user.inc.php.tmp
-        sed -i 's#__MYSQL_USER__#'"${MYSQL_USER}"'#g' config/phpmyadmin/config.user.inc.php.tmp
-        sed -i 's#__MYSQL_PASSWORD__#'"${MYSQL_PASSWORD}"'#g' config/phpmyadmin/config.user.inc.php.tmp
+     cp config/phpmyadmin/config.user.inc.php.d4d config/phpmyadmin/config.user.inc.php.tmp
 
-        cp config/phpmyadmin/config.user.inc.php.tmp config/phpmyadmin/config.user.inc.php
-        rm config/phpmyadmin/config.user.inc.php.tmp
-    fi
+     if [ "${PMA_AUTO_LOGIN}" = "yes" ]; then
+         PMA_AUTH_TYPE="config"
+         PMA_MYSQL_USER=${MYSQL_USER}
+         PMA_MYSQL_PASSWORD=${MYSQL_PASSWORD}
+     else
+         PMA_AUTH_TYPE="cookie"
+         PMA_MYSQL_USER=
+         PMA_MYSQL_PASSWORD=
+     fi
+
+     sed -i 's#__AUTH_TYPE__#'"${PMA_AUTH_TYPE}"'#g' config/phpmyadmin/config.user.inc.php.tmp
+     sed -i 's#__MYSQL_USER__#'"${PMA_MYSQL_USER}"'#g' config/phpmyadmin/config.user.inc.php.tmp
+     sed -i 's#__MYSQL_PASSWORD__#'"${PMA_MYSQL_PASSWORD}"'#g' config/phpmyadmin/config.user.inc.php.tmp
+
+     cp config/phpmyadmin/config.user.inc.php.tmp config/phpmyadmin/config.user.inc.php
+     rm config/phpmyadmin/config.user.inc.php.tmp
 }
 
 doBuild() {

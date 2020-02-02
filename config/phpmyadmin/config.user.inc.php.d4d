@@ -4,6 +4,6 @@ $cfg['ExecTimeLimit'] = 0;
 
 $i = 1;
 
-$cfg['Servers'][$i]['auth_type'] = 'config';
+$cfg['Servers'][$i]['auth_type'] = '__AUTH_TYPE__';
 $cfg['Servers'][$i]['user'] = '__MYSQL_USER__';
 $cfg['Servers'][$i]['password'] = '__MYSQL_PASSWORD__';
