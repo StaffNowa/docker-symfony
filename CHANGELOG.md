@@ -14,3 +14,4 @@ CHANGELOG for "Docker for Symfony"
     * FEATURE   [PHP]   Added ability to change max_execution_time in file .env
     * FEATURE   [NGINX] Added ability to put rewrite rules into file config/nginx/rewrite/project.conf
     * FEATURE   [NGINX] Added ability select SF vs SF + PWA configuration
+    * FEATURE   [PMA]   Added phpMyAdmin auto login functionality
