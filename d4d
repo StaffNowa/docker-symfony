@@ -146,7 +146,7 @@ PMA_AUTO_LOGIN_OPT=`getOpt PMA_AUTO_LOGIN ${PMA_AUTO_LOGIN_DEF}`
 
 # Help sections
 HELP_SECTIONS="DOCKER_RUN DOCKER_MYSQL DOCKER_PASSWD DOCKER_D4D"
-DOCKER_RUN_SET="install uninstall start stop exec logs prune"
+DOCKER_RUN_SET="install uninstall start stop restart exec logs prune"
 DOCKER_RUN_DESC="Docker for Symfony (PHP-FPM - NGINX - MySQL)"
 DOCKER_RUN_REQADD="start stop exec logs prune"
 START_ADDIT=""
@@ -494,6 +494,10 @@ stop() {
     docker-compose down
 }
 
+restart() {
+    ./d4d stop && ./d4d start
+}
+
 dockerComposeExec() {
     # $1 command
     docker-compose exec $1 bash
@@ -591,6 +595,8 @@ case "$1" in
     start) doChecks; doBuildNginxConf; doBuild; start
         ;;
     stop) stop
+        ;;
+    restart) restart
         ;;
     exec) dockerComposeExec $2
         ;;
