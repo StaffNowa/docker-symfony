@@ -141,6 +141,7 @@ PROJECT_TYPE_OPT=`getOpt PROJECT_TYPE ${PROJECT_TYPE_DEF}`
 PMA_AUTO_LOGIN_SET="yes no"
 PMA_AUTO_LOGIN_DEF="no"
 PMA_AUTO_LOGIN_OPT=`getOpt PMA_AUTO_LOGIN ${PMA_AUTO_LOGIN_DEF}`
+PMA_DESC="phpMyAdmin auto login"
 
 ##################################################
 
