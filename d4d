@@ -335,6 +335,18 @@ doBuildNginxConf() {
     rm config/nginx/d4d/sf.conf.default.tmp
 }
 
+doBuildMySQLConf() {
+    source ${WORK_DIR}/.env
+
+    cp config/mysql/d4d.cnf.d4d config/mysql/d4d.cnf.tmp
+    sed -i 's#__MYSQL_MAX_ALLOWED_PACKET__#'"${MYSQL_MAX_ALLOWED_PACKET}"'#g' config/mysql/d4d.cnf.tmp
+    sed -i 's#__MYSQL_INNODB_LOG_FILE_SIZE__#'"${MYSQL_INNODB_LOG_FILE_SIZE}"'#g' config/mysql/d4d.cnf.tmp
+    sed -i 's#__MYSQL_WAIT_TIMEOUT__#'"${MYSQL_WAIT_TIMEOUT}"'#g' config/mysql/d4d.cnf.tmp
+    cp config/mysql/d4d.cnf.tmp config/mysql/d4d.cnf
+
+    rm config/mysql/d4d.cnf.tmp
+}
+
 doCheckPackage() {
     # $1 package name
 
@@ -593,7 +605,7 @@ case "$1" in
         ;;
     uninstall) doUninstall;
         ;;
-    start) doChecks; doBuildNginxConf; doBuild; start
+    start) doChecks; doBuildNginxConf; doBuildMySQLConf; doBuild; start
         ;;
     stop) stop
         ;;

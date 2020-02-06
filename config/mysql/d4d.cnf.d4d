@@ -1,0 +1,4 @@
+[mysqld]
+max_allowed_packet=__MYSQL_MAX_ALLOWED_PACKET__
+innodb_log_file_size=__MYSQL_INNODB_LOG_FILE_SIZE__
+wait_timeout=__MYSQL_WAIT_TIMEOUT__

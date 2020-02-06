@@ -6,6 +6,7 @@
 /db
 /user
 
+/config/mysql/d4d.cnf
 /config/nginx/d4d/*.conf
 /config/nginx/project.conf
 
