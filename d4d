@@ -333,6 +333,14 @@ doBuildNginxConf() {
     sed -i 's#__SYMFONY_FRONT_CONTROLLER__#'"${SYMFONY_FRONT_CONTROLLER}"'#g' config/nginx/d4d/sf.conf.default.tmp
     cp config/nginx/d4d/sf.conf.default.tmp config/nginx/d4d/sf.conf
     rm config/nginx/d4d/sf.conf.default.tmp
+
+    NGINX_INCLUDE_CACHE=""
+
+    if [ "${NGINX_CACHE}" = "yes" ]; then
+        NGINX_INCLUDE_CACHE="include /etc/nginx/d4d/cache.conf;"
+    fi
+
+    sed -i 's#__INCLUDE_CACHE__#'"${NGINX_INCLUDE_CACHE}"'#g' config/nginx/project.conf
 }
 
 doBuildMySQLConf() {

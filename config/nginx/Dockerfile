@@ -54,6 +54,7 @@ RUN mkdir -p /etc/nginx/sites-available && \
 
 ADD project.conf /etc/nginx/sites-available/
 ADD rewrite/project.conf /etc/nginx/rewrite/
+ADD d4d/cache.conf /etc/nginx/d4d/cache.conf
 ADD d4d/sf.conf /etc/nginx/d4d/
 ADD d4d/pwa.conf /etc/nginx/d4d/
 
