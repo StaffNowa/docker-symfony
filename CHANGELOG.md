@@ -8,7 +8,7 @@ CHANGELOG for "Docker for Symfony"
     * FEATURE   [PHP] Added ability enable / disable ionCube using command ./docker set ioncube yes / no
     * BUGFIX    [PHP] Returned mcrypt extension into d4d.lt installation script
 
-* 1.0.7 (2020-02-10)
+* 1.0.7 (2020-02-15)
     * BUGFIX    [PHP]   Remove xdebug from pecl installation if disabled
     * FEATURE   [MYSQL] Import MySQL database copy without using a password form the console 
     * FEATURE   [PHP]   Added ability to change max_execution_time in file .env
