@@ -456,6 +456,9 @@ doInstall() {
     # Install PWGen
     doCheckPackage pwgen
 
+    # Install cURL
+    doCheckPackage curl
+
     # Install the latest Docker CE version
     doCheckPackage docker
 
