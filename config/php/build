@@ -78,6 +78,18 @@ else
     sed -i 's#__PHP_IONCUBE__#'""'#g' config/php/Dockerfile.tmp
 fi
 
+if [ "${YARN}" = "yes" ]; then
+    sed -i 's#__YARN__#'"RUN apt-get remove -y cmdtest \&\& curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \&\& echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | tee /etc/apt/sources.list.d/yarn.list \&\& apt-get update \&\& apt-get install -y yarn"'#g' config/php/Dockerfile.tmp
+else
+    sed -i 's#__YARN__#'""'#g' config/php/Dockerfile.tmp
+fi
+
+if [ "${WKHTMLTOPDF}" = "yes" ]; then
+    sed -i 's#__WKHTMLTOPDF__#'"RUN curl -o wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -sL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz  \&\& echo '3f923f425d345940089e44c1466f6408b9619562 wkhtmltox-0.12.4_linux-generic-amd64.tar.xz' | sha1sum -c - \&\& tar -xvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz \&\& cp wkhtmltox/lib/* /usr/lib/ \&\& cp wkhtmltox/bin/* /usr/bin/ \&\& cp -r wkhtmltox/share/man/man1 /usr/share/man/ \&\& chmod a+x /usr/bin/wkhtmltopdf \&\& chmod a+x /usr/bin/wkhtmltoimage"'#g' config/php/Dockerfile.tmp
+else
+    sed -i 's#__WKHTMLTOPDF__#'""'#g' config/php/Dockerfile.tmp
+fi
+
 # Remove duplicate
 sed -i '$!N; /^\(.*\)\n\1$/!P; D' config/php/Dockerfile.tmp
 
