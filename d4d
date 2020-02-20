@@ -507,6 +507,23 @@ doUninstall() {
     doRemovePackage docker-compose
 }
 
+doBeforeStart() {
+    if [ "${CLEAN_NGINX_LOGS}" = "yes" ]; then
+        echo > "${WORK_DIR}/var/logs/nginx/project_access.log"
+        echo > "${WORK_DIR}/var/logs/nginx/project_access.log"
+    fi
+
+    if [ "${CLEAN_SF_logs}" = "yes" ]; then
+        # SF 2.x
+        rm -rf "${WORK_DIR}/project/app/cache/"
+        rm -rf "${WORK_DIR}/project/app/logs/"
+
+        # SF 3.x, 4.x, 5.x
+        rm -rf "${WORK_DIR}/project/var/cache/"
+        rm -rf "${WORK_DIR}/project/var/log/"
+    fi
+}
+
 start() {
     # Start server
     echo "Starting docker containers..."
@@ -630,7 +647,7 @@ case "$1" in
         ;;
     uninstall) doUninstall;
         ;;
-    start) doChecks; doBuildNginxConf; doBuildMySQLConf; doBuild; start
+    start) doChecks; doBuildNginxConf; doBuildMySQLConf; doBuild; doBeforeStart; start
         ;;
     stop) stop
         ;;
