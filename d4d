@@ -630,9 +630,9 @@ showPasswords() {
     printf " +%-55s+\n" "-----------------------------------------------------------"
     printf " | %-55s %-2s|\n" "To login now, follow this link:"
     printf " +%-55s+\n" "-----------------------------------------------------------"
-    printf " | %-55s %-2s|\n" "Project URL: http://${PROJECT_DOMAIN}"
-    printf " | %-55s %-2s|\n" "phpMyAdmin: http://${PROJECT_DOMAIN}:8080"
-    printf " | %-55s %-2s|\n" "MailHog: http://${PROJECT_DOMAIN}:8025"
+    printf " | %-55s %-2s|\n" "Project URL: http://${PROJECT_DOMAIN_1}"
+    printf " | %-55s %-2s|\n" "phpMyAdmin: http://${PROJECT_DOMAIN_1}:8080"
+    printf " | %-55s %-2s|\n" "MailHog: http://${PROJECT_DOMAIN_1}:8025"
     printf " +%-55s+\n" "-----------------------------------------------------------"
 }
 
