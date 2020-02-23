@@ -334,6 +334,9 @@ doBuildNginxConf() {
         sed -i 's#__INCLUDE__#'"/etc/nginx/d4d/pwa.conf"'#g' config/nginx/project.conf.tmp
     fi
 
+    sed -i 's#__NGINX_FASTCGI_BUFFERS__#'"${NGINX_FASTCGI_BUFFERS}"'#g' config/nginx/project.conf.tmp
+    sed -i 's#__NGINX_FASTCGI_BUFFER_SIZE__#'"${NGINX_FASTCGI_BUFFER_SIZE}"'#g' config/nginx/project.conf.tmp
+
     cp config/nginx/project.conf.tmp config/nginx/project.conf
     rm config/nginx/project.conf.tmp
 

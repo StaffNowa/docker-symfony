@@ -33,5 +33,5 @@ server {
         fastcgi_buffer_size __NGINX_FASTCGI_BUFFER_SIZE__;
     }
 
-    client_max_body_size 1024M;
+    client_max_body_size __PHP_UPLOAD_MAX_FILESIZE__;
 }
