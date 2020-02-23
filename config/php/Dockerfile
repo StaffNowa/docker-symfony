@@ -5,6 +5,8 @@ FROM php:${PHP_VERSION}-fpm
 ARG DEFAULT_TIMEZONE
 ARG PHP_MEMORY_LIMIT
 ARG PHP_MAX_EXECUTION_TIME
+ARG PHP_POST_MAX_SIZE
+ARG PHP_UPLOAD_MAX_FILESIZE
 
 ARG NODE_JS_VERSION
 
@@ -35,6 +37,8 @@ RUN docker-php-ext-enable \
 RUN ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEFAULT_TIMEZONE} > /etc/timezone && \
     printf '[PHP]\ndate.timezone = "%s"\n' ${DEFAULT_TIMEZONE} > $PHP_INI_DIR/conf.d/tzone.ini && \
     printf '[CUSTOM]\nmemory_limit = "%s"\n' ${PHP_MEMORY_LIMIT} >> $PHP_INI_DIR/conf.d/custom.ini && \
+    printf '\npost_max_size = %s\n' ${PHP_POST_MAX_SIZE} >> $PHP_INI_DIR/conf.d/custom.ini && \
+    printf '\nupload_max_filesize = %s\n' ${PHP_UPLOAD_MAX_FILESIZE} >> $PHP_INI_DIR/conf.d/custom.ini && \
     printf '\nmax_execution_time = %s\n' ${PHP_MAX_EXECUTION_TIME} >> $PHP_INI_DIR/conf.d/custom.ini
 
 RUN echo 'extension=apc.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini
