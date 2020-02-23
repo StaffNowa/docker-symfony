@@ -79,9 +79,9 @@ services:
     build:
       context: config/phpmyadmin
       args:
-        PMA_MEMORY_LIMIT: ${PMA_MEMORY_LIMIT}
-        PMA_POST_MAX_SIZE: ${PMA_POST_MAX_SIZE}
-        PMA_UPLOAD_MAX_FILESIZE: ${PMA_UPLOAD_MAX_FILESIZE}
+        PHP_MEMORY_LIMIT: ${PHP_MEMORY_LIMIT}
+        PHP_POST_MAX_SIZE: ${PHP_POST_MAX_SIZE}
+        PHP_UPLOAD_MAX_FILESIZE: ${PHP_UPLOAD_MAX_FILESIZE}
         DEFAULT_TIMEZONE: ${DEFAULT_TIMEZONE}
 
     environment:
