@@ -3,6 +3,8 @@ ARG DEBIAN_VERSION
 FROM debian:${DEBIAN_VERSION}
 
 ARG NGINX_VERSION
+ARG NGINX_FASTCGI_BUFFERS
+ARG NGINX_FASTCGI_BUFFER_SIZE
 ARG PROJECT_DOMAIN_1
 ARG PROJECT_DOMAIN_2
 ARG PROJECT_DOMAIN_3
@@ -10,6 +12,7 @@ ARG PROJECT_DOMAIN_4
 ARG DOCUMENT_ROOT
 ARG SYMFONY_FRONT_CONTROLLER
 ARG PHP_MAX_EXECUTION_TIME
+ARG PHP_UPLOAD_MAX_FILESIZE
 
 MAINTAINER Vasilij Dusko <vasilij@prado.lt>
 
@@ -65,6 +68,9 @@ RUN sed -i 's#__PROJECT_DOMAIN_1__#'"${PROJECT_DOMAIN_1}"'#g' /etc/nginx/sites-a
     sed -i 's#__DOCUMENT_ROOT__#'"${DOCUMENT_ROOT}"'#g' /etc/nginx/sites-available/project.conf && \
     sed -i 's#__SYMFONY_FRONT_CONTROLLER__#'"${SYMFONY_FRONT_CONTROLLER}"'#g' /etc/nginx/sites-available/project.conf && \
     sed -i 's#__PHP_MAX_EXECUTION_TIME__#'"${PHP_MAX_EXECUTION_TIME}"'#g' /etc/nginx/sites-available/project.conf && \
+    sed -i 's#__PHP_UPLOAD_MAX_FILESIZE__#'"${PHP_UPLOAD_MAX_FILESIZE}"'#g' /etc/nginx/sites-available/project.conf && \
+    sed -i 's#__NGINX_FASTCGI_BUFFERS__#'"${NGINX_FASTCGI_BUFFERS}"'#g' /etc/nginx/sites-available/project.conf && \
+    sed -i 's#__NGINX_FASTCGI_BUFFER_SIZE__#'"${NGINX_FASTCGI_BUFFER_SIZE}"'#g' /etc/nginx/sites-available/project.conf && \
     ln -s /etc/nginx/sites-available/project.conf /etc/nginx/sites-enabled/project.conf && \
     echo "upstream php-upstream { server php:9000; }" > /etc/nginx/conf.d/upstream.conf
 
