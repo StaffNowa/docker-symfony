@@ -158,7 +158,7 @@ PMA_AUTO_LOGIN_DESC="phpMyAdmin auto login"
 ##################################################
 
 # Help sections
-HELP_SECTIONS="DOCKER_RUN DOCKER_MYSQL DOCKER_PASSWD DOCKER_D4D"
+HELP_SECTIONS="DOCKER_RUN DOCKER_MYSQL DOCKER_PASSWD D4D_UPDATE DOCKER_D4D"
 DOCKER_RUN_SET="install uninstall start stop restart exec logs prune"
 DOCKER_RUN_DESC="Docker for Symfony (PHP-FPM - NGINX - MySQL)"
 DOCKER_RUN_REQADD="start stop exec logs prune"
@@ -177,6 +177,10 @@ DOCKER_PASSWD_SET="passwd"
 DOCKER_PASSWD_DESC="Show password sensitive information"
 DOCKER_PASSWD_REQADD="passwd"
 PASSWD_ADDIT="show"
+
+D4D_UPDATE_SET="update_env"
+D4D_UPDATE_DESC="Get latest D4D script with or without new packages"
+D4D_UPDATE_REQADD=""
 
 DOCKER_D4D_SET="opt_help set"
 DOCKER_D4D_DESC="Docker related options/functions"
@@ -563,7 +567,7 @@ dockerComposeExec() {
 
 doMysqlDump() {
     # Load .env file into the current shell script
-    source ${WORK_DIR}/.env
+    source ${ENV}
 
     docker-compose exec mysql bash /tmp/db/mysql_dump.sh
 }
@@ -580,6 +584,66 @@ doPasswd() {
     if [ "${COMMAND}" = "show" ]; then
         showPasswords
     fi
+}
+
+updateEnv() {
+    source ${ENV}
+
+    if [ "${D4D_VERSION}" = "1.0.0" ]; then
+        cp ${ENV} ${WORK_DIR}/.env.tmp
+
+        sed -i 's#PROJECT_DOMAIN=#'"PROJECT_DOMAIN_1="'#g' ${WORK_DIR}/.env
+
+        if [ "${PROJECT_DOMAIN_2}" = "" ]; then
+            printf 'PROJECT_DOMAIN_2=symfony.local\n' >> ${WORK_DIR}/.env
+        fi
+        if [ "${PROJECT_DOMAIN_3}" = "" ]; then
+            printf 'PROJECT_DOMAIN_3=symfony.local\n' >> ${WORK_DIR}/.env
+        fi
+        if [ "${PROJECT_DOMAIN_4}" = "" ]; then
+            printf 'PROJECT_DOMAIN_4=symfony.local\n' >> ${WORK_DIR}/.env
+        fi
+        if [ "${SF_PATH}" = "" ]; then
+            printf 'SF_PATH=admin\n' >> ${WORK_DIR}/.env
+        fi
+
+        sed -i 's#NGINX_VERSION=1.15.7-1~stretch#'"NGINX_VERSION=1.17.8-1~stretch"'#g' ${WORK_DIR}/.env
+
+        if [ "${NGINX_FASTCGI_BUFFERS}" = "" ]; then
+            printf 'NGINX_FASTCGI_BUFFERS="8 8k"\n' >> ${WORK_DIR}/.env
+        fi
+
+        if [ "${NGINX_FASTCGI_BUFFER_SIZE}" = "" ]; then
+            printf 'NGINX_FASTCGI_BUFFER_SIZE=8k\n' >> ${WORK_DIR}/.env
+        fi
+
+        if [ "${MYSQL_MAX_ALLOWED_PACKET}" = "" ]; then
+            printf 'MYSQL_MAX_ALLOWED_PACKET=64M\n' >> ${WORK_DIR}/.env
+        fi
+
+        if [ "${MYSQL_INNODB_LOG_FILE_SIZE}" = "" ]; then
+            printf 'MYSQL_INNODB_LOG_FILE_SIZE=48M\n' >> ${WORK_DIR}/.env
+        fi
+
+        if [ "${MYSQL_WAIT_TIMEOUT}" = "" ]; then
+            printf 'MYSQL_WAIT_TIMEOUT=28800\n' >> ${WORK_DIR}/.env
+        fi
+
+#        sed -i 's#PMA_MEMORY_LIMIT=#'"PHP_MEMORY_LIMIT="'#g' ${WORK_DIR}/.env
+        sed -i -e '/^PMA_MEMORY_LIMIT/d' ${WORK_DIR}/.env
+        sed -i -e '/^PMA_POST_MAX_SIZE/d' ${WORK_DIR}/.env
+
+        if [ "${PHP_MAX_EXECUTION_TIME}" = "" ]; then
+            printf 'PHP_MAX_EXECUTION_TIME=30\n' >> ${WORK_DIR}/.env
+        fi
+
+        sed -i 's#PMA_UPLOAD_MAX_FILESIZE=#'"PHP_UPLOAD_MAX_FILESIZE="'#g' ${WORK_DIR}/.env
+
+        printf 'CLEAN_NGINX_LOGS=no\n' >> ${WORK_DIR}/.env
+        printf 'CLEAN_SF_logs=no\n' >> ${WORK_DIR}/.env
+    fi
+
+    echo $D4D_VERSION
 }
 
 allSettings() {
@@ -665,6 +729,8 @@ case "$1" in
     passwd) doPasswd $2
         ;;
     set) setOpt $2 $3
+        ;;
+    update_env) updateEnv
         ;;
     opt_help) allSettings $2
         ;;
