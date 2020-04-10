@@ -14,10 +14,10 @@ source ${WORK_DIR}/.env
 
 cp config/php/Dockerfile.build config/php/Dockerfile.tmp
 
-PACKAGE_LIST=('gnupg1' 'openssl' 'git' 'unzip' 'libzip-dev' 'nano' 'libpng-dev' 'libmagickwand-dev' 'curl' 'xauth' 'xvfb' 'openssh-client' 'less' 'inkscape' 'cron' 'exiftool' 'libicu-dev' 'libmcrypt-dev')
+PACKAGE_LIST=('gnupg1' 'openssl' 'git' 'unzip' 'libzip-dev' 'nano' 'libpng-dev' 'libmagickwand-dev' 'curl' 'xauth' 'xvfb' 'openssh-client' 'less' 'inkscape' 'cron' 'exiftool' 'libicu-dev' 'libmcrypt-dev' 'librabbitmq-dev' 'librabbitmq4')
 PHP_EXT_INSTALL=('pdo' 'pdo_mysql' 'opcache' 'zip' 'gd' 'mysqli' 'exif' 'bcmath' 'calendar' 'intl')
 PHP_EXT_ENABLE=('imagick' 'mysqli' 'calendar' 'exif' 'bcmath')
-PECL_INSTALL=('imagick')
+PECL_INSTALL=('imagick' 'amqp')
 
 if [ "${PHP_VERSION}" = "5.6" ]; then
     sed -i "s#RUN echo 'extension=apc.so' >> \$PHP_INI_DIR\/conf.d\/docker\-php\-ext\-apcu.ini##g" config/php/Dockerfile.tmp
