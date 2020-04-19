@@ -1,0 +1,100 @@
+version: '3'
+
+services:
+  nginx:
+    build:
+      context: config/nginx
+      args:
+        PROJECT_DOMAIN_1: ${PROJECT_DOMAIN_1}
+        PROJECT_DOMAIN_2: ${PROJECT_DOMAIN_2}
+        PROJECT_DOMAIN_3: ${PROJECT_DOMAIN_3}
+        PROJECT_DOMAIN_4: ${PROJECT_DOMAIN_4}
+        DOCUMENT_ROOT: ${DOCUMENT_ROOT}
+        DEBIAN_VERSION: ${DEBIAN_VERSION}
+        NGINX_VERSION: ${NGINX_VERSION}
+        SYMFONY_FRONT_CONTROLLER: ${SYMFONY_FRONT_CONTROLLER}
+        PHP_MAX_EXECUTION_TIME: ${PHP_MAX_EXECUTION_TIME}
+        PHP_UPLOAD_MAX_FILESIZE: ${PHP_UPLOAD_MAX_FILESIZE}
+    ports:
+      - ${PORT_NGINX}:80
+    networks:
+      default:
+        aliases:
+          - ${PROJECT_DOMAIN_1}
+    volumes:
+      - ${PROJECT_PATH}:/var/www/project:cached
+      - ${NGINX_LOG_PATH}:/var/log/nginx
+      - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - php
+    environment:
+      - TZ=${DEFAULT_TIMEZONE}
+
+  php:
+    build:
+      context: config/php
+      args:
+        USER_ID: ${USER_ID}
+        GROUP_ID: ${GROUP_ID}
+        PHP_VERSION: ${PHP_VERSION}
+        DEFAULT_TIMEZONE: ${DEFAULT_TIMEZONE}
+        PHP_MEMORY_LIMIT: ${PHP_MEMORY_LIMIT}
+        PHP_UPLOAD_MAX_FILESIZE: ${PHP_UPLOAD_MAX_FILESIZE}
+        PHP_MAX_EXECUTION_TIME: ${PHP_MAX_EXECUTION_TIME}
+        NODE_JS_VERSION: ${NODE_JS_VERSION}
+        XDEBUG_REMOTE_PORT: ${XDEBUG_REMOTE_PORT}
+        XDEBUG_REMOTE_AUTOSTART: ${XDEBUG_REMOTE_AUTOSTART}
+        XDEBUG_REMOTE_ENABLE: ${XDEBUG_REMOTE_ENABLE}
+        XDEBUG_REMOTE_HOST: ${XDEBUG_REMOTE_HOST}
+        XDEBUG_REMOTE_CONNECT_BACK: ${XDEBUG_REMOTE_CONNECT_BACK}
+    volumes:
+      - ${PROJECT_PATH}:/var/www/project:cached
+      - ${SYMFONY_LOG_PATH}:/var/www/project/var/logs:cached
+      - ${COMPOSER_PATH}/cache:/var/www/.composer/cache:cached
+      - ${SSH_KEY_PATH}/id_rsa:/var/www/.ssh/id_rsa
+      - ${SSH_KEY_PATH}/id_rsa.pub:/var/www/.ssh/id_rsa.pub
+      - ${SSH_KEY_PATH}/known_hosts:/var/www/.ssh/known_hosts
+      - ${USER_CONFIG_PATH}/.bash_history:/var/www/.bash_history
+      - ./config/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:${MYSQL_VERSION}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: ${DEFAULT_TIMEZONE}
+    ports:
+      - ${PORT_MYSQL}:3306
+    volumes:
+      - ${MYSQL_DATA_PATH}:/var/lib/mysql:cached
+      - ${MYSQL_DUMP_PATH}:/tmp/db
+      - ${USER_CONFIG_PATH}/.my.cnf:/root/.my.cnf:ro
+      - ./scripts/mysql_dump.sh:/tmp/db/mysql_dump.sh:ro
+      - ./config/mysql/d4d.cnf:/etc/mysql/mysql.conf.d/d4d.cnf:ro
+    command: ['--character-set-server=${MYSQL_CHARACTER_SET_SERVER}', '--collation-server=${MYSQL_COLLATION_SERVER}', '--default-authentication-plugin=mysql_native_password']
+
+  phpmyadmin:
+    build:
+      context: config/phpmyadmin
+      args:
+        PHP_MEMORY_LIMIT: ${PHP_MEMORY_LIMIT}
+        PHP_UPLOAD_MAX_FILESIZE: ${PHP_UPLOAD_MAX_FILESIZE}
+        DEFAULT_TIMEZONE: ${DEFAULT_TIMEZONE}
+
+    environment:
+      - PMA_HOST=mysql
+      - TZ=${DEFAULT_TIMEZONE}
+    ports:
+      - ${PORT_PHPMYADMIN}:80
+    volumes:
+      - ./config/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"

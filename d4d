@@ -319,6 +319,12 @@ doChecks() {
 }
 
 doBuild() {
+    cp "${WORK_DIR}/docker/compose.yml" "${WORK_DIR}/docker-compose.yml"
+
+    if [ "${REDIS}" = "yes" ]; then
+      cat "${WORK_DIR}/docker/redis.yml" >> "${WORK_DIR}/docker-compose.yml"
+    fi
+
     COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build --parallel
 
     # Clears the screen.

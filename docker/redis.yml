@@ -1,0 +1,6 @@
+
+
+  redis:
+    image: redis:latest
+    environment:
+      TZ: ${DEFAULT_TIMEZONE}
