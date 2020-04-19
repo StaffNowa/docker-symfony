@@ -325,6 +325,10 @@ doBuild() {
       cat "${WORK_DIR}/docker/redis.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi
 
+    if [ "${RABBITMQ}" = "yes" ]; then
+      cat "${WORK_DIR}/docker/rabbitmq.yml" >> "${WORK_DIR}/docker-compose.yml"
+    fi
+
     COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build --parallel
 
     # Clears the screen.
@@ -658,6 +662,8 @@ updateEnv() {
     if [ "${D4D_VERSION}" = "1.0.7" ]; then
         cp ${ENV} ${WORK_DIR}/.env.tmp
 
+         printf 'REDIS=yes\n' >> ${WORK_DIR}/.env
+         printf 'RABBITMQ=yes\n' >> ${WORK_DIR}/.env
          printf 'RABBITMQ_VERSION=3.8.3\n' >> ${WORK_DIR}/.env
          printf 'RABBITMQ_TCP_LISTENER_PORT=5673\n' >> ${WORK_DIR}/.env
          printf 'RABBITMQ_MANAGEMENT_PORT=15672\n' >> ${WORK_DIR}/.env
