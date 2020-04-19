@@ -15,3 +15,7 @@ CHANGELOG for "Docker for Symfony"
     * FEATURE   [NGINX] Added ability to put rewrite rules into file config/nginx/rewrite/project.conf
     * FEATURE   [NGINX] Added ability select SF vs SF + PWA configuration
     * FEATURE   [PMA]   Added phpMyAdmin auto login functionality
+    
+* 1.0.8 (2020-04-19)
+    * FEATURE   [D4D]   Added ability enable / disable redis in docker-compose.yml file
+    * FEATURE   [D4D]   Added ability enable / disable rabbitmq in docker-compose.yml file
