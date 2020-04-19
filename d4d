@@ -662,6 +662,7 @@ updateEnv() {
     if [ "${D4D_VERSION}" = "1.0.7" ]; then
         cp ${ENV} ${WORK_DIR}/.env.tmp
 
+         printf '\n' >> ${WORK_DIR}/.env
          printf 'REDIS=yes\n' >> ${WORK_DIR}/.env
          printf 'RABBITMQ=yes\n' >> ${WORK_DIR}/.env
          printf 'RABBITMQ_VERSION=3.8.3\n' >> ${WORK_DIR}/.env
