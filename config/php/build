@@ -17,7 +17,7 @@ cp config/php/Dockerfile.build config/php/Dockerfile.tmp
 PACKAGE_LIST=('gnupg1' 'openssl' 'git' 'unzip' 'libzip-dev' 'nano' 'libpng-dev' 'libmagickwand-dev' 'curl' 'xauth' 'xvfb' 'openssh-client' 'less' 'inkscape' 'cron' 'exiftool' 'libicu-dev' 'libmcrypt-dev' 'librabbitmq-dev' 'librabbitmq4')
 PHP_EXT_INSTALL=('pdo' 'pdo_mysql' 'opcache' 'zip' 'gd' 'mysqli' 'exif' 'bcmath' 'calendar' 'intl')
 PHP_EXT_ENABLE=('imagick' 'mysqli' 'calendar' 'exif' 'bcmath')
-PECL_INSTALL=('imagick' 'amqp')
+PECL_INSTALL=('imagick')
 
 if [ "${PHP_VERSION}" = "5.6" ]; then
     sed -i "s#RUN echo 'extension=apc.so' >> \$PHP_INI_DIR\/conf.d\/docker\-php\-ext\-apcu.ini##g" config/php/Dockerfile.tmp
@@ -88,6 +88,13 @@ if [ "${WKHTMLTOPDF}" = "yes" ]; then
     sed -i 's#__WKHTMLTOPDF__#'"RUN curl -o wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -sL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz  \&\& echo '3f923f425d345940089e44c1466f6408b9619562 wkhtmltox-0.12.4_linux-generic-amd64.tar.xz' | sha1sum -c - \&\& tar -xvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz \&\& cp wkhtmltox/lib/* /usr/lib/ \&\& cp wkhtmltox/bin/* /usr/bin/ \&\& cp -r wkhtmltox/share/man/man1 /usr/share/man/ \&\& chmod a+x /usr/bin/wkhtmltopdf \&\& chmod a+x /usr/bin/wkhtmltoimage"'#g' config/php/Dockerfile.tmp
 else
     sed -i 's#__WKHTMLTOPDF__#'""'#g' config/php/Dockerfile.tmp
+fi
+
+if [ "${RABBITMQ}" = "yes" ]; then
+    PECL_INSTALL+=('amqp')
+    sed -i 's#__RABBIT_MQ__#'"RUN echo 'extension=amqp.so' >> \$PHP_INI_DIR/conf.d/docker-php-ext-amqp.ini"'#g' config/php/Dockerfile.tmp
+else
+    sed -i 's#__RABBIT_MQ__#'""'#g' config/php/Dockerfile.tmp
 fi
 
 # Remove duplicate

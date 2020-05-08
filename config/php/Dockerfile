@@ -28,7 +28,7 @@ RUN apt-get update && \
 RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-configure intl && docker-php-ext-install -j$(nproc) pdo pdo_mysql opcache zip gd mysqli exif bcmath calendar intl
 
 RUN pecl install \
-    imagick amqp apcu apcu_bc mcrypt
+    imagick apcu apcu_bc mcrypt
 
 RUN docker-php-ext-enable \
     imagick mysqli calendar exif bcmath apcu mcrypt
@@ -41,7 +41,6 @@ RUN ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEF
     printf '\nmax_execution_time = %s\n' ${PHP_MAX_EXECUTION_TIME} >> $PHP_INI_DIR/conf.d/custom.ini
 
 RUN echo 'extension=apc.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini
-RUN echo 'extension=amqp.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-amqp.ini
 
 # Install composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
