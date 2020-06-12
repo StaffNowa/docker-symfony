@@ -19,3 +19,6 @@ CHANGELOG for "Docker for Symfony"
 * 1.0.8 (2020-04-19)
     * FEATURE   [D4D]   Added ability enable / disable redis in docker-compose.yml file
     * FEATURE   [D4D]   Added ability enable / disable rabbitmq in docker-compose.yml file
+    
+* 1.0.9 (2020-06-12)
+    * FEATURE   [D4D]   Added option to select project type Symfony (SF), Symfony + PWA (SF_PWA), WordPress (WP)
