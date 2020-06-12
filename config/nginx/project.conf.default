@@ -12,7 +12,7 @@ server {
     access_log /var/log/nginx/project_access.log;
     error_log /var/log/nginx/project_error.log;
 
-     # strip app.php/ prefix if it is present
+    # strip app.php/ prefix if it is present
     rewrite ^/app\.php/?(.*)$ /$1 permanent;
 
     include __INCLUDE__;

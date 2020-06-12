@@ -58,6 +58,7 @@ ADD rewrite/project.conf /etc/nginx/rewrite/
 ADD d4d/cache.conf /etc/nginx/d4d/cache.conf
 ADD d4d/sf.conf /etc/nginx/d4d/
 ADD d4d/pwa.conf /etc/nginx/d4d/
+ADD d4d/wp.conf /etc/nginx/d4d/
 
 RUN sed -i 's#__PROJECT_DOMAIN_1__#'"${PROJECT_DOMAIN_1}"'#g' /etc/nginx/sites-available/project.conf && \
     sed -i 's#__PROJECT_DOMAIN_2__#'"${PROJECT_DOMAIN_2}"'#g' /etc/nginx/sites-available/project.conf && \

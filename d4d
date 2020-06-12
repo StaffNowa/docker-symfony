@@ -348,6 +348,11 @@ doBuildNginxConf() {
         sed -i 's#__INCLUDE__#'"/etc/nginx/d4d/pwa.conf"'#g' config/nginx/project.conf.tmp
     fi
 
+    if [ "${PROJECT_TYPE}" = "WP" ]; then
+        sed -i 's#__INCLUDE__#'"/etc/nginx/d4d/wp.conf"'#g' config/nginx/project.conf.tmp
+        sed -i 's#location .*{#'"location ~ .php$ {"'#g' config/nginx/project.conf.tmp
+    fi
+
     sed -i 's#__NGINX_FASTCGI_BUFFERS__#'"${NGINX_FASTCGI_BUFFERS}"'#g' config/nginx/project.conf.tmp
     sed -i 's#__NGINX_FASTCGI_BUFFER_SIZE__#'"${NGINX_FASTCGI_BUFFER_SIZE}"'#g' config/nginx/project.conf.tmp
 
@@ -364,6 +369,11 @@ doBuildNginxConf() {
     sed -i 's#__SYMFONY_FRONT_CONTROLLER__#'"${SYMFONY_FRONT_CONTROLLER}"'#g' config/nginx/d4d/sf.conf.default.tmp
     cp config/nginx/d4d/sf.conf.default.tmp config/nginx/d4d/sf.conf
     rm config/nginx/d4d/sf.conf.default.tmp
+
+    cp config/nginx/d4d/wp.conf.default config/nginx/d4d/wp.conf.default.tmp
+    sed -i 's#__SYMFONY_FRONT_CONTROLLER__#'"${SYMFONY_FRONT_CONTROLLER}"'#g' config/nginx/d4d/wp.conf.default.tmp
+    cp config/nginx/d4d/wp.conf.default.tmp config/nginx/d4d/wp.conf
+    rm config/nginx/d4d/wp.conf.default.tmp
 
     NGINX_INCLUDE_CACHE=""
 
