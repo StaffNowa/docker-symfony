@@ -43,6 +43,13 @@ if [ "${PHP_VERSION}" = "7.4" ]; then
     sed -i 's#docker-php-ext-configure gd \-\-with\-freetype\-dir\=\/usr\/include\/ \-\-with\-jpeg\-dir\=\/usr\/include\/ \&\& #'"docker\-php\-ext\-configure gd \-\-with\-freetype \-\-with\-jpeg \&\& "'#g' config/php/Dockerfile.tmp
 fi
 
+if [ "${RABBITMQ}" = "yes" ]; then
+    PECL_INSTALL+=('amqp')
+    sed -i 's#__RABBIT_MQ__#'"RUN echo 'extension=amqp.so' >> \$PHP_INI_DIR/conf.d/docker-php-ext-amqp.ini"'#g' config/php/Dockerfile.tmp
+else
+    sed -i 's#__RABBIT_MQ__#'""'#g' config/php/Dockerfile.tmp
+fi
+
 NPM_INSTALL_GLOBAL=('grunt-cli' 'yargs' 'async' 'sass' 'gulp' 'requirejs' 'pm2' 'uglify-js')
 
 sed -i 's#__PACKAGE_LIST__#'"${PACKAGE_LIST[*]}"'#g' config/php/Dockerfile.tmp
@@ -88,13 +95,6 @@ if [ "${WKHTMLTOPDF}" = "yes" ]; then
     sed -i 's#__WKHTMLTOPDF__#'"RUN curl -o wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -sL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz  \&\& echo '3f923f425d345940089e44c1466f6408b9619562 wkhtmltox-0.12.4_linux-generic-amd64.tar.xz' | sha1sum -c - \&\& tar -xvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz \&\& cp wkhtmltox/lib/* /usr/lib/ \&\& cp wkhtmltox/bin/* /usr/bin/ \&\& cp -r wkhtmltox/share/man/man1 /usr/share/man/ \&\& chmod a+x /usr/bin/wkhtmltopdf \&\& chmod a+x /usr/bin/wkhtmltoimage"'#g' config/php/Dockerfile.tmp
 else
     sed -i 's#__WKHTMLTOPDF__#'""'#g' config/php/Dockerfile.tmp
-fi
-
-if [ "${RABBITMQ}" = "yes" ]; then
-    PECL_INSTALL+=('amqp')
-    sed -i 's#__RABBIT_MQ__#'"RUN echo 'extension=amqp.so' >> \$PHP_INI_DIR/conf.d/docker-php-ext-amqp.ini"'#g' config/php/Dockerfile.tmp
-else
-    sed -i 's#__RABBIT_MQ__#'""'#g' config/php/Dockerfile.tmp
 fi
 
 # Remove duplicate

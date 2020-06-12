@@ -546,6 +546,9 @@ start() {
     echo "Starting docker containers..."
     docker-compose up -d
 
+    echo "Starting supervisor..."
+    docker-compose exec -u root php service supervisor start && docker-compose exec -u root php supervisorctl reread && docker-compose exec -u root php supervisorctl update && docker-compose exec -u root php supervisorctl start messenger-consume:*
+
     # Documentation for end user
     echo ""
     echo "The following information has been set:"

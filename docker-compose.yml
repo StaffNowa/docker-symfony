@@ -56,6 +56,7 @@ services:
       - ${SSH_KEY_PATH}/known_hosts:/var/www/.ssh/known_hosts
       - ${USER_CONFIG_PATH}/.bash_history:/var/www/.bash_history
       - ./config/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+      - ./config/supervisor/conf.d/messenger-worker.conf:/etc/supervisor/conf.d/messenger-worker.conf
     depends_on:
       - mysql
 
