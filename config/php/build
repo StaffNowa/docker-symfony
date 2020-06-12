@@ -14,7 +14,7 @@ source ${WORK_DIR}/.env
 
 cp config/php/Dockerfile.build config/php/Dockerfile.tmp
 
-PACKAGE_LIST=('gnupg1' 'openssl' 'git' 'unzip' 'libzip-dev' 'nano' 'libpng-dev' 'libmagickwand-dev' 'curl' 'xauth' 'xvfb' 'openssh-client' 'less' 'inkscape' 'cron' 'exiftool' 'libicu-dev' 'libmcrypt-dev' 'librabbitmq-dev' 'librabbitmq4')
+PACKAGE_LIST=('gnupg1' 'openssl' 'git' 'unzip' 'libzip-dev' 'nano' 'libpng-dev' 'libmagickwand-dev' 'curl' 'xauth' 'xvfb' 'openssh-client' 'less' 'inkscape' 'cron' 'exiftool' 'libicu-dev' 'libmcrypt-dev' 'librabbitmq-dev' 'librabbitmq4' 'supervisor')
 PHP_EXT_INSTALL=('pdo' 'pdo_mysql' 'opcache' 'zip' 'gd' 'mysqli' 'exif' 'bcmath' 'calendar' 'intl')
 PHP_EXT_ENABLE=('imagick' 'mysqli' 'calendar' 'exif' 'bcmath')
 PECL_INSTALL=('imagick')
