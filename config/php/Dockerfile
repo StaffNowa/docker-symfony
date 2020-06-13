@@ -25,7 +25,7 @@ RUN apt-get update && \
     gnupg1 openssl git unzip libzip-dev nano libpng-dev libmagickwand-dev curl xauth xvfb openssh-client less inkscape cron exiftool libicu-dev libmcrypt-dev librabbitmq-dev librabbitmq4 supervisor
 
 # Install PHP extensions. Type docker-php-ext-install to see available extensions
-RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-configure intl && docker-php-ext-install -j$(nproc) pdo pdo_mysql opcache zip gd mysqli exif bcmath calendar intl
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg && docker-php-ext-configure intl && docker-php-ext-install -j$(nproc) pdo pdo_mysql opcache zip gd mysqli exif bcmath calendar intl
 
 RUN pecl install \
     imagick apcu apcu_bc mcrypt
@@ -65,13 +65,13 @@ RUN mkdir -p /var/www/.npm && \
 # bugfix: remove cmdtest to install yarn correctly.
 RUN apt-get remove -y cmdtest && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && apt-get update && apt-get install -y yarn
 
+# Install wkhtmltopdf
+RUN curl -o wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -sL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz  && echo '3f923f425d345940089e44c1466f6408b9619562 wkhtmltox-0.12.4_linux-generic-amd64.tar.xz' | sha1sum -c - && tar -xvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz && cp wkhtmltox/lib/* /usr/lib/ && cp wkhtmltox/bin/* /usr/bin/ && cp -r wkhtmltox/share/man/man1 /usr/share/man/ && chmod a+x /usr/bin/wkhtmltopdf && chmod a+x /usr/bin/wkhtmltoimage
+
 RUN apt-get remove --purge -y gnupg1 && apt-get -y --purge autoremove && rm -rf /var/lib/apt/lists/*
 
 # Copy xdebug and php config.
 COPY conf.d/* /usr/local/etc/php/conf.d/
-
-# Install wkhtmltopdf
-RUN curl -o wkhtmltox-0.12.4_linux-generic-amd64.tar.xz -sL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz  && echo '3f923f425d345940089e44c1466f6408b9619562 wkhtmltox-0.12.4_linux-generic-amd64.tar.xz' | sha1sum -c - && tar -xvf wkhtmltox-0.12.4_linux-generic-amd64.tar.xz && cp wkhtmltox/lib/* /usr/lib/ && cp wkhtmltox/bin/* /usr/bin/ && cp -r wkhtmltox/share/man/man1 /usr/share/man/ && chmod a+x /usr/bin/wkhtmltopdf && chmod a+x /usr/bin/wkhtmltoimage
 
 # Map user id from host user when it's provided
 RUN if [ ! -z ${USER_ID} ] && [ ${USER_ID} -ne 0 ]; then usermod -u ${USER_ID} www-data; fi

@@ -66,15 +66,17 @@ RUN mkdir -p /var/www/.npm && \
 # bugfix: remove cmdtest to install yarn correctly.
 __YARN__
 
-RUN apt-get remove --purge -y gnupg1 && apt-get -y --purge autoremove && rm -rf /var/lib/apt/lists/*
-
-# Copy xdebug and php config.
-COPY conf.d/* /usr/local/etc/php/conf.d/
-
 # Install wkhtmltopdf
 __WKHTMLTOPDF__
 
 __PHP_IONCUBE__
+
+__BLACKFIRE__
+
+RUN apt-get remove --purge -y gnupg1 && apt-get -y --purge autoremove && rm -rf /var/lib/apt/lists/*
+
+# Copy xdebug and php config.
+COPY conf.d/* /usr/local/etc/php/conf.d/
 
 # Map user id from host user when it's provided
 RUN if [ ! -z ${USER_ID} ] && [ ${USER_ID} -ne 0 ]; then usermod -u ${USER_ID} www-data; fi

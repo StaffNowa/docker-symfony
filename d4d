@@ -329,6 +329,10 @@ doBuild() {
       cat "${WORK_DIR}/docker/rabbitmq.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi
 
+    if [ "${BLACKFIRE}" = "yes" ]; then
+      cat "${WORK_DIR}/docker/blackfire.yml" >> "${WORK_DIR}/docker-compose.yml"
+    fi
+
     COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build --parallel
 
     # Clears the screen.
@@ -688,6 +692,24 @@ updateEnv() {
     echo $D4D_VERSION
 }
 
+blackfire() {
+    source ${ENV}
+
+    # $1 command
+    COMMAND=$1
+
+    if [ "${BLACKFIRE}" = "yes" ]; then
+         if [ "${COMMAND}" = "register" ]; then
+             echo "Register Blackfire..."
+             docker-compose exec -u root php blackfire-agent --register --server-id=${BLACKFIRE_SERVER_ID} --server-token=${BLACKFIRE_SERVER_TOKEN}
+         fi
+
+         if [ "${COMMAND}" = "start" ] || [ "${COMMAND}" == "stop" ] || [ "${COMMAND}" == "restart" ]; then
+             docker-compose exec -u root php /etc/init.d/blackfire-agent ${COMMAND}
+         fi
+    fi
+}
+
 allSettings() {
 	for section in $ALL_SECTIONS; do
 		DESC=${section}_DESC
@@ -773,6 +795,8 @@ case "$1" in
     set) setOpt $2 $3
         ;;
     update_env) updateEnv
+        ;;
+    blackfire) blackfire $2
         ;;
     opt_help) allSettings $2
         ;;

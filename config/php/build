@@ -97,6 +97,12 @@ else
     sed -i 's#__WKHTMLTOPDF__#'""'#g' config/php/Dockerfile.tmp
 fi
 
+if [ "${BLACKFIRE}" = "yes" ]; then
+    sed -i 's#__BLACKFIRE__#'"RUN curl -sS https://packages.blackfire.io/gpg.key | apt-key add - \&\& echo \"deb http://packages.blackfire.io/debian any main\" | tee /etc/apt/sources.list.d/blackfire.list \&\& apt-get update \&\& apt-get install -y blackfire-agent blackfire-php"'#g' config/php/Dockerfile.tmp
+else
+      sed -i 's#__BLACKFIRE__#'""'#g' config/php/Dockerfile.tmp
+fi
+
 # Remove duplicate
 sed -i '$!N; /^\(.*\)\n\1$/!P; D' config/php/Dockerfile.tmp
 
