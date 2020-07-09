@@ -22,3 +22,6 @@ CHANGELOG for "Docker for Symfony"
     
 * 1.0.9 (2020-06-12)
     * FEATURE   [D4D]   Added option to select project type Symfony (SF), Symfony + PWA (SF_PWA), WordPress (WP)
+
+* 1.0.10 (*)
+    * BUGFIX    [PHP]   Fix  missing redis module   
