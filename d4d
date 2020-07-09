@@ -681,7 +681,7 @@ updateEnv() {
 
          printf '\n' >> ${WORK_DIR}/.env
          printf 'REDIS=yes\n' >> ${WORK_DIR}/.env
-         printf 'RABBITMQ=yes\n' >> ${WORK_DIR}/.env
+         printf 'RABBITMQ=no\n' >> ${WORK_DIR}/.env
          printf 'RABBITMQ_VERSION=3.8.3\n' >> ${WORK_DIR}/.env
          printf 'RABBITMQ_TCP_LISTENER_PORT=5673\n' >> ${WORK_DIR}/.env
          printf 'RABBITMQ_MANAGEMENT_PORT=15672\n' >> ${WORK_DIR}/.env
