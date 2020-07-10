@@ -681,14 +681,23 @@ updateEnv() {
     if [ "${D4D_VERSION}" = "1.0.7" ]; then
         cp ${ENV} ${WORK_DIR}/.env.tmp
 
-         printf '\n' >> ${WORK_DIR}/.env
-         printf 'REDIS=yes\n' >> ${WORK_DIR}/.env
-         printf 'RABBITMQ=no\n' >> ${WORK_DIR}/.env
-         printf 'RABBITMQ_VERSION=3.8.3\n' >> ${WORK_DIR}/.env
-         printf 'RABBITMQ_TCP_LISTENER_PORT=5673\n' >> ${WORK_DIR}/.env
-         printf 'RABBITMQ_MANAGEMENT_PORT=15672\n' >> ${WORK_DIR}/.env
+        printf '\n' >> ${WORK_DIR}/.env
+        printf 'REDIS=yes\n' >> ${WORK_DIR}/.env
+        printf 'RABBITMQ=no\n' >> ${WORK_DIR}/.env
+        printf 'RABBITMQ_VERSION=3.8.3\n' >> ${WORK_DIR}/.env
+        printf 'RABBITMQ_TCP_LISTENER_PORT=5673\n' >> ${WORK_DIR}/.env
+        printf 'RABBITMQ_MANAGEMENT_PORT=15672\n' >> ${WORK_DIR}/.env
 
         sed -i 's#D4D_VERSION=1.0.7#'"D4D_VERSION=${DOCKER_SCRIPT_VER}"'#g' ${WORK_DIR}/.env
+    fi
+
+    if [ "${D4D_VERSION}" = "1.0.9" ]; then
+        cp ${ENV} ${WORK_DIR}/.env.tmp
+
+        printf '\n' >> ${WORK_DIR}/.env
+        printf 'SUPERVISOR=no\n' >> ${WORK_DIR}/.env
+
+        sed -i 's#D4D_VERSION=1.0.9#'"D4D_VERSION=${DOCKER_SCRIPT_VER}"'#g' ${WORK_DIR}/.env
     fi
 
     echo $D4D_VERSION
