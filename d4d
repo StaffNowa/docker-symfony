@@ -578,7 +578,7 @@ start() {
     echo "phpMyAdmin: http://${PROJECT_DOMAIN_1}:8080"
     echo "MailHog: http://${PROJECT_DOMAIN_1}:8025"
     echo ""
-    echo "Thank you for using Docker for Symfony. Should you have any questions, don't hesitate to contact us at support@prado.lt"
+    echo "Thank you for using Docker for Symfony. Should you have any questions, don't hesitate to contact us at support@d4d.lt"
 }
 
 stop() {
