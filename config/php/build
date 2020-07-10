@@ -14,7 +14,7 @@ source ${WORK_DIR}/.env
 
 cp config/php/Dockerfile.build config/php/Dockerfile.tmp
 
-PACKAGE_LIST=('gnupg1' 'openssl' 'git' 'unzip' 'libzip-dev' 'nano' 'libpng-dev' 'libmagickwand-dev' 'curl' 'xauth' 'xvfb' 'openssh-client' 'less' 'inkscape' 'cron' 'exiftool' 'libicu-dev' 'libmcrypt-dev' 'librabbitmq-dev' 'librabbitmq4' 'supervisor')
+PACKAGE_LIST=('gnupg1' 'openssl' 'git' 'unzip' 'libzip-dev' 'nano' 'libpng-dev' 'libmagickwand-dev' 'curl' 'xauth' 'xvfb' 'openssh-client' 'less' 'inkscape' 'cron' 'exiftool' 'libicu-dev' 'libmcrypt-dev')
 PHP_EXT_INSTALL=('pdo' 'pdo_mysql' 'opcache' 'zip' 'gd' 'mysqli' 'exif' 'bcmath' 'calendar' 'intl' 'soap')
 PHP_EXT_ENABLE=('imagick' 'mysqli' 'calendar' 'exif' 'bcmath')
 PECL_INSTALL=('imagick')
@@ -49,10 +49,15 @@ if [ "${REDIS}" = "yes" ]; then
 fi
 
 if [ "${RABBITMQ}" = "yes" ]; then
+    PACKAGE_LIST+=('librabbitmq-dev' 'librabbitmq4')
     PECL_INSTALL+=('amqp')
     sed -i 's#__RABBIT_MQ__#'"RUN echo 'extension=amqp.so' >> \$PHP_INI_DIR/conf.d/docker-php-ext-amqp.ini"'#g' config/php/Dockerfile.tmp
 else
     sed -i 's#__RABBIT_MQ__#'""'#g' config/php/Dockerfile.tmp
+fi
+
+if [ "${SUPERVISOR}" = "yes" ]; then
+    PACKAGE_LIST+=('supervisor')
 fi
 
 NPM_INSTALL_GLOBAL=('grunt-cli' 'yargs' 'async' 'sass' 'gulp' 'requirejs' 'pm2' 'uglify-js')
