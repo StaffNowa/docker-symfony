@@ -26,3 +26,5 @@ CHANGELOG for "Docker for Symfony"
 * 1.0.10 (*)
     * BUGFIX    [PHP]           Fix  missing redis module
     * FEATURE   [SUPERVISOR]    Added ability to switch on / off supervisor in the file .env
+    * FEATURE   [ES]            Added ability to use elastic search.
+    * FEATURE   [NGROK]         Added ability to use remote access.
