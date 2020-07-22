@@ -1,0 +1,10 @@
+
+  ngrok:
+    image: shkoliar/ngrok:latest
+    ports:
+      - ${NGROK_PORT}:4551
+    links:
+      - nginx
+    environment:
+      - DOMAIN=nginx
+      - PORT=80

@@ -1,0 +1,33 @@
+  # elasticsearch server (official image)
+  # https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_VERSION}
+    ports:
+      - ${ELASTICSEARCH_PORT}:9200
+    environment:
+      - "discovery.type=single-node"
+      - "bootstrap.memory_lock=true"
+      - "ES_JAVA_OPTS=-Xms1G -Xmx1G"
+      - "xpack.security.enabled=false"
+      - "http.cors.enabled=true"
+      - "http.cors.allow-origin=*"
+  # elasticsearch head manager (fork of mobz/elasticsearch-head for elasticsearch 6)
+  # /!\ it isn't an official image /!\
+  # https://hub.docker.com/r/tobias74/elasticsearch-head
+  elasticsearch-head:
+    container_name: elasticsearch-head
+    depends_on:
+      - elasticsearch
+    image: tobias74/elasticsearch-head:6
+    ports:
+      - ${ELASTICSEARCH_HEAD_PORT}:9100
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:6.8.6
+    ports:
+      - ${ELASTICSEARCH_KIBANA_PORT}:5601
+    environment:
+      - "ELASTICSEARCH_URL=http://elasticsearch"
+    depends_on:
+      - elasticsearch
