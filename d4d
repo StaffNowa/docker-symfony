@@ -333,6 +333,14 @@ doBuild() {
       cat "${WORK_DIR}/docker/blackfire.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi
 
+    if [ "${ELASTICSEARCH}" = "yes" ]; then
+      cat "${WORK_DIR}/docker/elasticsearch.yml" >> "${WORK_DIR}/docker-compose.yml"
+    fi
+
+    if [ "${NGROK}" = "yes" ]; then
+      cat "${WORK_DIR}/docker/ngrok.yml" >> "${WORK_DIR}/docker-compose.yml"
+    fi
+
     COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build --parallel
 
     # Clears the screen.
@@ -558,7 +566,7 @@ doBeforeStart() {
 start() {
     # Start server
     echo "Starting docker containers..."
-    docker-compose up -d
+    docker-compose up -d --remove-orphans
 
     if [ "${SUPERVISOR}" = "yes" ]; then
         echo "Starting supervisor..."
