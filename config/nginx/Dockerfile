@@ -41,17 +41,6 @@ RUN apt-get update \
 						gettext-base \
 						nano \
 	&& rm -rf /var/lib/apt/lists/*
-# optional commands to run at shell inside container at build time
-# this one adds package repo for nginx from nginx.org and installs it
-
-RUN ln -sf /dev/stdout /var/log/nginx/access.log \
-	&& ln -sf /dev/stderr /var/log/nginx/error.log
-# forward request and error logs to docker log collector
-
-RUN mkdir -p /etc/nginx/sites-available && \
-    mkdir -p /etc/nginx/sites-enabled && \
-    mkdir -p /etc/nginx/d4d && \
-    mkdir -p /etc/nginx/rewrite
 
 ADD project.conf /etc/nginx/sites-available/
 ADD rewrite/project.conf /etc/nginx/rewrite/
@@ -59,17 +48,28 @@ ADD d4d/cache.conf /etc/nginx/d4d/cache.conf
 ADD d4d/sf.conf /etc/nginx/d4d/
 ADD d4d/pwa.conf /etc/nginx/d4d/
 ADD d4d/wp.conf /etc/nginx/d4d/
+ADD custom_50x.html /etc/nginx/d4d/
 
-RUN sed -i 's#__PROJECT_DOMAIN_1__#'"${PROJECT_DOMAIN_1}"'#g' /etc/nginx/sites-available/project.conf && \
-    sed -i 's#__PROJECT_DOMAIN_2__#'"${PROJECT_DOMAIN_2}"'#g' /etc/nginx/sites-available/project.conf && \
-    sed -i 's#__PROJECT_DOMAIN_3__#'"${PROJECT_DOMAIN_3}"'#g' /etc/nginx/sites-available/project.conf && \
-    sed -i 's#__PROJECT_DOMAIN_4__#'"${PROJECT_DOMAIN_4}"'#g' /etc/nginx/sites-available/project.conf && \
-    sed -i 's#__DOCUMENT_ROOT__#'"${DOCUMENT_ROOT}"'#g' /etc/nginx/sites-available/project.conf && \
-    sed -i 's#__SYMFONY_FRONT_CONTROLLER__#'"${SYMFONY_FRONT_CONTROLLER}"'#g' /etc/nginx/sites-available/project.conf && \
-    sed -i 's#__PHP_MAX_EXECUTION_TIME__#'"${PHP_MAX_EXECUTION_TIME}"'#g' /etc/nginx/sites-available/project.conf && \
-    sed -i 's#__PHP_UPLOAD_MAX_FILESIZE__#'"${PHP_UPLOAD_MAX_FILESIZE}"'#g' /etc/nginx/sites-available/project.conf && \
-    ln -s /etc/nginx/sites-available/project.conf /etc/nginx/sites-enabled/project.conf && \
-    echo "upstream php-upstream { server php:9000; }" > /etc/nginx/conf.d/upstream.conf
+# optional commands to run at shell inside container at build time
+# this one adds package repo for nginx from nginx.org and installs it
+# forward request and error logs to docker log collector
+
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+	&& ln -sf /dev/stderr /var/log/nginx/error.log \
+	&& mkdir -p /etc/nginx/sites-available \
+	&& mkdir -p /etc/nginx/sites-enabled \
+	&& mkdir -p /etc/nginx/d4d \
+	&& mkdir -p /etc/nginx/rewrite \
+	&& sed -i 's#__PROJECT_DOMAIN_1__#'"${PROJECT_DOMAIN_1}"'#g' /etc/nginx/sites-available/project.conf \
+	&& sed -i 's#__PROJECT_DOMAIN_2__#'"${PROJECT_DOMAIN_2}"'#g' /etc/nginx/sites-available/project.conf \
+    && sed -i 's#__PROJECT_DOMAIN_3__#'"${PROJECT_DOMAIN_3}"'#g' /etc/nginx/sites-available/project.conf \
+    && sed -i 's#__PROJECT_DOMAIN_4__#'"${PROJECT_DOMAIN_4}"'#g' /etc/nginx/sites-available/project.conf \
+    && sed -i 's#__DOCUMENT_ROOT__#'"${DOCUMENT_ROOT}"'#g' /etc/nginx/sites-available/project.conf \
+    && sed -i 's#__SYMFONY_FRONT_CONTROLLER__#'"${SYMFONY_FRONT_CONTROLLER}"'#g' /etc/nginx/sites-available/project.conf \
+    && sed -i 's#__PHP_MAX_EXECUTION_TIME__#'"${PHP_MAX_EXECUTION_TIME}"'#g' /etc/nginx/sites-available/project.conf \
+    && sed -i 's#__PHP_UPLOAD_MAX_FILESIZE__#'"${PHP_UPLOAD_MAX_FILESIZE}"'#g' /etc/nginx/sites-available/project.conf \
+    && ln -s /etc/nginx/sites-available/project.conf /etc/nginx/sites-enabled/project.conf \
+    && echo "upstream php-upstream { server php:9000; }" > /etc/nginx/conf.d/upstream.conf
 
 CMD ["nginx", "-g", "daemon off;"]
 # required: run this command when container is launched
