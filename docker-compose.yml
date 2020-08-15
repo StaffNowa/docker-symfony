@@ -59,3 +59,43 @@ services:
       - ./config/supervisor/conf.d/messenger-worker.conf:/etc/supervisor/conf.d/messenger-worker.conf
     depends_on:
       - mysql
+
+  mysql:
+    image: mysql:${MYSQL_VERSION}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: ${DEFAULT_TIMEZONE}
+    ports:
+      - ${PORT_MYSQL}:3306
+    volumes:
+      - ${MYSQL_DATA_PATH}:/var/lib/mysql:cached
+      - ${MYSQL_DUMP_PATH}:/tmp/db
+      - ${USER_CONFIG_PATH}/.my.cnf:/root/.my.cnf:ro
+      - ./scripts/mysql_dump.sh:/tmp/db/mysql_dump.sh:ro
+      - ./config/mysql/d4d.cnf:/etc/mysql/mysql.conf.d/d4d.cnf:ro
+    command: ['--character-set-server=${MYSQL_CHARACTER_SET_SERVER}', '--collation-server=${MYSQL_COLLATION_SERVER}', '--default-authentication-plugin=mysql_native_password']
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  phpmyadmin:
+    build:
+      context: config/phpmyadmin
+      args:
+        PHP_MEMORY_LIMIT: ${PHP_MEMORY_LIMIT}
+        PHP_UPLOAD_MAX_FILESIZE: ${PHP_UPLOAD_MAX_FILESIZE}
+        DEFAULT_TIMEZONE: ${DEFAULT_TIMEZONE}
+
+    environment:
+      - PMA_HOST=mysql
+      - TZ=${DEFAULT_TIMEZONE}
+    ports:
+      - ${PORT_PHPMYADMIN}:80
+    volumes:
+      - ./config/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
