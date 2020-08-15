@@ -48,7 +48,6 @@ ADD d4d/cache.conf /etc/nginx/d4d/cache.conf
 ADD d4d/sf.conf /etc/nginx/d4d/
 ADD d4d/pwa.conf /etc/nginx/d4d/
 ADD d4d/wp.conf /etc/nginx/d4d/
-ADD custom_50x.html /etc/nginx/d4d/
 
 # optional commands to run at shell inside container at build time
 # this one adds package repo for nginx from nginx.org and installs it
