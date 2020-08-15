@@ -1,5 +1,4 @@
 
-
   mysql:
     image: mysql:${MYSQL_VERSION}
     environment:
