@@ -321,6 +321,20 @@ doChecks() {
 doBuild() {
     cp "${WORK_DIR}/docker/compose.yml" "${WORK_DIR}/docker-compose.yml"
 
+    if [ "${MYSQL_INST}" = "mysql" ]; then
+        cat "${WORK_DIR}/docker/mysql.yml" >> "${WORK_DIR}/docker-compose.yml"
+    elif [ "${MYSQL_INST}" = "mariadb" ]; then
+        cat "${WORK_DIR}/docker/mariadb.yml" >> "${WORK_DIR}/docker-compose.yml"
+    fi
+
+    if [ "${MAILHOG}" = "yes" ]; then
+        cat "${WORK_DIR}/docker/mailhog.yml" >> "${WORK_DIR}/docker-compose.yml"
+    fi
+
+    if [ "${PHPMYADMIN}" = "yes" ]; then
+        cat "${WORK_DIR}/docker/phpmyadmin.yml" >> "${WORK_DIR}/docker-compose.yml"
+    fi
+
     if [ "${REDIS}" = "yes" ]; then
       cat "${WORK_DIR}/docker/redis.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi

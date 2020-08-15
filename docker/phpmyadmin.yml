@@ -1,0 +1,16 @@
+
+  phpmyadmin:
+    build:
+      context: config/phpmyadmin
+      args:
+        PHP_MEMORY_LIMIT: ${PHP_MEMORY_LIMIT}
+        PHP_UPLOAD_MAX_FILESIZE: ${PHP_UPLOAD_MAX_FILESIZE}
+        DEFAULT_TIMEZONE: ${DEFAULT_TIMEZONE}
+
+    environment:
+      - PMA_HOST=mysql
+      - TZ=${DEFAULT_TIMEZONE}
+    ports:
+      - ${PORT_PHPMYADMIN}:80
+    volumes:
+      - ./config/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
