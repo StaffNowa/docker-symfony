@@ -2,7 +2,7 @@
   ngrok:
     image: shkoliar/ngrok:latest
     ports:
-      - ${NGROK_PORT}:4551
+      - ${PORT_NGROK}:4551
     links:
       - nginx
     environment:

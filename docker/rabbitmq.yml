@@ -3,5 +3,5 @@
     image: rabbitmq:${RABBITMQ_VERSION}-management
     ports:
       - 5672:5672
-      - ${RABBITMQ_TCP_LISTENER_PORT}:5673
-      - ${RABBITMQ_MANAGEMENT_PORT}:15672
+      - ${PORT_RABBITMQ_TCP_LISTENER}:5673
+      - ${PORT_RABBITMQ_MANAGEMENT}:15672
