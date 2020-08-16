@@ -27,48 +27,43 @@ RUN apt-get update && \
 # Install PHP extensions. Type docker-php-ext-install to see available extensions
 RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-configure intl && docker-php-ext-install -j$(nproc) pdo pdo_mysql opcache zip gd mysqli exif bcmath calendar intl soap
 
-RUN pecl install \
-    imagick apcu apcu_bc mcrypt
+RUN pecl install imagick apcu apcu_bc mcrypt && docker-php-ext-enable imagick mysqli calendar exif bcmath apcu mcrypt
 
-RUN docker-php-ext-enable \
-    imagick mysqli calendar exif bcmath apcu mcrypt
+RUN ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEFAULT_TIMEZONE} > /etc/timezone \
+    && printf '[PHP]\ndate.timezone = "%s"\n' ${DEFAULT_TIMEZONE} > $PHP_INI_DIR/conf.d/tzone.ini \
+    && printf '[CUSTOM]\nmemory_limit = "%s"\n' ${PHP_MEMORY_LIMIT} >> $PHP_INI_DIR/conf.d/custom.ini \
+    && printf '\npost_max_size = %s\n' ${PHP_UPLOAD_MAX_FILESIZE} >> $PHP_INI_DIR/conf.d/custom.ini \
+    && printf '\nupload_max_filesize = %s\n' ${PHP_UPLOAD_MAX_FILESIZE} >> $PHP_INI_DIR/conf.d/custom.ini \
+    && printf '\nmax_execution_time = %s\n' ${PHP_MAX_EXECUTION_TIME} >> $PHP_INI_DIR/conf.d/custom.ini \
+    && echo 'extension=apc.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini \
+    &&  \
+    # Install composer
+    && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php composer-setup.php \
+    && php -r "unlink('composer-setup.php');" \
+    && mv composer.phar /usr/local/bin/composer \
+    && mkdir -p /var/www/.composer
 
-RUN ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEFAULT_TIMEZONE} > /etc/timezone && \
-    printf '[PHP]\ndate.timezone = "%s"\n' ${DEFAULT_TIMEZONE} > $PHP_INI_DIR/conf.d/tzone.ini && \
-    printf '[CUSTOM]\nmemory_limit = "%s"\n' ${PHP_MEMORY_LIMIT} >> $PHP_INI_DIR/conf.d/custom.ini && \
-    printf '\npost_max_size = %s\n' ${PHP_UPLOAD_MAX_FILESIZE} >> $PHP_INI_DIR/conf.d/custom.ini && \
-    printf '\nupload_max_filesize = %s\n' ${PHP_UPLOAD_MAX_FILESIZE} >> $PHP_INI_DIR/conf.d/custom.ini && \
-    printf '\nmax_execution_time = %s\n' ${PHP_MAX_EXECUTION_TIME} >> $PHP_INI_DIR/conf.d/custom.ini
-
-RUN echo 'extension=apc.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini
-
-# Install composer
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php composer-setup.php
-RUN php -r "unlink('composer-setup.php');"
-RUN mv composer.phar /usr/local/bin/composer
-RUN mkdir -p /var/www/.composer
 COPY composer/config.json /var/www/.composer/config.json
-RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/.composer && \
-    chown ${USER_ID}:${GROUP_ID} /var/www
-
-# npm & node
-RUN mkdir -p /var/www/.npm && \
-    chown -R ${USER_ID}:${GROUP_ID} /var/www/.npm && \
-    printf 'Package: *\nPin: origin deb.nodesource.com\nPin-Priority: 600' > /etc/apt/preferences.d/nodejs && \
-    curl -sL https://deb.nodesource.com/setup_${NODE_JS_VERSION} | bash && \
-    apt-get install -y nodejs && \
-    update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10 && \
-    npm install -g grunt-cli yargs async sass gulp requirejs pm2 uglify-js
-
-# Yarn package manager
-# bugfix: remove cmdtest to install yarn correctly.
-RUN apt-get remove -y cmdtest && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && apt-get update && apt-get install -y yarn
-
-# Install wkhtmltopdf
-RUN curl -o wkhtmltox-0.12.3_linux-generic-amd64.tar.xz -sL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.3/wkhtmltox-0.12.3_linux-generic-amd64.tar.xz  && echo '9066ab2c7b2035c6eaa043d31aeb7260191e6c88 wkhtmltox-0.12.3_linux-generic-amd64.tar.xz' | sha1sum -c - && tar -xvf wkhtmltox-0.12.3_linux-generic-amd64.tar.xz && cp wkhtmltox/lib/* /usr/lib/ && cp wkhtmltox/bin/* /usr/bin/ && cp -r wkhtmltox/share/man/man1 /usr/share/man/ && chmod a+x /usr/bin/wkhtmltopdf && chmod a+x /usr/bin/wkhtmltoimage
-
-RUN apt-get remove --purge -y gnupg1 && apt-get -y --purge autoremove && rm -rf /var/lib/apt/lists/*
+RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/.composer \
+    && chown ${USER_ID}:${GROUP_ID} /var/www \
+    # npm & node
+    && mkdir -p /var/www/.npm \
+    && chown -R ${USER_ID}:${GROUP_ID} /var/www/.npm \
+    && printf 'Package: *\nPin: origin deb.nodesource.com\nPin-Priority: 600' > /etc/apt/preferences.d/nodejs \
+    && curl -sL https://deb.nodesource.com/setup_${NODE_JS_VERSION} | bash \
+    && apt-get install -y nodejs \
+    && update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10 \
+    && npm install -g grunt-cli yargs async sass gulp requirejs pm2 uglify-js \
+    # Yarn package manager
+    # bugfix: remove cmdtest to install yarn correctly.
+    && apt-get remove -y cmdtest && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && apt-get update && apt-get install -y yarn \
+    # Install wkhtmltopdf
+    && curl -o wkhtmltox-0.12.3_linux-generic-amd64.tar.xz -sL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.3/wkhtmltox-0.12.3_linux-generic-amd64.tar.xz  && echo '9066ab2c7b2035c6eaa043d31aeb7260191e6c88 wkhtmltox-0.12.3_linux-generic-amd64.tar.xz' | sha1sum -c - && tar -xvf wkhtmltox-0.12.3_linux-generic-amd64.tar.xz && cp wkhtmltox/lib/* /usr/lib/ && cp wkhtmltox/bin/* /usr/bin/ && cp -r wkhtmltox/share/man/man1 /usr/share/man/ && chmod a+x /usr/bin/wkhtmltopdf && chmod a+x /usr/bin/wkhtmltoimage \
+     \
+    && apt-get remove --purge -y gnupg1 \
+    && apt-get -y --purge autoremove \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy xdebug and php config.
 COPY conf.d/* /usr/local/etc/php/conf.d/

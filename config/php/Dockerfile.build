@@ -27,53 +27,44 @@ RUN apt-get update && \
 # Install PHP extensions. Type docker-php-ext-install to see available extensions
 RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-configure intl && docker-php-ext-install -j$(nproc) __PHP_EXT_INSTALL__
 
-RUN pecl install \
-    __PECL_INSTALL__
+RUN pecl install __PECL_INSTALL__ && docker-php-ext-enable __PHP_EXT_ENABLE__
 
-RUN docker-php-ext-enable \
-    __PHP_EXT_ENABLE__
+RUN ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEFAULT_TIMEZONE} > /etc/timezone \
+    && printf '[PHP]\ndate.timezone = "%s"\n' ${DEFAULT_TIMEZONE} > $PHP_INI_DIR/conf.d/tzone.ini \
+    && printf '[CUSTOM]\nmemory_limit = "%s"\n' ${PHP_MEMORY_LIMIT} >> $PHP_INI_DIR/conf.d/custom.ini \
+    && printf '\npost_max_size = %s\n' ${PHP_UPLOAD_MAX_FILESIZE} >> $PHP_INI_DIR/conf.d/custom.ini \
+    && printf '\nupload_max_filesize = %s\n' ${PHP_UPLOAD_MAX_FILESIZE} >> $PHP_INI_DIR/conf.d/custom.ini \
+    && printf '\nmax_execution_time = %s\n' ${PHP_MAX_EXECUTION_TIME} >> $PHP_INI_DIR/conf.d/custom.ini \
+    && echo 'extension=apc.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini \
+    && __RABBIT_MQ__ \
+    # Install composer
+    && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php composer-setup.php \
+    && php -r "unlink('composer-setup.php');" \
+    && mv composer.phar /usr/local/bin/composer \
+    && mkdir -p /var/www/.composer
 
-RUN ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEFAULT_TIMEZONE} > /etc/timezone && \
-    printf '[PHP]\ndate.timezone = "%s"\n' ${DEFAULT_TIMEZONE} > $PHP_INI_DIR/conf.d/tzone.ini && \
-    printf '[CUSTOM]\nmemory_limit = "%s"\n' ${PHP_MEMORY_LIMIT} >> $PHP_INI_DIR/conf.d/custom.ini && \
-    printf '\npost_max_size = %s\n' ${PHP_UPLOAD_MAX_FILESIZE} >> $PHP_INI_DIR/conf.d/custom.ini && \
-    printf '\nupload_max_filesize = %s\n' ${PHP_UPLOAD_MAX_FILESIZE} >> $PHP_INI_DIR/conf.d/custom.ini && \
-    printf '\nmax_execution_time = %s\n' ${PHP_MAX_EXECUTION_TIME} >> $PHP_INI_DIR/conf.d/custom.ini
-
-RUN echo 'extension=apc.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini
-__RABBIT_MQ__
-
-# Install composer
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php composer-setup.php
-RUN php -r "unlink('composer-setup.php');"
-RUN mv composer.phar /usr/local/bin/composer
-RUN mkdir -p /var/www/.composer
 COPY composer/config.json /var/www/.composer/config.json
-RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/.composer && \
-    chown ${USER_ID}:${GROUP_ID} /var/www
-
-# npm & node
-RUN mkdir -p /var/www/.npm && \
-    chown -R ${USER_ID}:${GROUP_ID} /var/www/.npm && \
-    printf 'Package: *\nPin: origin deb.nodesource.com\nPin-Priority: 600' > /etc/apt/preferences.d/nodejs && \
-    curl -sL https://deb.nodesource.com/setup_${NODE_JS_VERSION} | bash && \
-    apt-get install -y nodejs && \
-    update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10 && \
-    npm install -g __NPM_INSTALL_GLOBAL__
-
-# Yarn package manager
-# bugfix: remove cmdtest to install yarn correctly.
-__YARN__
-
-# Install wkhtmltopdf
-__WKHTMLTOPDF__
-
-__PHP_IONCUBE__
-
-__BLACKFIRE__
-
-RUN apt-get remove --purge -y gnupg1 && apt-get -y --purge autoremove && rm -rf /var/lib/apt/lists/*
+RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/.composer \
+    && chown ${USER_ID}:${GROUP_ID} /var/www \
+    # npm & node
+    && mkdir -p /var/www/.npm \
+    && chown -R ${USER_ID}:${GROUP_ID} /var/www/.npm \
+    && printf 'Package: *\nPin: origin deb.nodesource.com\nPin-Priority: 600' > /etc/apt/preferences.d/nodejs \
+    && curl -sL https://deb.nodesource.com/setup_${NODE_JS_VERSION} | bash \
+    && apt-get install -y nodejs \
+    && update-alternatives --install /usr/bin/node node /usr/bin/nodejs 10 \
+    && npm install -g __NPM_INSTALL_GLOBAL__ \
+    # Yarn package manager
+    # bugfix: remove cmdtest to install yarn correctly.
+    __YARN__ \
+    # Install wkhtmltopdf
+    __WKHTMLTOPDF__ \
+    __PHP_IONCUBE__ \
+    __BLACKFIRE__ \
+    && apt-get remove --purge -y gnupg1 \
+    && apt-get -y --purge autoremove \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy xdebug and php config.
 COPY conf.d/* /usr/local/etc/php/conf.d/
