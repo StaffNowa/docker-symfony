@@ -49,7 +49,6 @@ services:
         XDEBUG_REMOTE_CONNECT_BACK: ${XDEBUG_REMOTE_CONNECT_BACK}
     volumes:
       - ${PROJECT_PATH}:/var/www/project:cached
-      - ${SYMFONY_LOG_PATH}:/var/www/project/var/logs:cached
       - ${COMPOSER_PATH}/cache:/var/www/.composer/cache:cached
       - ${SSH_KEY_PATH}/id_rsa:/var/www/.ssh/id_rsa
       - ${SSH_KEY_PATH}/id_rsa.pub:/var/www/.ssh/id_rsa.pub

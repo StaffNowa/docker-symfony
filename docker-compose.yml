@@ -49,7 +49,6 @@ services:
         XDEBUG_REMOTE_CONNECT_BACK: ${XDEBUG_REMOTE_CONNECT_BACK}
     volumes:
       - ${PROJECT_PATH}:/var/www/project:cached
-      - ${SYMFONY_LOG_PATH}:/var/www/project/var/logs:cached
       - ${COMPOSER_PATH}/cache:/var/www/.composer/cache:cached
       - ${SSH_KEY_PATH}/id_rsa:/var/www/.ssh/id_rsa
       - ${SSH_KEY_PATH}/id_rsa.pub:/var/www/.ssh/id_rsa.pub
@@ -75,7 +74,7 @@ services:
       - ${MYSQL_DUMP_PATH}:/tmp/db
       - ${USER_CONFIG_PATH}/.my.cnf:/root/.my.cnf:ro
       - ./scripts/mysql_dump.sh:/tmp/db/mysql_dump.sh:ro
-#      - ./config/mysql/d4d.cnf:/etc/mysql/mysql.conf.d/d4d.cnf:ro
+      - ./config/mysql/d4d.cnf:/etc/mysql/mysql.conf.d/d4d.cnf:ro
     command: ['--character-set-server=${MYSQL_CHARACTER_SET_SERVER}', '--collation-server=${MYSQL_COLLATION_SERVER}', '--default-authentication-plugin=mysql_native_password']
 
   mailhog:
