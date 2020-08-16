@@ -15,4 +15,8 @@
       - ${USER_CONFIG_PATH}/.my.cnf:/root/.my.cnf:ro
       - ./scripts/mysql_dump.sh:/tmp/db/mysql_dump.sh:ro
       - ./config/mysql/d4d.cnf:/etc/mysql/mysql.conf.d/d4d.cnf:ro
-    command: ['--character-set-server=${MYSQL_CHARACTER_SET_SERVER}', '--collation-server=${MYSQL_COLLATION_SERVER}', '--default-authentication-plugin=mysql_native_password']
+    command: [
+      '--character-set-server=${MYSQL_CHARACTER_SET_SERVER}',
+      '--collation-server=${MYSQL_COLLATION_SERVER}',
+      '--default-authentication-plugin=mysql_native_password'
+    ]
