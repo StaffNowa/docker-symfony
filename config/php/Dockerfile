@@ -25,18 +25,16 @@ RUN apt-get update && \
     gnupg1 openssl git unzip libzip-dev nano libpng-dev libmagickwand-dev curl xauth xvfb openssh-client less inkscape cron exiftool libicu-dev libmcrypt-dev
 
 # Install PHP extensions. Type docker-php-ext-install to see available extensions
-RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-configure intl && docker-php-ext-install -j$(nproc) pdo pdo_mysql opcache zip gd mysqli exif bcmath calendar intl soap
-
-RUN pecl install imagick apcu apcu_bc mcrypt && docker-php-ext-enable imagick mysqli calendar exif bcmath apcu mcrypt
-
-RUN ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEFAULT_TIMEZONE} > /etc/timezone \
+RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && docker-php-ext-configure intl && docker-php-ext-install -j$(nproc) pdo pdo_mysql opcache zip gd mysqli exif bcmath calendar intl soap \
+    && pecl install imagick apcu apcu_bc mcrypt && docker-php-ext-enable imagick mysqli calendar exif bcmath apcu mcrypt \
+    && ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEFAULT_TIMEZONE} > /etc/timezone \
     && printf '[PHP]\ndate.timezone = "%s"\n' ${DEFAULT_TIMEZONE} > $PHP_INI_DIR/conf.d/tzone.ini \
     && printf '[CUSTOM]\nmemory_limit = "%s"\n' ${PHP_MEMORY_LIMIT} >> $PHP_INI_DIR/conf.d/custom.ini \
     && printf '\npost_max_size = %s\n' ${PHP_UPLOAD_MAX_FILESIZE} >> $PHP_INI_DIR/conf.d/custom.ini \
     && printf '\nupload_max_filesize = %s\n' ${PHP_UPLOAD_MAX_FILESIZE} >> $PHP_INI_DIR/conf.d/custom.ini \
     && printf '\nmax_execution_time = %s\n' ${PHP_MAX_EXECUTION_TIME} >> $PHP_INI_DIR/conf.d/custom.ini \
     && echo 'extension=apc.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini \
-    &&  \
+     \
     # Install composer
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php \
@@ -69,14 +67,13 @@ RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/.composer \
 COPY conf.d/* /usr/local/etc/php/conf.d/
 
 # Map user id from host user when it's provided
-RUN if [ ! -z ${USER_ID} ] && [ ${USER_ID} -ne 0 ]; then usermod -u ${USER_ID} www-data; fi
-RUN if [ ! -z ${GROUP_ID} ] && [ ${GROUP_ID} -ne 0 ]; then groupmod -g ${GROUP_ID} www-data; fi
-
-RUN echo 'alias sf="php bin/console"' >> /var/www/.bashrc && \
-    echo 'alias sf2="php app/console"' >> /var/www/.bashrc && \
-    echo 'alias sf3="php bin/console"' >> /var/www/.bashrc && \
-    echo 'alias sf4="php bin/console"' >> /var/www/.bashrc && \
-    echo 'alias sf5="php bin/console"' >> /var/www.bashrc
+RUN if [ ! -z ${USER_ID} ] && [ ${USER_ID} -ne 0 ]; then usermod -u ${USER_ID} www-data; fi \
+    && if [ ! -z ${GROUP_ID} ] && [ ${GROUP_ID} -ne 0 ]; then groupmod -g ${GROUP_ID} www-data; fi \
+    && echo 'alias sf="php bin/console"' >> /var/www/.bashrc \
+    && echo 'alias sf2="php app/console"' >> /var/www/.bashrc \
+    && echo 'alias sf3="php bin/console"' >> /var/www/.bashrc \
+    && echo 'alias sf4="php bin/console"' >> /var/www/.bashrc \
+    && echo 'alias sf5="php bin/console"' >> /var/www.bashrc
 
 # set default user and working directory
 USER ${USER_ID}

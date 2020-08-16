@@ -51,7 +51,7 @@ fi
 if [ "${RABBITMQ}" = "yes" ]; then
     PACKAGE_LIST+=('librabbitmq-dev' 'librabbitmq4')
     PECL_INSTALL+=('amqp')
-    sed -i 's#__RABBIT_MQ__#'"RUN echo 'extension=amqp.so' >> \$PHP_INI_DIR/conf.d/docker-php-ext-amqp.ini"'#g' config/php/Dockerfile.tmp
+    sed -i 's#__RABBIT_MQ__#'"\&\& echo 'extension=amqp.so' >> \$PHP_INI_DIR/conf.d/docker-php-ext-amqp.ini"'#g' config/php/Dockerfile.tmp
 else
     sed -i 's#__RABBIT_MQ__#'""'#g' config/php/Dockerfile.tmp
 fi
@@ -90,25 +90,25 @@ else
 fi
 
 if [ "${IONCUBE}" = "yes" ]; then
-    sed -i 's#__PHP_IONCUBE__#'"RUN curl -fsSL 'https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz' -o ioncube.tar.gz \&\& mkdir -p /tmp/ioncube \&\& tar -xvvzf ioncube.tar.gz \&\& mv ioncube/ioncube_loader_lin_${PHP_VERSION}.so \`php-config --extension-dir\` \&\& rm -Rf ioncube.tar.gz ioncube \&\& docker-php-ext-enable ioncube_loader_lin_${PHP_VERSION}"'#g' config/php/Dockerfile.tmp
+    sed -i 's#__PHP_IONCUBE__#'"\&\& curl -fsSL 'https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz' -o ioncube.tar.gz \&\& mkdir -p /tmp/ioncube \&\& tar -xvvzf ioncube.tar.gz \&\& mv ioncube/ioncube_loader_lin_${PHP_VERSION}.so \`php-config --extension-dir\` \&\& rm -Rf ioncube.tar.gz ioncube \&\& docker-php-ext-enable ioncube_loader_lin_${PHP_VERSION}"'#g' config/php/Dockerfile.tmp
 else
     sed -i 's#__PHP_IONCUBE__#'""'#g' config/php/Dockerfile.tmp
 fi
 
 if [ "${YARN}" = "yes" ]; then
-    sed -i 's#__YARN__#'"RUN apt-get remove -y cmdtest \&\& curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \&\& echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | tee /etc/apt/sources.list.d/yarn.list \&\& apt-get update \&\& apt-get install -y yarn"'#g' config/php/Dockerfile.tmp
+    sed -i 's#__YARN__#'"\&\& apt-get remove -y cmdtest \&\& curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \&\& echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | tee /etc/apt/sources.list.d/yarn.list \&\& apt-get update \&\& apt-get install -y yarn"'#g' config/php/Dockerfile.tmp
 else
     sed -i 's#__YARN__#'""'#g' config/php/Dockerfile.tmp
 fi
 
 if [ "${WKHTMLTOPDF}" = "yes" ]; then
-    sed -i 's#__WKHTMLTOPDF__#'"RUN curl -o wkhtmltox-0.12.3_linux-generic-amd64.tar.xz -sL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.3/wkhtmltox-0.12.3_linux-generic-amd64.tar.xz  \&\& echo '9066ab2c7b2035c6eaa043d31aeb7260191e6c88 wkhtmltox-0.12.3_linux-generic-amd64.tar.xz' | sha1sum -c - \&\& tar -xvf wkhtmltox-0.12.3_linux-generic-amd64.tar.xz \&\& cp wkhtmltox/lib/* /usr/lib/ \&\& cp wkhtmltox/bin/* /usr/bin/ \&\& cp -r wkhtmltox/share/man/man1 /usr/share/man/ \&\& chmod a+x /usr/bin/wkhtmltopdf \&\& chmod a+x /usr/bin/wkhtmltoimage"'#g' config/php/Dockerfile.tmp
+    sed -i 's#__WKHTMLTOPDF__#'"\&\& curl -o wkhtmltox-0.12.3_linux-generic-amd64.tar.xz -sL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.3/wkhtmltox-0.12.3_linux-generic-amd64.tar.xz  \&\& echo '9066ab2c7b2035c6eaa043d31aeb7260191e6c88 wkhtmltox-0.12.3_linux-generic-amd64.tar.xz' | sha1sum -c - \&\& tar -xvf wkhtmltox-0.12.3_linux-generic-amd64.tar.xz \&\& cp wkhtmltox/lib/* /usr/lib/ \&\& cp wkhtmltox/bin/* /usr/bin/ \&\& cp -r wkhtmltox/share/man/man1 /usr/share/man/ \&\& chmod a+x /usr/bin/wkhtmltopdf \&\& chmod a+x /usr/bin/wkhtmltoimage"'#g' config/php/Dockerfile.tmp
 else
     sed -i 's#__WKHTMLTOPDF__#'""'#g' config/php/Dockerfile.tmp
 fi
 
 if [ "${BLACKFIRE}" = "yes" ]; then
-    sed -i 's#__BLACKFIRE__#'"RUN curl -sS https://packages.blackfire.io/gpg.key | apt-key add - \&\& echo \"deb http://packages.blackfire.io/debian any main\" | tee /etc/apt/sources.list.d/blackfire.list \&\& apt-get update \&\& apt-get install -y blackfire-agent blackfire-php"'#g' config/php/Dockerfile.tmp
+    sed -i 's#__BLACKFIRE__#'"\&\& curl -sS https://packages.blackfire.io/gpg.key | apt-key add - \&\& echo \"deb http://packages.blackfire.io/debian any main\" | tee /etc/apt/sources.list.d/blackfire.list \&\& apt-get update \&\& apt-get install -y blackfire-agent blackfire-php"'#g' config/php/Dockerfile.tmp
 else
       sed -i 's#__BLACKFIRE__#'""'#g' config/php/Dockerfile.tmp
 fi
