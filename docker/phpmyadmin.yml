@@ -11,6 +11,6 @@
       - PMA_HOST=mysql
       - TZ=${DEFAULT_TIMEZONE}
     ports:
-      - ${PORT_PHPMYADMIN}:80
+      - ${PORT_PMA}:80
     volumes:
       - ./config/phpmyadmin/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php

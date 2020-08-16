@@ -331,7 +331,7 @@ doBuild() {
         cat "${WORK_DIR}/docker/mailhog.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi
 
-    if [ "${PHPMYADMIN}" = "yes" ]; then
+    if [ "${PMA}" = "yes" ]; then
         cat "${WORK_DIR}/docker/phpmyadmin.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi
 
@@ -694,8 +694,8 @@ updateEnv() {
         printf 'CLEAN_SF_logs=no\n' >> ${WORK_DIR}/.env
 
         printf 'RABBITMQ_VERSION=3.8.3\n' >> ${WORK_DIR}/.env
-        printf 'RABBITMQ_TCP_LISTENER_PORT=5673\n' >> ${WORK_DIR}/.env
-        printf 'RABBITMQ_MANAGEMENT_PORT=15672\n' >> ${WORK_DIR}/.env
+        printf 'PORT_RABBITMQ_TCP_LISTENER=5673\n' >> ${WORK_DIR}/.env
+        printf 'PORT_RABBITMQ_MANAGEMENT=15672\n' >> ${WORK_DIR}/.env
 
         sed -i 's#D4D_VERSION=1.0.0#'"D4D_VERSION=${DOCKER_SCRIPT_VER}"'#g' ${WORK_DIR}/.env
     fi
@@ -707,8 +707,8 @@ updateEnv() {
         printf 'REDIS=yes\n' >> ${WORK_DIR}/.env
         printf 'RABBITMQ=no\n' >> ${WORK_DIR}/.env
         printf 'RABBITMQ_VERSION=3.8.3\n' >> ${WORK_DIR}/.env
-        printf 'RABBITMQ_TCP_LISTENER_PORT=5673\n' >> ${WORK_DIR}/.env
-        printf 'RABBITMQ_MANAGEMENT_PORT=15672\n' >> ${WORK_DIR}/.env
+        printf 'PORT_RABBITMQ_TCP_LISTENER=5673\n' >> ${WORK_DIR}/.env
+        printf 'PORT_RABBITMQ_MANAGEMENT=15672\n' >> ${WORK_DIR}/.env
 
         sed -i 's#D4D_VERSION=1.0.7#'"D4D_VERSION=${DOCKER_SCRIPT_VER}"'#g' ${WORK_DIR}/.env
     fi
@@ -721,12 +721,12 @@ updateEnv() {
 
         printf 'ELASTICSEARCH=no\n' >> ${WORK_DIR}/.env
         printf 'ELASTICSEARCH_VERSION=6.8.3\n' >> ${WORK_DIR}/.env
-        printf 'ELASTICSEARCH_PORT=9200\n' >> ${WORK_DIR}/.env
-        printf 'ELASTICSEARCH_HEAD_PORT=9100\n' >> ${WORK_DIR}/.env
-        printf 'ELASTICSEARCH_KIBANA_PORT=5601\n' >> ${WORK_DIR}/.env
+        printf 'PORT_ELASTICSEARCH=9200\n' >> ${WORK_DIR}/.env
+        printf 'PORT_ELASTICSEARCH_HEAD=9100\n' >> ${WORK_DIR}/.env
+        printf 'PORT_ELASTICSEARCH_KIBANA=5601\n' >> ${WORK_DIR}/.env
 
         printf 'NGROK=no\n' >> ${WORK_DIR}/.env
-        printf 'NGROK_PORT=4551\n' >> ${WORK_DIR}/.env
+        printf 'PORT_NGROK=4551\n' >> ${WORK_DIR}/.env
 
         sed -i 's#D4D_VERSION=1.0.9#'"D4D_VERSION=${DOCKER_SCRIPT_VER}"'#g' ${WORK_DIR}/.env
     fi
