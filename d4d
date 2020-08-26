@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOCKER_SCRIPT_VER=1.0.10
+DOCKER_SCRIPT_VER=1.0.11
 
 OS=`uname`
 WORK_DIR=`pwd`
@@ -728,6 +728,28 @@ updateEnv() {
 
         sed -i 's#D4D_VERSION=1.0.9#'"D4D_VERSION=${DOCKER_SCRIPT_VER}"'#g' ${WORK_DIR}/.env
     fi
+
+    if [ "${D4D_VERSION}" = "1.0.10" ]; then
+            cp ${ENV} ${WORK_DIR}/.env.tmp
+
+            printf '\n' >> ${WORK_DIR}/.env
+            printf 'MARIADB_VERSION=10.5\n' >> ${WORK_DIR}/.env
+            printf 'MYSQL_INST=mysql\n' >> ${WORK_DIR}/.env
+            printf 'MAILHOG=yes\n' >> ${WORK_DIR}/.env
+            printf 'PMA=yes\n' >> ${WORK_DIR}/.env
+
+            sed -i 's#SYMFONY_LOG_PATH=./var/logs/symfony#'""'#g' ${WORK_DIR}/.env
+            sed -i 's#PORT_PHPMYADMIN#'"PORT_PMA"'#g' ${WORK_DIR}/.env
+            sed -i 's#RABBITMQ_TCP_LISTENER_PORT#'"PORT_RABBITMQ_TCP_LISTENER"'#g' ${WORK_DIR}/.env
+            sed -i 's#RABBITMQ_MANAGEMENT_PORT#'"PORT_RABBITMQ_MANAGEMENT"'#g' ${WORK_DIR}/.env
+            sed -i 's#ELASTICSEARCH_PORT#'"PORT_ELASTICSEARCH"'#g' ${WORK_DIR}/.env
+            sed -i 's#ELASTICSEARCH_HEAD_PORT#'"PORT_ELASTICSEARCH_HEAD"'#g' ${WORK_DIR}/.env
+            sed -i 's#ELASTICSEARCH_KIBANA_PORT#'"PORT_ELASTICSEARCH_KIBANA"'#g' ${WORK_DIR}/.env
+            sed -i 's#NGROK_PORT#'"PORT_NGROK"'#g' ${WORK_DIR}/.env
+            sed -i 's#REDIS=yes#'"REDIS=no"'#g' ${WORK_DIR}/.env
+
+            sed -i 's#D4D_VERSION=1.0.10#'"D4D_VERSION=${DOCKER_SCRIPT_VER}"'#g' ${WORK_DIR}/.env
+        fi
 
     echo $D4D_VERSION
 }
