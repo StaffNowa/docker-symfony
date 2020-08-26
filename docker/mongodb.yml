@@ -1,0 +1,17 @@
+
+  mongodb:
+    image: mongo:${MONGODB_VERSION}
+    volumes:
+        - ./config/mongodb/mongod.conf:/etc/mongod.conf
+        - ./.user/mongodb/initdb.d/:/docker-entrypoint-initdb.d/
+        - ${MONGODB_DATA_PATH}:/var/lib/mongodb
+        - ${MONGODB_LOG_PATH}:/var/log/mongodb
+    env_file:
+        - .env
+    environment:
+        MONGO_INITDB_ROOT_USERNAME: ${MONGODB_ROOT_USERNAME}
+        MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD}
+        MONGO_INITDB_DATABASE: ${MONGODB_DATABASE}
+    ports:
+        - "27017:27017"
+    command: ["-f", "/etc/mongod.conf"]
