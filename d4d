@@ -258,6 +258,7 @@ doChecks() {
     sed -i 's#GROUP_ID=.*#'"GROUP_ID=${TMP_USER_ID}"'#g' ${WORK_DIR}/.env
     sed -i 's#MYSQL_ROOT_PASSWORD=root#'"MYSQL_ROOT_PASSWORD=`pwgen -s 20 1`"'#g' ${WORK_DIR}/.env
     sed -i 's#MYSQL_PASSWORD=db_password#'"MYSQL_PASSWORD=`pwgen -s 20 1`"'#g' ${WORK_DIR}/.env
+    sed -i 's#MONGODB_ROOT_PASSWORD=root#'"MONGODB_ROOT_PASSWORD=`pwgen -s 20 1`"'#g' ${WORK_DIR}/.env
     sed -i 's#MONGODB_PASSWORD=db_password#'"MONGODB_PASSWORD=`pwgen -s 20 1`"'#g' ${WORK_DIR}/.env
 
     # Load .env file into the current shell script
