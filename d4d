@@ -747,7 +747,6 @@ updateEnv() {
             printf 'PMA=yes\n' >> ${WORK_DIR}/.env
             printf 'MONGODB=no' >> ${WORK_DIR}/.env
             printf 'MONGODB_VERSION=4.4.0' >> ${WORK_DIR}/.env
-            printf 'MONGODB_URL=mongodb://mongodb:27017' >> ${WORK_DIR}/.env
             printf 'MONGODB_ROOT_USERNAME=root' >> ${WORK_DIR}/.env
             printf 'MONGODB_ROOT_PASSWORD=root' >> ${WORK_DIR}/.env
             printf 'MONGODB_DATABASE=db_name' >> ${WORK_DIR}/.env
