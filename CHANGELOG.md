@@ -28,3 +28,8 @@ CHANGELOG for "Docker for Symfony"
     * FEATURE   [SUPERVISOR]    Added ability to switch on / off supervisor in the file .env
     * FEATURE   [ES]            Added ability to use elastic search.
     * FEATURE   [NGROK]         Added ability to use remote access.
+
+* 1.0.11 (2020-08-26)
+    * FEATURE   [D4D]           Layer optimization.
+    * FEATURE   [D4D]           Added ability select MySQL vs MariaDB.
+    * FEATURE   [MONGODB]       Added ability to use MongoDB.

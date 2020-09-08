@@ -258,6 +258,8 @@ doChecks() {
     sed -i 's#GROUP_ID=.*#'"GROUP_ID=${TMP_USER_ID}"'#g' ${WORK_DIR}/.env
     sed -i 's#MYSQL_ROOT_PASSWORD=root#'"MYSQL_ROOT_PASSWORD=`pwgen -s 20 1`"'#g' ${WORK_DIR}/.env
     sed -i 's#MYSQL_PASSWORD=db_password#'"MYSQL_PASSWORD=`pwgen -s 20 1`"'#g' ${WORK_DIR}/.env
+    sed -i 's#MONGODB_ROOT_PASSWORD=root#'"MONGODB_ROOT_PASSWORD=`pwgen -s 20 1`"'#g' ${WORK_DIR}/.env
+    sed -i 's#MONGODB_PASSWORD=db_password#'"MONGODB_PASSWORD=`pwgen -s 20 1`"'#g' ${WORK_DIR}/.env
 
     # Load .env file into the current shell script
     source ${WORK_DIR}/.env
@@ -284,6 +286,8 @@ doChecks() {
     mkdir -p ${NGINX_LOG_PATH}
     mkdir -p ${MYSQL_DATA_PATH}
     mkdir -p ${USER_CONFIG_PATH}
+    mkdir -p -m 777 ${MONGODB_LOG_PATH}
+    mkdir -p -m 777 ${MONGODB_DATA_PATH}
 
     # Create a file if it does not exist
     touch ${USER_CONFIG_PATH}/.bash_history
@@ -351,6 +355,10 @@ doBuild() {
 
     if [ "${NGROK}" = "yes" ]; then
       cat "${WORK_DIR}/docker/ngrok.yml" >> "${WORK_DIR}/docker-compose.yml"
+    fi
+
+    if [ "${MONGODB}" = "yes" ]; then
+      cat "${WORK_DIR}/docker/mongodb.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi
 
     COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build --parallel
@@ -737,6 +745,16 @@ updateEnv() {
             printf 'MYSQL_INST=mysql\n' >> ${WORK_DIR}/.env
             printf 'MAILHOG=yes\n' >> ${WORK_DIR}/.env
             printf 'PMA=yes\n' >> ${WORK_DIR}/.env
+            printf 'MONGODB=no' >> ${WORK_DIR}/.env
+            printf 'MONGODB_VERSION=4.4.0' >> ${WORK_DIR}/.env
+            printf 'MONGODB_ROOT_USERNAME=root' >> ${WORK_DIR}/.env
+            printf 'MONGODB_ROOT_PASSWORD=root' >> ${WORK_DIR}/.env
+            printf 'MONGODB_DATABASE=db_name' >> ${WORK_DIR}/.env
+            printf 'MONGODB_USERNAME=db_user' >> ${WORK_DIR}/.env
+            printf 'MONGODB_PASSWORD=db_password' >> ${WORK_DIR}/.env
+            printf 'MONGODB_REPLICA_SET_NAME=rs0' >> ${WORK_DIR}/.env
+            printf 'MONGODB_LOG_PATH=./var/log/mongodb/' >> ${WORK_DIR}/.env
+            printf 'MONGODB_DATA_PATH=./var/lib/mongodb' >> ${WORK_DIR}/.env
 
             sed -i 's#SYMFONY_LOG_PATH=./var/logs/symfony#'""'#g' ${WORK_DIR}/.env
             sed -i 's#PORT_PHPMYADMIN#'"PORT_PMA"'#g' ${WORK_DIR}/.env
