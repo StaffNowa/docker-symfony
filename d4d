@@ -605,6 +605,20 @@ start() {
     echo "Project URL: http://${PROJECT_DOMAIN_1}"
     echo "phpMyAdmin: http://${PROJECT_DOMAIN_1}:8080"
     echo "MailHog: http://${PROJECT_DOMAIN_1}:8025"
+
+    if [ "${RABBITMQ}" = "yes" ] || [ "${ELASTICSEARCH}" = "yes" ]; then
+        echo ""
+        echo "Extra features:"
+    fi
+
+    if [ "${RABBITMQ}" = "yes" ]; then
+        echo "RabbitMQ: http://${PROJECT_DOMAIN_1}:15672"
+    fi
+
+    if [ "${ELASTICSEARCH}" = "yes" ]; then
+        echo "Elasticsearch: http://${PROJECT_DOMAIN_1}:9100"
+    fi
+
     echo ""
     echo "Thank you for using Docker for Symfony. Should you have any questions, don't hesitate to contact us at support@d4d.lt"
 }
