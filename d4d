@@ -318,6 +318,12 @@ doChecks() {
 
      cp config/phpmyadmin/config.user.inc.php.tmp config/phpmyadmin/config.user.inc.php
      rm config/phpmyadmin/config.user.inc.php.tmp
+
+     if [ "${MKCERT}" = "yes" ]; then
+         if [ ! -f "${WORK_DIR}/config/nginx/ssl/d4d.pem" ] || [ ! -f "${WORK_DIR}/config/nginx/ssl/d4d-key.pem" ]; then
+             ./d4d mkcert ssl
+         fi
+     fi
 }
 
 doBuild() {
@@ -825,6 +831,25 @@ blackfire() {
          if [ "${COMMAND}" = "start" ] || [ "${COMMAND}" == "stop" ] || [ "${COMMAND}" == "restart" ]; then
              docker-compose exec -u root php /etc/init.d/blackfire-agent ${COMMAND}
          fi
+    fi
+}
+
+mkcert() {
+    source ${ENV}
+
+    # $1 command
+    COMMAND=$1
+    if [ "${MKCERT}" = "yes" ]; then
+        if [ "${COMMAND}" = "install" ]; then
+            echo "Install the local CA in the system trust store."
+
+            ./d4d mkcert ssl
+        fi
+
+        if [ "${COMMAND}" = "ssl" ]; then
+            DOMAINS="${PROJECT_DOMAIN_1} ${PROJECT_DOMAIN_2} ${PROJECT_DOMAIN_3} ${PROJECT_DOMAIN_4}"
+            /usr/local/bin/mkcert -cert-file ${WORK_DIR}/config/nginx/ssl/d4d.pem -key-file ${WORK_DIR}/config/nginx/ssl/d4d-key.pem ${DOMAINS}
+        fi
     fi
 }
 
