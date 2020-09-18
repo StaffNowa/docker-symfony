@@ -540,6 +540,9 @@ doInstall() {
 
     # Install the latest Docker Compose
     doCheckPackage docker-compose
+
+    # Install mkcert
+    doCheckPackage mkcert
 }
 
 doUninstall() {
@@ -553,7 +556,7 @@ doUninstall() {
         exit 1
     fi
 
-		# Remove PWGen
+	# Remove PWGen
     doRemovePackage pwgen
 
     # Remove Docker CE
@@ -564,6 +567,9 @@ doUninstall() {
 
     # Remove Docker Compose
     doRemovePackage docker-compose
+
+    # Remove mkcert
+    doRemovePackage mkcert
 }
 
 doBeforeStart() {
