@@ -468,6 +468,11 @@ doCheckPackage() {
             docker-compose)
                 sudo curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
                 ;;
+
+            mkcert)
+                export VER="v1.4." && wget -O mkcert https://github.com/FiloSottile/mkcert/releases/download/${VER}/mkcert-${VER}-linux-amd64 && chmod +x mkcert && mv mkcert /usr/local/bin
+                ;;
+
             * )
                 if [ ${OS} = "FreeBSD" ]; then
 			              pkg install $1
@@ -501,6 +506,9 @@ doRemovePackage() {
                 ;;
             docker-compose)
                 rm /usr/local/bin/docker-compose
+                ;;
+            mkcert)
+                rm /usr/local/bin/mkcert
                 ;;
             * )
                 if [ ${OS} = "FreeBSD" ]; then
@@ -903,6 +911,8 @@ case "$1" in
     update_env) updateEnv
         ;;
     blackfire) blackfire $2
+        ;;
+    mkcert) mkcert $2
         ;;
     opt_help) allSettings $2
         ;;
