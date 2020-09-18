@@ -481,7 +481,7 @@ doCheckPackage() {
                 ;;
 
             mkcert)
-                export VER="v1.4." && wget -O mkcert https://github.com/FiloSottile/mkcert/releases/download/${VER}/mkcert-${VER}-linux-amd64 && chmod +x mkcert && mv mkcert /usr/local/bin
+                export VER="v1.4.1" && wget -O mkcert https://github.com/FiloSottile/mkcert/releases/download/${VER}/mkcert-${VER}-linux-amd64 && chmod +x mkcert && mv mkcert /usr/local/bin
                 ;;
 
             * )
