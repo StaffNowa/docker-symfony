@@ -297,6 +297,7 @@ doChecks() {
     fi
 
     #
+    ./config/nginx/build
     ./config/php/build
 
     # phpMyAdmin configuration
@@ -319,7 +320,7 @@ doChecks() {
      cp config/phpmyadmin/config.user.inc.php.tmp config/phpmyadmin/config.user.inc.php
      rm config/phpmyadmin/config.user.inc.php.tmp
 
-     if [ "${MKCERT}" = "yes" ]; then
+     if [ "${NGINX_SSL}" = "yes" ]; then
          if [ ! -f "${WORK_DIR}/config/nginx/ssl/d4d.pem" ] || [ ! -f "${WORK_DIR}/config/nginx/ssl/d4d-key.pem" ]; then
              ./d4d mkcert ssl
          fi
@@ -839,7 +840,7 @@ mkcert() {
 
     # $1 command
     COMMAND=$1
-    if [ "${MKCERT}" = "yes" ]; then
+    if [ "${NGINX_SSL}" = "yes" ]; then
         if [ "${COMMAND}" = "install" ]; then
             echo "Install the local CA in the system trust store."
 
