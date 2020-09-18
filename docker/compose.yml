@@ -17,6 +17,7 @@ services:
         PHP_UPLOAD_MAX_FILESIZE: ${PHP_UPLOAD_MAX_FILESIZE}
     ports:
       - ${PORT_NGINX}:80
+      - ${PORT_NGINX_SSL}:443
     networks:
       default:
         aliases:
