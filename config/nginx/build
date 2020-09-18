@@ -14,6 +14,9 @@ source ${WORK_DIR}/.env
 
 cp config/nginx/Dockerfile.build config/nginx/Dockerfile.tmp
 
+mkdir -p config/nginx/ssl
+cp -R user/nginx/ssl/* config/nginx/ssl/
+
 if [ "${NGINX_SSL}" = "yes" ]; then
     sed -i 's#__D4D_PEM__#'"ADD ssl/d4d.pem /etc/nginx/ssl/"'#g' config/nginx/Dockerfile.tmp
     sed -i 's#__D4D_KEY_PEM__#'"ADD ssl/d4d-key.pem /etc/nginx/ssl/"'#g' config/nginx/Dockerfile.tmp

@@ -283,6 +283,7 @@ doChecks() {
     fi
 
     # Ensure all folders exists
+    mkdir -p ${NGINX_SSL_PATH}
     mkdir -p ${NGINX_LOG_PATH}
     mkdir -p ${MYSQL_DATA_PATH}
     mkdir -p ${USER_CONFIG_PATH}
@@ -321,7 +322,7 @@ doChecks() {
      rm config/phpmyadmin/config.user.inc.php.tmp
 
      if [ "${NGINX_SSL}" = "yes" ]; then
-         if [ ! -f "${WORK_DIR}/config/nginx/ssl/d4d.pem" ] || [ ! -f "${WORK_DIR}/config/nginx/ssl/d4d-key.pem" ]; then
+         if [ ! -f "${WORK_DIR}/user/nginx/ssl/d4d.pem" ] || [ ! -f "${WORK_DIR}/user/nginx/ssl/d4d-key.pem" ]; then
              ./d4d mkcert ssl
          fi
      fi
@@ -371,7 +372,7 @@ doBuild() {
     COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build --parallel
 
     # Clears the screen.
-    clear
+    # clear
 }
 
 doBuildNginxConf() {
@@ -479,7 +480,15 @@ doCheckPackage() {
             docker-compose)
                 sudo curl -L "https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
                 ;;
-
+            certutil)
+                if [ ${OS} = "FreeBSD" ]; then
+			        pkg install libnss3-tools
+		        elif [ -e ${DEBIAN_VERSION} ]; then
+			        apt-get install libnss3-tools
+		        else
+			        yum install libnss3-tools
+		        fi
+                ;;
             mkcert)
                 export VER="v1.4.1" && wget -O mkcert https://github.com/FiloSottile/mkcert/releases/download/${VER}/mkcert-${VER}-linux-amd64 && chmod +x mkcert && mv mkcert /usr/local/bin
                 ;;
@@ -505,18 +514,27 @@ doRemovePackage() {
         case "$1" in
             docker)
                 if [ ${OS} = "FreeBSD" ]; then
-			              pkg remove docker-ce docker-ce-cli
-		            elif [ -e ${DEBIAN_VERSION} ]; then
-			              apt-get remove docker-ce docker-ce-cli
-		            else
-			              yum remove docker-ce docker-ce-cli
-		            fi
+			        pkg remove docker-ce docker-ce-cli
+		        elif [ -e ${DEBIAN_VERSION} ]; then
+			        apt-get remove docker-ce docker-ce-cli
+		        else
+			        yum remove docker-ce docker-ce-cli
+		        fi
                 ;;
             docker-machine)
                 rm /usr/local/bin/docker-machine
                 ;;
             docker-compose)
                 rm /usr/local/bin/docker-compose
+                ;;
+            certutil)
+                if [ ${OS} = "FreeBSD" ]; then
+                    pkg remove libnss3-tools
+            	elif [ -e ${DEBIAN_VERSION} ]; then
+            	    apt-get remove libnss3-tools
+            	else
+            	    yum remove libnss3-tools
+                fi
                 ;;
             mkcert)
                 rm /usr/local/bin/mkcert
@@ -560,6 +578,9 @@ doInstall() {
     # Install the latest Docker Compose
     doCheckPackage docker-compose
 
+    # Install certutil
+    doCheckPackage certutil
+
     # Install mkcert
     doCheckPackage mkcert
 }
@@ -586,6 +607,9 @@ doUninstall() {
 
     # Remove Docker Compose
     doRemovePackage docker-compose
+
+    # Remove certutil
+    doRemovePackage certutil
 
     # Remove mkcert
     doRemovePackage mkcert
@@ -843,13 +867,14 @@ mkcert() {
     if [ "${NGINX_SSL}" = "yes" ]; then
         if [ "${COMMAND}" = "install" ]; then
             echo "Install the local CA in the system trust store."
+            /usr/local/bin/mkcert -install
 
             ./d4d mkcert ssl
         fi
 
         if [ "${COMMAND}" = "ssl" ]; then
             DOMAINS="${PROJECT_DOMAIN_1} ${PROJECT_DOMAIN_2} ${PROJECT_DOMAIN_3} ${PROJECT_DOMAIN_4}"
-            /usr/local/bin/mkcert -cert-file ${WORK_DIR}/config/nginx/ssl/d4d.pem -key-file ${WORK_DIR}/config/nginx/ssl/d4d-key.pem ${DOMAINS}
+            /usr/local/bin/mkcert -cert-file ${WORK_DIR}/user/nginx/ssl/d4d.pem -key-file ${WORK_DIR}/user/nginx/ssl/d4d-key.pem ${DOMAINS}
         fi
     fi
 }

@@ -8,6 +8,7 @@
 
 /config/mysql/d4d.cnf
 /config/nginx/d4d/*.conf
+/config/nginx/ssl/*.pem
 /config/nginx/project.conf
 
 /config/php/conf.d/xdebug.ini
