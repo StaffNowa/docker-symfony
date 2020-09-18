@@ -633,7 +633,13 @@ restart() {
 
 dockerComposeExec() {
     # $1 command
-    docker-compose exec $1 bash
+    # $2 user
+
+    if [ "${1}" == "php" ] && [ "${2}" != "" ]; then
+        docker-compose exec -u $2 $1 bash
+    else
+        docker-compose exec $1 bash
+    fi
 }
 
 doMysqlDump() {
@@ -878,7 +884,7 @@ case "$1" in
         ;;
     restart) restart
         ;;
-    exec) dockerComposeExec $2
+    exec) dockerComposeExec $2 $3
         ;;
     prune) doPrune
         ;;
