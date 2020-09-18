@@ -49,6 +49,9 @@ ADD d4d/sf.conf /etc/nginx/d4d/
 ADD d4d/pwa.conf /etc/nginx/d4d/
 ADD d4d/wp.conf /etc/nginx/d4d/
 
+ADD ssl/d4d.pem /etc/nginx/ssl/
+ADD ssl/d4d-key.pem /etc/nginx/ssl/
+
 # optional commands to run at shell inside container at build time
 # this one adds package repo for nginx from nginx.org and installs it
 # forward request and error logs to docker log collector

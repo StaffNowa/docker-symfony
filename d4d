@@ -370,7 +370,11 @@ doBuild() {
 doBuildNginxConf() {
     source ${WORK_DIR}/.env
 
-    cp config/nginx/project.conf.default config/nginx/project.conf.tmp
+    if [ "${NGINX_SSL}" = "yes" ]; then
+        cp config/nginx/project-ssl.conf.default config/nginx/project.conf.tmp
+    else
+        cp config/nginx/project.conf.default config/nginx/project.conf.tmp
+    fi
 
     if [ "${PROJECT_TYPE}" = "SF" ]; then
         sed -i 's#__INCLUDE__#'"/etc/nginx/d4d/sf.conf"'#g' config/nginx/project.conf.tmp
