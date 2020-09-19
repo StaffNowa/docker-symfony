@@ -1,10 +1,11 @@
 
   ngrok:
-    image: shkoliar/ngrok:latest
+    image: wernight/ngrok:latest
     ports:
-      - ${PORT_NGROK}:4551
+      - ${PORT_NGROK}:${PORT_NGROK}
     links:
       - nginx
     environment:
-      - DOMAIN=nginx
-      - PORT=80
+      - NGROK_LOOK_DOMAIN=${PROJECT_DOMAIN_1}
+      - NGROK_PORT=${PORT_NGINX}
+      - NGROK_AUTH=${NGROK_AUTH}
