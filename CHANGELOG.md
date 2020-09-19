@@ -33,3 +33,7 @@ CHANGELOG for "Docker for Symfony"
     * FEATURE   [D4D]           Layer optimization.
     * FEATURE   [D4D]           Added ability select MySQL vs MariaDB.
     * FEATURE   [MONGODB]       Added ability to use MongoDB.
+    
+* 1.0.12 ()
+    * FEATURE   [MKCERT]        Added the ability to have local developer SSL certificate.
+    * FEATURE   [NGROK]         Added the ability to have ngrok auth token in the file .env
