@@ -35,6 +35,7 @@ RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --
     && printf '\nmax_execution_time = %s\n' ${PHP_MAX_EXECUTION_TIME} >> $PHP_INI_DIR/conf.d/custom.ini \
     && echo 'extension=apc.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini \
     __RABBIT_MQ__ \
+    __MONGODB__ \
     # Install composer
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php \
