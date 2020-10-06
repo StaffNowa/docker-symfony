@@ -4,7 +4,9 @@
 /var
 /.composer/cache
 /db
-/user
+/user/nginx/*
+/user/.bash_history
+/user/.my.cnf
 
 /config/mysql/d4d.cnf
 /config/nginx/d4d/*.conf
