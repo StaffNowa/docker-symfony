@@ -53,12 +53,14 @@ if [ "${RABBITMQ}" = "yes" ]; then
     PECL_INSTALL+=('amqp')
     sed -i 's#__RABBIT_MQ__#'"\&\& echo 'extension=amqp.so' >> \$PHP_INI_DIR/conf.d/docker-php-ext-amqp.ini"'#g' config/php/Dockerfile.tmp
 else
-    sed -i 's#__RABBIT_MQ__#'""'#g' config/php/Dockerfile.tmp
+    sed -i 's#__RABBIT_MQ__\ \\#'""'#g' config/php/Dockerfile.tmp
 fi
 
 if [ "${MONGODB}" = "yes" ]; then
     PECL_INSTALL+=('mongodb')
     sed -i 's#__MONGODB__#'"\&\& echo 'extension=mongodb.so' >> \$PHP_INI_DIR/conf.d/docker-php-ext-mongodb.ini"'#g' config/php/Dockerfile.tmp
+else
+    sed -i 's#__MONGODB__#'""'#g' config/php/Dockerfile.tmp
 fi
 
 if [ "${SUPERVISOR}" = "yes" ]; then
