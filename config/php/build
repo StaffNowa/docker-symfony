@@ -69,12 +69,6 @@ fi
 
 NPM_INSTALL_GLOBAL=('grunt-cli' 'yargs' 'async' 'sass' 'gulp' 'requirejs' 'pm2' 'uglify-js')
 
-sed -i 's#__PACKAGE_LIST__#'"${PACKAGE_LIST[*]}"'#g' config/php/Dockerfile.tmp
-sed -i 's#__PHP_EXT_INSTALL__#'"${PHP_EXT_INSTALL[*]}"'#g' config/php/Dockerfile.tmp
-sed -i 's#__PHP_EXT_ENABLE__#'"${PHP_EXT_ENABLE[*]}"'#g' config/php/Dockerfile.tmp
-sed -i 's#__PECL_INSTALL__#'"${PECL_INSTALL[*]}"'#g' config/php/Dockerfile.tmp
-sed -i 's#__NPM_INSTALL_GLOBAL__#'"${NPM_INSTALL_GLOBAL[*]}"'#g' config/php/Dockerfile.tmp
-
 if [ "${XDEBUG}" = "yes" ]; then
     if [ "${PHP_VERSION}" != "5.6" ] && [ "${PHP_VERSION}" != "7.0" ]; then
         PHP_EXT_ENABLE+=('xdebug')
@@ -119,6 +113,12 @@ if [ "${BLACKFIRE}" = "yes" ]; then
 else
       sed -i 's#__BLACKFIRE__#'""'#g' config/php/Dockerfile.tmp
 fi
+
+sed -i 's#__PACKAGE_LIST__#'"${PACKAGE_LIST[*]}"'#g' config/php/Dockerfile.tmp
+sed -i 's#__PHP_EXT_INSTALL__#'"${PHP_EXT_INSTALL[*]}"'#g' config/php/Dockerfile.tmp
+sed -i 's#__PHP_EXT_ENABLE__#'"${PHP_EXT_ENABLE[*]}"'#g' config/php/Dockerfile.tmp
+sed -i 's#__PECL_INSTALL__#'"${PECL_INSTALL[*]}"'#g' config/php/Dockerfile.tmp
+sed -i 's#__NPM_INSTALL_GLOBAL__#'"${NPM_INSTALL_GLOBAL[*]}"'#g' config/php/Dockerfile.tmp
 
 # Remove duplicate
 sed -i '$!N; /^\(.*\)\n\1$/!P; D' config/php/Dockerfile.tmp
