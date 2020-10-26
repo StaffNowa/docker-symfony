@@ -18,6 +18,8 @@ ARG XDEBUG_REMOTE_ENABLE
 ARG XDEBUG_REMOTE_HOST
 ARG XDEBUG_REMOTE_CONNECT_BACK
 
+ARG COMPOSER_VERSION
+
 MAINTAINER Vasilij Dusko <vasilij@prado.lt>
 
 RUN apt-get update && \
@@ -38,7 +40,7 @@ RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --
     __MONGODB__ \
     # Install composer
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php composer-setup.php \
+    && php composer-setup.php --version=${COMPOSER_VERSION} \
     && php -r "unlink('composer-setup.php');" \
     && mv composer.phar /usr/local/bin/composer \
     && mkdir -p /var/www/.composer
