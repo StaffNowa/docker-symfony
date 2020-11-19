@@ -20,6 +20,8 @@ ARG XDEBUG_REMOTE_CONNECT_BACK
 
 ARG COMPOSER_VERSION
 
+ARG WKHTMLTOPDF_VERSION
+
 MAINTAINER Vasilij Dusko <vasilij@prado.lt>
 
 RUN apt-get update && \
