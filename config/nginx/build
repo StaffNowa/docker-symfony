@@ -14,8 +14,10 @@ source ${WORK_DIR}/.env
 
 cp config/nginx/Dockerfile.build config/nginx/Dockerfile.tmp
 
+sed -i 's#__DEBIAN_VERSION__#'"${DEBIAN_VERSION}"'#g' config/nginx/Dockerfile.tmp
+
 mkdir -p config/nginx/ssl
-cp -R user/nginx/ssl/* config/nginx/ssl/
+cp -R user/nginx/ssl/* config/nginx/ssl/ 2>/dev/null # No error message gets printed
 
 if [ "${NGINX_SSL}" = "yes" ]; then
     sed -i 's#__D4D_PEM__#'"ADD ssl/d4d.pem /etc/nginx/ssl/"'#g' config/nginx/Dockerfile.tmp

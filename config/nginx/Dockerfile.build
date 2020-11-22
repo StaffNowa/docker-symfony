@@ -12,12 +12,12 @@ ARG SYMFONY_FRONT_CONTROLLER
 ARG PHP_MAX_EXECUTION_TIME
 ARG PHP_UPLOAD_MAX_FILESIZE
 
-MAINTAINER Vasilij Dusko <vasilij@prado.lt>
+MAINTAINER Vasilij Dusko <support@d4d.lt>
 
 RUN apt-get update \
 	&& apt-get install --no-install-recommends --no-install-suggests -y gnupg1 \
 	&& \
-	NGINX_GPGKEY=573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62; \
+	NGINX_GPGKEY=ABF5BD827BD9BF62; \
 	found=''; \
 	for server in \
 		ha.pool.sks-keyservers.net \
@@ -30,7 +30,7 @@ RUN apt-get update \
 	done; \
 	test -z "$found" && echo >&2 "error: failed to fetch GPG key $NGINX_GPGKEY" && exit 1; \
 	apt-get remove --purge -y gnupg1 && apt-get -y --purge autoremove && rm -rf /var/lib/apt/lists/* \
-	&& echo "deb http://nginx.org/packages/mainline/debian/ stretch nginx" >> /etc/apt/sources.list \
+	&& echo "deb http://nginx.org/packages/mainline/debian/ __DEBIAN_VERSION__ nginx" >> /etc/apt/sources.list \
 	&& apt-get update \
 	&& apt-get install --no-install-recommends --no-install-suggests -y \
 						nginx=${NGINX_VERSION} \
