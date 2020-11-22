@@ -690,6 +690,16 @@ dockerComposeExec() {
     fi
 }
 
+logs() {
+    # $1 command
+
+    CURRENT_DIR=`basename ${WORK_DIR}`
+    CONTAINER_NAME="${CURRENT_DIR}_${1}_1"
+    CONTAINER_ID=`docker ps -aqf name=^${CONTAINER_NAME}$`
+
+    docker logs -f ${CONTAINER_ID}
+}
+
 doMysqlDump() {
     # Load .env file into the current shell script
     source ${ENV}
@@ -953,6 +963,8 @@ case "$1" in
     restart) restart
         ;;
     exec) dockerComposeExec $2 $3
+        ;;
+    logs) logs $2
         ;;
     prune) doPrune
         ;;
