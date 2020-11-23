@@ -34,6 +34,10 @@ CHANGELOG for "Docker for Symfony"
     * FEATURE   [D4D]           Added ability select MySQL vs MariaDB.
     * FEATURE   [MONGODB]       Added ability to use MongoDB.
     
-* 1.0.12 ()
-    * FEATURE   [MKCERT]        Added the ability to have local developer SSL certificate.
-    * FEATURE   [NGROK]         Added the ability to have ngrok auth token in the file .env
+* 1.0.12 (2020-11-23)
+    * FEATURE   [MKCERT]        Added ability to have local developer SSL certificate.
+    * FEATURE   [NGROK]         Added ability to have ngrok auth token in the file .env
+    * FEATURE   [NGINX]         Updated Debian OS + nginx version.
+    * FEATURE   [PHP]           The PHP 7.4 is set as default version.
+    * FEATURE   [COMPOSER]      Added ability to select composer version 1.x vs 2.x
+    * FEATURE   [WKHTMLTOPDF]   Added ability to select version 0.12.3, 0.12.4, 0.12.5 or 0.12.6
