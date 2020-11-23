@@ -12,6 +12,7 @@
 /config/nginx/d4d/*.conf
 /config/nginx/ssl/*.pem
 /config/nginx/project.conf
+config/php/Dockerfile
 
 /config/php/conf.d/xdebug.ini
 
