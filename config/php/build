@@ -109,8 +109,11 @@ if [ "${WKHTMLTOPDF}" = "yes" ]; then
     if [ "${WKHTMLTOPDF_VERSION}" = "0.12.4" ]; then
         sed -i 's#__WKHTMLTOPDF__#'"\&\& curl -o wkhtmltox-${WKHTMLTOPDF_VERSION}_linux-generic-amd64.tar.xz -sL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/${WKHTMLTOPDF_VERSION}/wkhtmltox-${WKHTMLTOPDF_VERSION}_linux-generic-amd64.tar.xz  \&\& echo '3f923f425d345940089e44c1466f6408b9619562 wkhtmltox-${WKHTMLTOPDF_VERSION}_linux-generic-amd64.tar.xz' | sha1sum -c - \&\& tar -xvf wkhtmltox-${WKHTMLTOPDF_VERSION}_linux-generic-amd64.tar.xz \&\& cp wkhtmltox/lib/* /usr/lib/ \&\& cp wkhtmltox/bin/* /usr/bin/ \&\& cp -r wkhtmltox/share/man/man1 /usr/share/man/ \&\& chmod a+x /usr/bin/wkhtmltopdf \&\& chmod a+x /usr/bin/wkhtmltoimage"'#g' config/php/Dockerfile.tmp
     fi
-    if [ "${WKHTMLTOPDF_VERSION}" = "0.12.5" ] || [ "${WKHTMLTOPDF_VERSION}" = "0.12.6" ]; then
+    if [ "${WKHTMLTOPDF_VERSION}" = "0.12.5" ]; then
         sed -i 's#__WKHTMLTOPDF__#'"\&\& curl -o /tmp/wkhtmltox_${WKHTMLTOPDF_VERSION}.\`echo \$(lsb_release -cs)\`_amd64.deb -sL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/${WKHTMLTOPDF_VERSION}/wkhtmltox_${WKHTMLTOPDF_VERSION}-1.\`echo \$(lsb_release -cs)\`_amd64.deb \&\& apt-get --assume-yes install /tmp/wkhtmltox_${WKHTMLTOPDF_VERSION}.\`echo \$(lsb_release -cs)\`_amd64.deb \&\& rm /tmp/wkhtmltox_${WKHTMLTOPDF_VERSION}.\`echo \$(lsb_release -cs)\`_amd64.deb \&\& ln -s /usr/local/bin/wkhtmltopdf /usr/bin/wkhtmltopdf \&\& ln -s /usr/local/bin/wkhtmltoimage /usr/bin/wkhtmltoimage"'#g' config/php/Dockerfile.tmp
+    fi
+    if [ "${WKHTMLTOPDF_VERSION}" = "0.12.6" ]; then
+        sed -i 's#__WKHTMLTOPDF__#'"\&\& curl -o /tmp/wkhtmltox_${WKHTMLTOPDF_VERSION}.\`echo \$(lsb_release -cs)\`_amd64.deb -sL https://github.com/wkhtmltopdf/packaging/releases/download/${WKHTMLTOPDF_VERSION}-1/wkhtmltox_${WKHTMLTOPDF_VERSION}-1.\`echo \$(lsb_release -cs)\`_amd64.deb \&\& apt-get --assume-yes install /tmp/wkhtmltox_${WKHTMLTOPDF_VERSION}.\`echo \$(lsb_release -cs)\`_amd64.deb \&\& rm /tmp/wkhtmltox_${WKHTMLTOPDF_VERSION}.\`echo \$(lsb_release -cs)\`_amd64.deb \&\& ln -s /usr/local/bin/wkhtmltopdf /usr/bin/wkhtmltopdf \&\& ln -s /usr/local/bin/wkhtmltoimage /usr/bin/wkhtmltoimage"'#g' config/php/Dockerfile.tmp
     fi
 else
     sed -i 's#__WKHTMLTOPDF__#'""'#g' config/php/Dockerfile.tmp
