@@ -48,6 +48,7 @@ services:
         XDEBUG_REMOTE_ENABLE: ${XDEBUG_REMOTE_ENABLE}
         XDEBUG_REMOTE_HOST: ${XDEBUG_REMOTE_HOST}
         XDEBUG_REMOTE_CONNECT_BACK: ${XDEBUG_REMOTE_CONNECT_BACK}
+        COMPOSER_VERSION: ${COMPOSER_VERSION}
     volumes:
       - ${PROJECT_PATH}:/var/www/project:cached
       - ${COMPOSER_PATH}/cache:/var/www/.composer/cache:cached
