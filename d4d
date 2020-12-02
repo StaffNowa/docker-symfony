@@ -879,7 +879,6 @@ case "$1" in
         ;;
     opt_help) allSettings $2
         ;;
-
     git) git
         ;;
     * ) showHelp
