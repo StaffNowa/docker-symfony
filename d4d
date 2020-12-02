@@ -14,8 +14,21 @@ chmod 700 ${WORK_DIR} >/dev/null 2>&1
 ENV=${WORK_DIR}/.env
 ENV_DIST=${WORK_DIR}/.env.dist
 
+ENV_SECRET=${WORK_DIR}/.env.secret
+ENV_SECRET_DIST=${WORK_DIR}/.env.secret.dist
+
+D4D_ENV=${ENV}
+
 if [ ! -e ${ENV} ]; then
   cp "${ENV_DIST}" "${ENV}"
+fi
+
+if [ ! -e ${ENV_SECRET} ]; then
+  cp "${ENV_SECRET_DIST}" "${ENV_SECRET}"
+fi
+
+if [ ! -e ${D4D_ENV} ]; then
+  cp "${D4D_ENV}" "${ENV}"
 fi
 
 # Emulate ${!variable}
@@ -50,7 +63,7 @@ getOpt() {
 	#$1 is option name
 	#$2 is default value
 
-  source ${WORK_DIR}/.env
+    source ${D4D_ENV}
 
 	GET_OPTION="$(eval_var $1)"
 	if [ "${GET_OPTION}" = "" ]; then
@@ -240,9 +253,11 @@ doChecks() {
     docker-machine --version > /dev/null 2>&1 || { echo >&2 "Docker machine not found. https://docs.docker.com/machine/install-machine/"; exit 1; }
     docker-compose --version > /dev/null 2>&1 || { echo >&2 "Docker compose not found. Please install it via https://docs.docker.com/compose/install/"; exit 1; }
 
-    if [ ! -f "${ENV}" ]; then
+    if [ ! -f "${D4D_ENV}" ]; then
         if [ -f "${ENV_DIST}" ]; then
-            cp "{$ENV_DIST}" "${ENV}"
+            cp "{$ENV_DIST}" "${D4D_ENV}"
+            SECRET=`cat ${ENV_SECRET}`
+            echo "${SECRET}" >> "${D4D_ENV}"
         else
             echo >&2 "The ${ENV} file does not exist. Project setup will not work"
             exit 1
@@ -254,15 +269,21 @@ doChecks() {
     TMP_GROUP_ID=`id -g`
 
     # Always validate user id and group id before start using .env file
-    sed -i 's#USER_ID=.*#'"USER_ID=${TMP_USER_ID}"'#g' ${WORK_DIR}/.env
-    sed -i 's#GROUP_ID=.*#'"GROUP_ID=${TMP_USER_ID}"'#g' ${WORK_DIR}/.env
-    sed -i 's#MYSQL_ROOT_PASSWORD=root#'"MYSQL_ROOT_PASSWORD=`pwgen -s 20 1`"'#g' ${WORK_DIR}/.env
-    sed -i 's#MYSQL_PASSWORD=db_password#'"MYSQL_PASSWORD=`pwgen -s 20 1`"'#g' ${WORK_DIR}/.env
-    sed -i 's#MONGODB_ROOT_PASSWORD=root#'"MONGODB_ROOT_PASSWORD=`pwgen -s 20 1`"'#g' ${WORK_DIR}/.env
-    sed -i 's#MONGODB_PASSWORD=db_password#'"MONGODB_PASSWORD=`pwgen -s 20 1`"'#g' ${WORK_DIR}/.env
+    sed -i 's#USER_ID=.*#'"USER_ID=${TMP_USER_ID}"'#g' ${D4D_ENV}
+    sed -i 's#GROUP_ID=.*#'"GROUP_ID=${TMP_USER_ID}"'#g' ${D4D_ENV}
+    sed -i 's#MYSQL_ROOT_PASSWORD=root#'"MYSQL_ROOT_PASSWORD=`pwgen -s 20 1`"'#g' ${ENV_SECRET}
+    sed -i 's#MYSQL_PASSWORD=db_password#'"MYSQL_PASSWORD=`pwgen -s 20 1`"'#g' ${ENV_SECRET}
+    sed -i 's#MONGODB_ROOT_PASSWORD=root#'"MONGODB_ROOT_PASSWORD=`pwgen -s 20 1`"'#g' ${ENV_SECRET}
+    sed -i 's#MONGODB_PASSWORD=db_password#'"MONGODB_PASSWORD=`pwgen -s 20 1`"'#g' ${ENV_SECRET}
+
+    IN_IN_FILE=$(cat ${D4D_ENV} | grep -c ".env.secret")
+    if [ ${IN_IN_FILE} -eq 0 ]; then
+        SECRET=`cat ${ENV_SECRET}`
+        echo "${SECRET}" >> "${D4D_ENV}"
+    fi
 
     # Load .env file into the current shell script
-    source ${WORK_DIR}/.env
+    source ${D4D_ENV}
 
     # Ensure all folders exists
     mkdir -p ${PROJECT_PATH}
@@ -375,7 +396,7 @@ doBuild() {
 }
 
 doBuildNginxConf() {
-    source ${WORK_DIR}/.env
+    source ${D4D_ENV}
 
     if [ "${NGINX_SSL}" = "yes" ]; then
         cp config/nginx/project-ssl.conf.default config/nginx/project.conf.tmp
@@ -428,7 +449,7 @@ doBuildNginxConf() {
 }
 
 doBuildMySQLConf() {
-    source ${WORK_DIR}/.env
+    source ${D4D_ENV}
 
     cp config/mysql/d4d.cnf.d4d config/mysql/d4d.cnf.tmp
     sed -i 's#__MYSQL_MAX_ALLOWED_PACKET__#'"${MYSQL_MAX_ALLOWED_PACKET}"'#g' config/mysql/d4d.cnf.tmp
@@ -634,7 +655,7 @@ doBeforeStart() {
 start() {
     # Start server
     echo "Starting docker containers..."
-    docker-compose up -d --remove-orphans
+    docker-compose --env-file ${D4D_ENV} up -d --remove-orphans
 
     if [ "${SUPERVISOR}" = "yes" ]; then
         echo "Starting supervisor..."
@@ -702,7 +723,7 @@ logs() {
 
 doMysqlDump() {
     # Load .env file into the current shell script
-    source ${ENV}
+    source ${D4D_ENV}
 
     docker-compose exec mysql bash /tmp/db/mysql_dump.sh
 }
@@ -719,135 +740,6 @@ doPasswd() {
     if [ "${COMMAND}" = "show" ]; then
         showPasswords
     fi
-}
-
-updateEnv() {
-    source ${ENV}
-
-    if [ "${D4D_VERSION}" = "1.0.0" ]; then
-        cp ${ENV} ${WORK_DIR}/.env.tmp
-
-        sed -i 's#PROJECT_DOMAIN=#'"PROJECT_DOMAIN_1="'#g' ${WORK_DIR}/.env
-
-        if [ "${PROJECT_DOMAIN_2}" = "" ]; then
-            printf 'PROJECT_DOMAIN_2=symfony.local\n' >> ${WORK_DIR}/.env
-        fi
-        if [ "${PROJECT_DOMAIN_3}" = "" ]; then
-            printf 'PROJECT_DOMAIN_3=symfony.local\n' >> ${WORK_DIR}/.env
-        fi
-        if [ "${PROJECT_DOMAIN_4}" = "" ]; then
-            printf 'PROJECT_DOMAIN_4=symfony.local\n' >> ${WORK_DIR}/.env
-        fi
-        if [ "${SF_PATH}" = "" ]; then
-            printf 'SF_PATH=admin\n' >> ${WORK_DIR}/.env
-        fi
-
-        sed -i 's#NGINX_VERSION=1.15.7-1~stretch#'"NGINX_VERSION=1.17.8-1~stretch"'#g' ${WORK_DIR}/.env
-
-        if [ "${NGINX_FASTCGI_BUFFERS}" = "" ]; then
-            printf 'NGINX_FASTCGI_BUFFERS="8 8k"\n' >> ${WORK_DIR}/.env
-        fi
-
-        if [ "${NGINX_FASTCGI_BUFFER_SIZE}" = "" ]; then
-            printf 'NGINX_FASTCGI_BUFFER_SIZE=8k\n' >> ${WORK_DIR}/.env
-        fi
-
-        if [ "${MYSQL_MAX_ALLOWED_PACKET}" = "" ]; then
-            printf 'MYSQL_MAX_ALLOWED_PACKET=64M\n' >> ${WORK_DIR}/.env
-        fi
-
-        if [ "${MYSQL_INNODB_LOG_FILE_SIZE}" = "" ]; then
-            printf 'MYSQL_INNODB_LOG_FILE_SIZE=48M\n' >> ${WORK_DIR}/.env
-        fi
-
-        if [ "${MYSQL_WAIT_TIMEOUT}" = "" ]; then
-            printf 'MYSQL_WAIT_TIMEOUT=28800\n' >> ${WORK_DIR}/.env
-        fi
-
-#        sed -i 's#PMA_MEMORY_LIMIT=#'"PHP_MEMORY_LIMIT="'#g' ${WORK_DIR}/.env
-        sed -i -e '/^PMA_MEMORY_LIMIT/d' ${WORK_DIR}/.env
-        sed -i -e '/^PMA_POST_MAX_SIZE/d' ${WORK_DIR}/.env
-
-        if [ "${PHP_MAX_EXECUTION_TIME}" = "" ]; then
-            printf 'PHP_MAX_EXECUTION_TIME=30\n' >> ${WORK_DIR}/.env
-        fi
-
-        sed -i 's#PMA_UPLOAD_MAX_FILESIZE=#'"PHP_UPLOAD_MAX_FILESIZE="'#g' ${WORK_DIR}/.env
-
-        printf 'CLEAN_NGINX_LOGS=no\n' >> ${WORK_DIR}/.env
-        printf 'CLEAN_SF_logs=no\n' >> ${WORK_DIR}/.env
-
-        printf 'RABBITMQ_VERSION=3.8.3\n' >> ${WORK_DIR}/.env
-        printf 'PORT_RABBITMQ_TCP_LISTENER=5673\n' >> ${WORK_DIR}/.env
-        printf 'PORT_RABBITMQ_MANAGEMENT=15672\n' >> ${WORK_DIR}/.env
-
-        sed -i 's#D4D_VERSION=1.0.0#'"D4D_VERSION=${DOCKER_SCRIPT_VER}"'#g' ${WORK_DIR}/.env
-    fi
-
-    if [ "${D4D_VERSION}" = "1.0.7" ]; then
-        cp ${ENV} ${WORK_DIR}/.env.tmp
-
-        printf '\n' >> ${WORK_DIR}/.env
-        printf 'REDIS=no\n' >> ${WORK_DIR}/.env
-        printf 'RABBITMQ=no\n' >> ${WORK_DIR}/.env
-        printf 'RABBITMQ_VERSION=3.8.3\n' >> ${WORK_DIR}/.env
-        printf 'PORT_RABBITMQ_TCP_LISTENER=5673\n' >> ${WORK_DIR}/.env
-        printf 'PORT_RABBITMQ_MANAGEMENT=15672\n' >> ${WORK_DIR}/.env
-
-        sed -i 's#D4D_VERSION=1.0.7#'"D4D_VERSION=${DOCKER_SCRIPT_VER}"'#g' ${WORK_DIR}/.env
-    fi
-
-    if [ "${D4D_VERSION}" = "1.0.9" ]; then
-        cp ${ENV} ${WORK_DIR}/.env.tmp
-
-        printf '\n' >> ${WORK_DIR}/.env
-        printf 'SUPERVISOR=no\n' >> ${WORK_DIR}/.env
-
-        printf 'ELASTICSEARCH=no\n' >> ${WORK_DIR}/.env
-        printf 'ELASTICSEARCH_VERSION=6.8.3\n' >> ${WORK_DIR}/.env
-        printf 'PORT_ELASTICSEARCH=9200\n' >> ${WORK_DIR}/.env
-        printf 'PORT_ELASTICSEARCH_HEAD=9100\n' >> ${WORK_DIR}/.env
-        printf 'PORT_ELASTICSEARCH_KIBANA=5601\n' >> ${WORK_DIR}/.env
-
-        printf 'NGROK=no\n' >> ${WORK_DIR}/.env
-        printf 'PORT_NGROK=4551\n' >> ${WORK_DIR}/.env
-
-        sed -i 's#D4D_VERSION=1.0.9#'"D4D_VERSION=${DOCKER_SCRIPT_VER}"'#g' ${WORK_DIR}/.env
-    fi
-
-    if [ "${D4D_VERSION}" = "1.0.10" ]; then
-            cp ${ENV} ${WORK_DIR}/.env.tmp
-
-            printf '\n' >> ${WORK_DIR}/.env
-            printf 'MARIADB_VERSION=10.5\n' >> ${WORK_DIR}/.env
-            printf 'MYSQL_INST=mysql\n' >> ${WORK_DIR}/.env
-            printf 'MAILHOG=yes\n' >> ${WORK_DIR}/.env
-            printf 'PMA=yes\n' >> ${WORK_DIR}/.env
-            printf 'MONGODB=no' >> ${WORK_DIR}/.env
-            printf 'MONGODB_VERSION=4.4.0' >> ${WORK_DIR}/.env
-            printf 'MONGODB_ROOT_USERNAME=root' >> ${WORK_DIR}/.env
-            printf 'MONGODB_ROOT_PASSWORD=root' >> ${WORK_DIR}/.env
-            printf 'MONGODB_DATABASE=db_name' >> ${WORK_DIR}/.env
-            printf 'MONGODB_USERNAME=db_user' >> ${WORK_DIR}/.env
-            printf 'MONGODB_PASSWORD=db_password' >> ${WORK_DIR}/.env
-            printf 'MONGODB_REPLICA_SET_NAME=rs0' >> ${WORK_DIR}/.env
-            printf 'MONGODB_LOG_PATH=./var/log/mongodb/' >> ${WORK_DIR}/.env
-            printf 'MONGODB_DATA_PATH=./var/lib/mongodb' >> ${WORK_DIR}/.env
-
-            sed -i 's#SYMFONY_LOG_PATH=./var/logs/symfony#'""'#g' ${WORK_DIR}/.env
-            sed -i 's#PORT_PHPMYADMIN#'"PORT_PMA"'#g' ${WORK_DIR}/.env
-            sed -i 's#RABBITMQ_TCP_LISTENER_PORT#'"PORT_RABBITMQ_TCP_LISTENER"'#g' ${WORK_DIR}/.env
-            sed -i 's#RABBITMQ_MANAGEMENT_PORT#'"PORT_RABBITMQ_MANAGEMENT"'#g' ${WORK_DIR}/.env
-            sed -i 's#ELASTICSEARCH_PORT#'"PORT_ELASTICSEARCH"'#g' ${WORK_DIR}/.env
-            sed -i 's#ELASTICSEARCH_HEAD_PORT#'"PORT_ELASTICSEARCH_HEAD"'#g' ${WORK_DIR}/.env
-            sed -i 's#ELASTICSEARCH_KIBANA_PORT#'"PORT_ELASTICSEARCH_KIBANA"'#g' ${WORK_DIR}/.env
-            sed -i 's#NGROK_PORT#'"PORT_NGROK"'#g' ${WORK_DIR}/.env
-            sed -i 's#REDIS=yes#'"REDIS=no"'#g' ${WORK_DIR}/.env
-
-            sed -i 's#D4D_VERSION=1.0.10#'"D4D_VERSION=${DOCKER_SCRIPT_VER}"'#g' ${WORK_DIR}/.env
-        fi
-
-    echo $D4D_VERSION
 }
 
 blackfire() {
@@ -921,14 +813,14 @@ mainHeader() {
 }
 
 showPasswords() {
-    source ${WORK_DIR}/.env
+    source ${D4D_ENV}
 
     mainHeader
     printf " +%-55s+\n" "-----------------------------------------------------------"
     printf " | %-55s %-2s|\n" "The following information has been set:"
     printf " +%-55s+\n" "-----------------------------------------------------------"
     printf " | %-55s %-2s|\n" "Server IP: 127.0.0.1"
-    printf " | %-55s %-2s|\n" "Server Hostname: ${PROJECT_DOMAIN}"
+    printf " | %-55s %-2s|\n" "Server Hostname: ${PROJECT_DOMAIN_1}"
     printf " +%-55s+\n" "-----------------------------------------------------------"
     printf " | %-55s %-2s|\n" "MySQL root username: root"
     printf " | %-55s %-2s|\n" "MySQL root password: ${MYSQL_ROOT_PASSWORD}"
