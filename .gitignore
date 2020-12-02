@@ -1,6 +1,7 @@
 # Core files
 .env
 .env.secret
+.env.git
 /project
 /var
 /.composer/cache

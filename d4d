@@ -804,6 +804,11 @@ allSettings() {
 	done
 }
 
+git() {
+    awk 'NR==1,/.env.secret/' ${D4D_ENV} > ${WORK_DIR}/.env.git
+    sed -i '$d' ${WORK_DIR}/.env.git
+}
+
 mainHeader() {
     printf " +%-55s+\n" "-----------------------------------------------------------"
     printf " | %-55s %-2s|\n" "Docker for Symfony (PHP-FPM - NGINX - MySQL)"
@@ -873,6 +878,9 @@ case "$1" in
     mkcert) mkcert $2
         ;;
     opt_help) allSettings $2
+        ;;
+
+    git) git
         ;;
     * ) showHelp
         exit 0
