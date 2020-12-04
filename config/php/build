@@ -43,6 +43,11 @@ if [ "${PHP_VERSION}" = "7.4" ]; then
     sed -i 's#docker-php-ext-configure gd \-\-with\-freetype\-dir\=\/usr\/include\/ \-\-with\-jpeg\-dir\=\/usr\/include\/ \&\& #'"docker\-php\-ext\-configure gd \-\-with\-freetype \-\-with\-jpeg \&\& "'#g' config/php/Dockerfile.tmp
 fi
 
+if [ "${PHP_VERSION}" = "8.0" ]; then
+    sed -i 's#docker-php-ext-configure zip --with-libzip#'"docker-php-ext-configure zip"'#g' config/php/Dockerfile.tmp
+    sed -i 's#docker-php-ext-configure gd \-\-with\-freetype\-dir\=\/usr\/include\/ \-\-with\-jpeg\-dir\=\/usr\/include\/ \&\& #'"docker\-php\-ext\-configure gd \-\-with\-freetype \-\-with\-jpeg \&\& "'#g' config/php/Dockerfile.tmp
+fi
+
 if [ "${REDIS}" = "yes" ]; then
     PHP_EXT_ENABLE+=('redis')
     PECL_INSTALL+=('redis')
