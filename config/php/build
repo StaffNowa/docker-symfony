@@ -16,14 +16,19 @@ cp config/php/Dockerfile.build config/php/Dockerfile.tmp
 
 PACKAGE_LIST=('gnupg1' 'openssl' 'git' 'unzip' 'libzip-dev' 'nano' 'libpng-dev' 'libmagickwand-dev' 'curl' 'xauth' 'xvfb' 'openssh-client' 'less' 'inkscape' 'cron' 'exiftool' 'libicu-dev' 'libmcrypt-dev' 'libc-client-dev' 'libkrb5-dev' 'libssl-dev')
 PHP_EXT_INSTALL=('pdo' 'pdo_mysql' 'opcache' 'zip' 'gd' 'mysqli' 'exif' 'bcmath' 'calendar' 'intl' 'soap' 'imap' 'sockets')
-PHP_EXT_ENABLE=('imagick' 'mysqli' 'calendar' 'exif' 'bcmath')
-PECL_INSTALL=('imagick')
+PHP_EXT_ENABLE=('mysqli' 'calendar' 'exif' 'bcmath')
+PECL_INSTALL=()
 
-if [ "${PHP_VERSION}" = "5.6" ]; then
-    sed -i "s#RUN echo 'extension=apc.so' >> \$PHP_INI_DIR\/conf.d\/docker\-php\-ext\-apcu.ini##g" config/php/Dockerfile.tmp
+if [ "${PHP_VERSION}" != "8.0" ]; then
+    PHP_EXT_ENABLE+=('imagick')
+    PECL_INSTALL+=('imagick')
 fi
 
-if [ "${PHP_VERSION}" != "5.6" ]; then
+if [ "${PHP_VERSION}" = "5.6" ] || [ "${PHP_VERSION}" = "8.0" ]; then
+    sed -i "s#\&\& echo 'extension=apc.so' >> \$PHP_INI_DIR\/conf.d\/docker\-php\-ext\-apcu.ini##g" config/php/Dockerfile.tmp
+fi
+
+if [ "${PHP_VERSION}" != "5.6" ] && [ "${PHP_VERSION}" != "8.0" ]; then
     PHP_EXT_ENABLE+=('apcu')
     PECL_INSTALL+=('apcu' 'apcu_bc')
 fi
