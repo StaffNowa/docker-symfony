@@ -22,6 +22,7 @@ PECL_INSTALL=()
 if [ "${PHP_VERSION}" != "8.0" ]; then
     PHP_EXT_ENABLE+=('imagick')
     PECL_INSTALL+=('imagick')
+    sed -i 's#__IMAGICK__#'""'#g' config/php/Dockerfile.tmp
 fi
 
 if [ "${PHP_VERSION}" = "5.6" ] || [ "${PHP_VERSION}" = "8.0" ]; then
@@ -51,6 +52,8 @@ fi
 if [ "${PHP_VERSION}" = "8.0" ]; then
     sed -i 's#docker-php-ext-configure zip --with-libzip#'"docker-php-ext-configure zip"'#g' config/php/Dockerfile.tmp
     sed -i 's#docker-php-ext-configure gd \-\-with\-freetype\-dir\=\/usr\/include\/ \-\-with\-jpeg\-dir\=\/usr\/include\/ \&\& #'"docker\-php\-ext\-configure gd \-\-with\-freetype \-\-with\-jpeg \&\& "'#g' config/php/Dockerfile.tmp
+
+    sed -i 's#__IMAGICK__#'"\&\& cd /tmp \&\& git clone https://github.com/Imagick/imagick \&\& cd imagick \&\& phpize \&\& ./configure \&\& make \&\& make install \&\& echo "extension=imagick.so" > /usr/local/etc/php/conf.d/docker-php-ext-imagick.ini \&\& rm -rf /tmp/imagick"'#g' config/php/Dockerfile.tmp
 fi
 
 if [ "${REDIS}" = "yes" ]; then

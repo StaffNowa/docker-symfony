@@ -41,3 +41,8 @@ CHANGELOG for "Docker for Symfony"
     * FEATURE   [PHP]           The PHP 7.4 is set as default version.
     * FEATURE   [COMPOSER]      Added ability to select composer version 1.x vs 2.x
     * FEATURE   [WKHTMLTOPDF]   Added ability to select version 0.12.3, 0.12.4, 0.12.5 or 0.12.6
+
+* 1.0.13 ()
+  * FEATURE     [PHP]           PHP 8 is available now!
+  * FEATURE     [PHP]           Added imagick changes required to support PHP 8.0
+  

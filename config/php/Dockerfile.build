@@ -38,6 +38,7 @@ RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --
     && printf '\nupload_max_filesize = %s\n' ${PHP_UPLOAD_MAX_FILESIZE} >> $PHP_INI_DIR/conf.d/custom.ini \
     && printf '\nmax_execution_time = %s\n' ${PHP_MAX_EXECUTION_TIME} >> $PHP_INI_DIR/conf.d/custom.ini \
     && echo 'extension=apc.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini \
+    __IMAGICK__ \
     __RABBIT_MQ__ \
     __MONGODB__ \
     # Install composer
