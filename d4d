@@ -332,7 +332,7 @@ doChecks() {
 
      if [ "${PMA_AUTO_LOGIN}" = "yes" ]; then
              PMA_AUTH_TYPE="config"
-         if [ "${PMA_ROOT}" = "no" ]; then
+         if [ "${PMA_AUTO_LOGIN_ROOT}" = "no" ]; then
              PMA_MYSQL_USER=${MYSQL_USER}
              PMA_MYSQL_PASSWORD=${MYSQL_PASSWORD}
          else
