@@ -331,9 +331,14 @@ doChecks() {
      cp config/phpmyadmin/config.user.inc.php.d4d config/phpmyadmin/config.user.inc.php.tmp
 
      if [ "${PMA_AUTO_LOGIN}" = "yes" ]; then
-         PMA_AUTH_TYPE="config"
-         PMA_MYSQL_USER=${MYSQL_USER}
-         PMA_MYSQL_PASSWORD=${MYSQL_PASSWORD}
+             PMA_AUTH_TYPE="config"
+         if [ "${PMA_ROOT}" = "no" ]; then
+             PMA_MYSQL_USER=${MYSQL_USER}
+             PMA_MYSQL_PASSWORD=${MYSQL_PASSWORD}
+         else
+             PMA_MYSQL_USER=root
+             PMA_MYSQL_PASSWORD=${MYSQL_ROOT_PASSWORD}
+         fi
      else
          PMA_AUTH_TYPE="cookie"
          PMA_MYSQL_USER=
