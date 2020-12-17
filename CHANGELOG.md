@@ -45,4 +45,5 @@ CHANGELOG for "Docker for Symfony"
 * 1.0.13 ()
   * FEATURE     [PHP]           PHP 8 is available now!
   * FEATURE     [PHP]           Added imagick changes required to support PHP 8.0
+  * FEATURE     [D4D]           Added phpMyAdmin auto login functionality as root user.
   
