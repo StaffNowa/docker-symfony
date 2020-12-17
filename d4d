@@ -814,6 +814,17 @@ git() {
     sed -i '$d' ${WORK_DIR}/.env.git
 }
 
+info() {
+    mainHeader
+    printf " | %-55s %-2s|\n" "Docker Information:"
+    printf " | %-55s %-2s|\n" "`docker --version`"
+    printf " | %-55s %-2s|\n" "`docker-machine --version`"
+    printf " | %-55s %-2s|\n" "`docker-compose --version`"
+    printf " +%-55s+\n" "-----------------------------------------------------------"
+    printf " | %-55s %-2s|\n" "D4D Information:"
+
+}
+
 mainHeader() {
     printf " +%-55s+\n" "-----------------------------------------------------------"
     printf " | %-55s %-2s|\n" "Docker for Symfony (PHP-FPM - NGINX - MySQL)"
@@ -885,6 +896,8 @@ case "$1" in
     opt_help) allSettings $2
         ;;
     git) git
+        ;;
+    info) info
         ;;
     * ) showHelp
         exit 0
