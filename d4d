@@ -815,6 +815,18 @@ git() {
 }
 
 info() {
+    source ${D4D_ENV}
+
+    NGINX_INFO=`docker-compose exec nginx dpkg -s nginx | grep -m1 "^Version: " | cut -d' ' -f2 | tr -d '\r'`
+
+    if [ "${MYSQL_INST}" = "mysql" ]; then
+        MYSQL_INFO=`docker-compose exec mysql dpkg -s mysql-server | grep -m1 "^Version: " | cut -d' ' -f2 | tr -d '\r\n'`
+    else
+        MYSQL_INFO=`docker-compose exec mysql dpkg -s mariadb-server | grep -m1 "^Version: " | cut -d' ' -f2 | tr -d '\r\n'`
+    fi
+
+    PHP_INFO=`docker-compose exec php php -v | grep -m1 "^PHP " | cut -d' ' -f2 | tr -d '\r\n'`
+
     mainHeader
     printf " | %-55s %-2s|\n" "Docker Information:"
     printf " | %-55s %-2s|\n" "`docker --version`"
@@ -822,7 +834,10 @@ info() {
     printf " | %-55s %-2s|\n" "`docker-compose --version`"
     printf " +%-55s+\n" "-----------------------------------------------------------"
     printf " | %-55s %-2s|\n" "D4D Information:"
-
+    printf " | %-55s %-2s|\n" "NGINX: ${NGINX_INFO}"
+    printf " | %-55s %-2s|\n" "PHP: ${PHP_INFO}"
+    printf " | %-55s %-2s|\n" "MySQL: ${MYSQL_INFO}"
+    printf " +%-55s+\n" "-----------------------------------------------------------"
 }
 
 mainHeader() {
