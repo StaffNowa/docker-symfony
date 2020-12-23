@@ -2,5 +2,5 @@
   mailhog:
     image: mailhog/mailhog
     ports:
-      - "1025:1025"
-      - "8025:8025"
+      - "${PORT_MAILHOG_SMTP}:1025"
+      - "${PORT_MAILHOG_HTTP}:8025"
