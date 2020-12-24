@@ -46,6 +46,8 @@ services:
         XDEBUG_REMOTE_HOST: ${XDEBUG_REMOTE_HOST}
         XDEBUG_REMOTE_CONNECT_BACK: ${XDEBUG_REMOTE_CONNECT_BACK}
         COMPOSER_VERSION: ${COMPOSER_VERSION}
+    ports:
+      - ${PORT_PHP}: 9000
     volumes:
       - ${PROJECT_PATH}:/var/www/project:cached
       - ${COMPOSER_PATH}/cache:/var/www/.composer/cache:cached
