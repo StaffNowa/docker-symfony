@@ -22,8 +22,6 @@ ARG COMPOSER_VERSION
 
 ARG WKHTMLTOPDF_VERSION
 
-ARG PORT_PHP
-
 MAINTAINER Vasilij Dusko <support@d4d.lt>
 
 RUN apt-get update && \
@@ -48,8 +46,7 @@ RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --
     && php composer-setup.php --version=${COMPOSER_VERSION} \
     && php -r "unlink('composer-setup.php');" \
     && mv composer.phar /usr/local/bin/composer \
-    && mkdir -p /var/www/.composer \
-    && sed -i 's/9000/${PORT_PHP}/' /usr/local/etc/php-fpm.d/zz-docker.conf
+    && mkdir -p /var/www/.composer
 
 COPY composer/config.json /var/www/.composer/config.json
 RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/.composer \

@@ -46,7 +46,6 @@ services:
         XDEBUG_REMOTE_HOST: ${XDEBUG_REMOTE_HOST}
         XDEBUG_REMOTE_CONNECT_BACK: ${XDEBUG_REMOTE_CONNECT_BACK}
         COMPOSER_VERSION: ${COMPOSER_VERSION}
-        PORT_PHP: ${PORT_PHP}
     volumes:
       - ${PROJECT_PATH}:/var/www/project:cached
       - ${COMPOSER_PATH}/cache:/var/www/.composer/cache:cached
@@ -55,6 +54,7 @@ services:
       - ${SSH_KEY_PATH}/known_hosts:/var/www/.ssh/known_hosts
       - ${USER_CONFIG_PATH}/.bash_history:/var/www/.bash_history
       - ./config/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
+      - ./config/php/php-fpm.d/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf:ro
       - ./config/supervisor/conf.d/messenger-worker.conf:/etc/supervisor/conf.d/messenger-worker.conf
     depends_on:
       - mysql
