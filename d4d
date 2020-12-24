@@ -60,8 +60,8 @@ fi
 HIDE_CHANGES=0
 
 getOpt() {
-	#$1 is option name
-	#$2 is default value
+	# $1 is option name
+	# $2 is default value
 
     source ${D4D_ENV}
 
@@ -73,6 +73,37 @@ getOpt() {
 	fi
 
 	echo ${GET_OPTION}
+}
+
+
+getContainerName() {
+  # $1 is option name
+
+  CURRENT_DIR=`basename ${WORK_DIR}`
+  CONTAINER_NAME="${CURRENT_DIR}_${1}_1"
+
+  echo ${CONTAINER_NAME}
+}
+
+getContainerId() {
+  # $1 is option name
+
+  echo $1
+
+  CURRENT_DIR=`basename ${WORK_DIR}`
+  CONTAINER_NAME="${CURRENT_DIR}_${1}_1"
+  CONTAINER_ID=`docker ps -aqf name=^${CONTAINER_NAME}$`
+
+  echo ${CONTAINER_ID}
+}
+
+getContainerIpAddress() {
+  # $1 is option name
+
+  CONTAINER_NAME=`getContainerName $1`
+  IP_ADDRESS=`docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${CONTAINER_NAME}`
+
+  echo ${IP_ADDRESS}
 }
 
 ##################################################
@@ -821,15 +852,21 @@ git() {
 info() {
     source ${D4D_ENV}
 
-    NGINX_INFO=`docker-compose exec nginx dpkg -s nginx | grep -m1 "^Version: " | cut -d' ' -f2 | tr -d '\r'`
+    IP_NGINX=`getContainerIpAddress nginx`
+    IP_PHP=`getContainerIpAddress php`
+    IP_MYSQL=`getContainerIpAddress mysql`
+    IP_PMA=`getContainerIpAddress phpmyadmin`
+    IP_MAILHOG=`getContainerIpAddress mailhog`
+
+    NGINX_INFO=`docker-compose exec nginx dpkg -s nginx | grep -oP '(?<=Version: ).*(?=~)' | cut -d' ' -f2 | tr -d "\r\n"`
 
     if [ "${MYSQL_INST}" = "mysql" ]; then
-        MYSQL_INFO=`docker-compose exec mysql dpkg -s mysql-server | grep -m1 "^Version: " | cut -d' ' -f2 | tr -d '\r\n'`
+        MYSQL_INFO=`docker-compose exec mysql dpkg -s mysql-server | grep -oP '(?<=Version: ).*(?=debian)' | cut -d' ' -f2 | tr -d "\r\n"`
     else
-        MYSQL_INFO=`docker-compose exec mysql dpkg -s mariadb-server | grep -m1 "^Version: " | cut -d' ' -f2 | tr -d '\r\n'`
+        MYSQL_INFO=`docker-compose exec mysql dpkg -s mariadb-server | grep -oP '(?<=Version: ).*(?=~)' | cut -d' ' -f2 | tr -d "\r\n"`
     fi
 
-    PHP_INFO=`docker-compose exec php php -v | grep -m1 "^PHP " | cut -d' ' -f2 | tr -d '\r\n'`
+    PHP_INFO=`docker-compose exec php php -v | grep -oP '(?<=PHP ).*(?= \(cli\))' | cut -d' ' -f2 | tr -d "\r\n"`
 
     mainHeader
     printf " | %-55s %-2s|\n" "Docker Information:"
@@ -841,6 +878,13 @@ info() {
     printf " | %-55s %-2s|\n" "NGINX: ${NGINX_INFO}"
     printf " | %-55s %-2s|\n" "PHP: ${PHP_INFO}"
     printf " | %-55s %-2s|\n" "MySQL: ${MYSQL_INFO}"
+    printf " +%-55s+\n" "-----------------------------------------------------------"
+    printf " | %-55s %-2s|\n" "IP Information:"
+    printf " | %-55s %-2s|\n" "NGINX: ${IP_NGINX}"
+    printf " | %-55s %-2s|\n" "PHP: ${IP_PHP}"
+    printf " | %-55s %-2s|\n" "MySQL: ${IP_MYSQL}"
+    printf " | %-55s %-2s|\n" "MailHog: ${IP_MAILHOG}"
+    printf " | %-55s %-2s|\n" "phpMyAdmin: ${IP_PMA}"
     printf " +%-55s+\n" "-----------------------------------------------------------"
 }
 
