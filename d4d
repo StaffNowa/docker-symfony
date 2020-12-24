@@ -681,8 +681,8 @@ start() {
     echo "To login now, follow this link:"
     echo ""
     echo "Project URL: http://${PROJECT_DOMAIN_1}"
-    echo "phpMyAdmin: http://${PROJECT_DOMAIN_1}:8080"
-    echo "MailHog: http://${PROJECT_DOMAIN_1}:8025"
+    echo "phpMyAdmin: http://${PROJECT_DOMAIN_1}:${PORT_PMA}"
+    echo "MailHog: http://${PROJECT_DOMAIN_1}:${PORT_MAILHOG_HTTP}"
 
     if [ "${RABBITMQ}" = "yes" ] || [ "${ELASTICSEARCH}" = "yes" ]; then
         echo ""
@@ -690,11 +690,11 @@ start() {
     fi
 
     if [ "${RABBITMQ}" = "yes" ]; then
-        echo "RabbitMQ: http://${PROJECT_DOMAIN_1}:15672"
+        echo "RabbitMQ: http://${PROJECT_DOMAIN_1}:${PORT_RABBITMQ_MANAGEMENT}"
     fi
 
     if [ "${ELASTICSEARCH}" = "yes" ]; then
-        echo "Elasticsearch: http://${PROJECT_DOMAIN_1}:9100"
+        echo "Elasticsearch: http://${PROJECT_DOMAIN_1}:${PORT_ELASTICSEARCH_HEAD}"
     fi
 
     echo ""
@@ -872,8 +872,8 @@ showPasswords() {
     printf " | %-55s %-2s|\n" "To login now, follow this link:"
     printf " +%-55s+\n" "-----------------------------------------------------------"
     printf " | %-55s %-2s|\n" "Project URL: http://${PROJECT_DOMAIN_1}"
-    printf " | %-55s %-2s|\n" "phpMyAdmin: http://${PROJECT_DOMAIN_1}:8080"
-    printf " | %-55s %-2s|\n" "MailHog: http://${PROJECT_DOMAIN_1}:8025"
+    printf " | %-55s %-2s|\n" "phpMyAdmin: http://${PROJECT_DOMAIN_1}:${PORT_PMA}"
+    printf " | %-55s %-2s|\n" "MailHog: http://${PROJECT_DOMAIN_1}:${PORT_MAILHOG_HTTP}"
     printf " +%-55s+\n" "-----------------------------------------------------------"
 }
 
