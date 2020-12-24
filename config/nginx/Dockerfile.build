@@ -71,7 +71,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && sed -i 's#__PHP_MAX_EXECUTION_TIME__#'"${PHP_MAX_EXECUTION_TIME}"'#g' /etc/nginx/sites-available/project.conf \
     && sed -i 's#__PHP_UPLOAD_MAX_FILESIZE__#'"${PHP_UPLOAD_MAX_FILESIZE}"'#g' /etc/nginx/sites-available/project.conf \
     && ln -s /etc/nginx/sites-available/project.conf /etc/nginx/sites-enabled/project.conf \
-    && echo "upstream php-upstream { server php:9000; }" > /etc/nginx/conf.d/upstream.conf
+    && echo "upstream php-upstream { server php:${PORT_PHP}; }" > /etc/nginx/conf.d/upstream.conf
 
 CMD ["nginx", "-g", "daemon off;"]
 # required: run this command when container is launched

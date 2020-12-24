@@ -394,6 +394,8 @@ doBuild() {
       cat "${WORK_DIR}/docker/mongodb.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi
 
+    cat "${WORK_DIR}/docker/network.yml" >> "${WORK_DIR}/docker-compose.yml"
+
     COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build --parallel
 
     # Clears the screen.

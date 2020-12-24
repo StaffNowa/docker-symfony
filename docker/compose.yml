@@ -18,10 +18,6 @@ services:
     ports:
       - ${PORT_NGINX}:80
       - ${PORT_NGINX_SSL}:443
-    networks:
-      default:
-        aliases:
-          - ${PROJECT_DOMAIN_1}
     volumes:
       - ${PROJECT_PATH}:/var/www/project:cached
       - ${NGINX_LOG_PATH}:/var/log/nginx
@@ -49,6 +45,7 @@ services:
         XDEBUG_REMOTE_HOST: ${XDEBUG_REMOTE_HOST}
         XDEBUG_REMOTE_CONNECT_BACK: ${XDEBUG_REMOTE_CONNECT_BACK}
         COMPOSER_VERSION: ${COMPOSER_VERSION}
+        PORT_PHP: ${PORT_PHP}
     volumes:
       - ${PROJECT_PATH}:/var/www/project:cached
       - ${COMPOSER_PATH}/cache:/var/www/.composer/cache:cached
