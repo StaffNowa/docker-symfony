@@ -42,8 +42,11 @@ CHANGELOG for "Docker for Symfony"
     * FEATURE   [COMPOSER]      Added ability to select composer version 1.x vs 2.x
     * FEATURE   [WKHTMLTOPDF]   Added ability to select version 0.12.3, 0.12.4, 0.12.5 or 0.12.6
 
-* 1.0.13 ()
+* 1.0.13 (2020-12-25)
   * FEATURE     [PHP]           PHP 8 is available now!
   * FEATURE     [PHP]           Added imagick changes required to support PHP 8.0
   * FEATURE     [D4D]           Added phpMyAdmin auto login functionality as root user.
-  
+  * FEATURE     [D4D]           Added ability to store .env.git without credentials (.env.secret.dist)
+  * FEATURE     [D4D]           Added ability to run multiple dockers on the same time (network name external-d4d and needed to have nginx reverse proxy docker container)
+  * FEATURE     [D4D]           Added ability to see running dockers IP address, version
+  * FEATURE     [D4D]           Added ability to update main docker images from repository
