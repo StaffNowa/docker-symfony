@@ -2,6 +2,7 @@
 .env
 .env.secret
 .env.git
+docker-compose.yml
 /project
 /var
 /.composer/cache
