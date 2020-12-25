@@ -888,6 +888,56 @@ info() {
     printf " +%-55s+\n" "-----------------------------------------------------------"
 }
 
+updateImages() {
+    source ${D4D_ENV}
+
+    IMAGES=('debian:'${DEBIAN_VERSION} 'php:'${PHP_VERSION}'-fpm')
+
+    if [ "${MYSQL_INST}" = "mysql" ]; then
+        IMAGES+=('mysql:'${MYSQL_VERSION})
+    elif [ "${MYSQL_INST}" = "mariadb" ]; then
+        IMAGES+=('mariadb:'${MARIADB_VERSION})
+    fi
+
+    if [ "${MAILHOG}" = "yes" ]; then
+        IMAGES+=('mailhog/mailhog')
+    fi
+
+    if [ "${PMA}" = "yes" ]; then
+        IMAGES+=('phpmyadmin/phpmyadmin')
+    fi
+
+    if [ "${REDIS}" = "yes" ]; then
+        IMAGES+=('redis:latest')
+    fi
+
+    if [ "${RABBITMQ}" = "yes" ]; then
+        IMAGES+=('rabbitmq:'${RABBITMQ_VERSION}'-management')
+    fi
+
+    if [ "${ELASTICSEARCH}" = "yes" ]; then
+        IMAGES+=('docker.elastic.co/elasticsearch/elasticsearch:'${ELASTICSEARCH_VERSION})
+        IMAGES+=('tobias74/elasticsearch-head:6')
+    fi
+
+    if [ "${NGROK}" = "yes" ]; then
+        IMAGES+=('wernight/ngrok:latest')
+    fi
+
+    if [ "${MONGODB}" = "yes" ]; then
+        IMAGES+=('mongo:'${MONGODB_VERSION})
+    fi
+
+    if [ "${BLACKFIRE}" = "yes" ]; then
+        IMAGES+=('blackfire/blackfire')
+    fi
+
+    for i in "${IMAGES[@]}"
+    do
+      docker pull $i
+    done
+}
+
 mainHeader() {
     printf " +%-55s+\n" "-----------------------------------------------------------"
     printf " | %-55s %-2s|\n" "Docker for Symfony (PHP-FPM - NGINX - MySQL)"
@@ -961,6 +1011,8 @@ case "$1" in
     git) git
         ;;
     info) info
+        ;;
+    update_images) updateImages
         ;;
     * ) showHelp
         exit 0
