@@ -10,6 +10,8 @@ docker-compose.yml
 /user/nginx/*
 /user/.bash_history
 /user/.my.cnf
+/user/.gitconfig
+/user/.gitignore
 
 /config/mysql/d4d.cnf
 /config/nginx/d4d/*.conf
