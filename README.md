@@ -22,7 +22,7 @@ sudo usermod -aG docker ${USER}
 
 If you are running on Linux:
 ```
-base=https://github.com/docker/machine/releases/download/v0.16.0 &&
+base=https://github.com/docker/machine/releases/download/v0.16.2 &&
 curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
 sudo install /tmp/docker-machine /usr/local/bin/docker-machine
 ```
@@ -31,7 +31,7 @@ sudo install /tmp/docker-machine /usr/local/bin/docker-machine
 
 If you are running on Linux:
 ```
-sudo curl -L "https://github.com/docker/compose/releases/download/1.23.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
 ```
 
 ## Install PWGen
