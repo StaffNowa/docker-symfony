@@ -772,7 +772,7 @@ doMysqlDump() {
 
 doPrune() {
     # Remove all unused containers, networks, images (both dangling and unreferenced), and optionally, volumes.
-    docker system prune
+    docker system prune --volumes -a
 }
 
 doPasswd() {
