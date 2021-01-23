@@ -325,7 +325,7 @@ doChecks() {
 
     # Create an SSH private and public keys if we do not have it
     if [ ! -f "${SSH_KEY_PATH}/id_rsa" ]; then
-        ssh-keygen -b 4096 -t rsa -f ${SSH_KEY_PATH}/id_rsa -q -P ""
+        ssh-keygen -b 4096 -t rsa -C ${USER}@d4d.lt -f ${SSH_KEY_PATH}/id_rsa -q -P ""
     fi
 
     # Create a file if it does not exist
