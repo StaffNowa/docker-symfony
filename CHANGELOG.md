@@ -54,4 +54,4 @@ CHANGELOG for "Docker for Symfony"
 * 1.0.14 (2021)
   * FEATURE     [D4D]           Added ability to see the main docker information (docker, docker-machine, docker-compose versions), main software versions, ip addresses every container
   * FEATURE     [PHP]           PHP 8 - RabbitMQ amqp extension support
-  
+  * FEATURE     [NGINX]         nginx version update
