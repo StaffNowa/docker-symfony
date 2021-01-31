@@ -63,8 +63,13 @@ fi
 
 if [ "${RABBITMQ}" = "yes" ]; then
     PACKAGE_LIST+=('librabbitmq-dev' 'librabbitmq4')
-    PECL_INSTALL+=('amqp')
-    sed -i 's#__RABBIT_MQ__#'"\&\& echo 'extension=amqp.so' >> \$PHP_INI_DIR/conf.d/docker-php-ext-amqp.ini"'#g' config/php/Dockerfile.tmp
+    if [ "${PHP_VERSION}" != "8.0" ]; then
+        PECL_INSTALL+=('amqp')
+        sed -i 's#__RABBIT_MQ__#'"\&\& echo 'extension=amqp.so' >> \$PHP_INI_DIR/conf.d/docker-php-ext-amqp.ini"'#g' config/php/Dockerfile.tmp
+    else
+        sed -i 's#__RABBIT_MQ__#'"\&\& cd /tmp \&\& git clone https://github.com/php-amqp/php-amqp \&\& cd php-amqp \&\& phpize \&\& ./configure \&\& make \&\& make install \&\& echo 'extension=amqp.so' > /usr/local/etc/php/conf.d/docker-php-ext-amqp.ini \&\& rm -rf /tmp/php-amqp \&\& cd /tmp"'#g' config/php/Dockerfile.tmp
+    fi
+
 else
     sed -i 's#__RABBIT_MQ__\ \\#'""'#g' config/php/Dockerfile.tmp
 fi

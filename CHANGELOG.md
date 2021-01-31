@@ -50,3 +50,8 @@ CHANGELOG for "Docker for Symfony"
   * FEATURE     [D4D]           Added ability to run multiple dockers on the same time (network name external-d4d and needed to have nginx reverse proxy docker container)
   * FEATURE     [D4D]           Added ability to see running dockers IP address, version
   * FEATURE     [D4D]           Added ability to update main docker images from repository
+  
+* 1.0.14 (2021)
+  * FEATURE     [D4D]           Added ability to see the main docker information (docker, docker-machine, docker-compose versions), main software versions, ip addresses every container
+  * FEATURE     [PHP]           PHP 8 - RabbitMQ amqp extension support
+  
