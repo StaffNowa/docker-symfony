@@ -55,3 +55,4 @@ CHANGELOG for "Docker for Symfony"
   * FEATURE     [D4D]           Added ability to see the main docker information (docker, docker-machine, docker-compose versions), main software versions, ip addresses every container
   * FEATURE     [PHP]           PHP 8 - RabbitMQ amqp extension support
   * FEATURE     [NGINX]         nginx version update
+  * FEATURE     [COMPOSER]      Default composer version 2.x
