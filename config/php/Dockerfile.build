@@ -17,6 +17,8 @@ ARG XDEBUG_REMOTE_AUTOSTART
 ARG XDEBUG_REMOTE_ENABLE
 ARG XDEBUG_REMOTE_HOST
 ARG XDEBUG_REMOTE_CONNECT_BACK
+ARG XDEBUG_FILE_LINK_FORMAT
+ARG XDEBUG_IDE_KEY
 
 ARG COMPOSER_VERSION
 
@@ -37,6 +39,8 @@ RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --
     && printf '\npost_max_size = %s\n' ${PHP_UPLOAD_MAX_FILESIZE} >> $PHP_INI_DIR/conf.d/custom.ini \
     && printf '\nupload_max_filesize = %s\n' ${PHP_UPLOAD_MAX_FILESIZE} >> $PHP_INI_DIR/conf.d/custom.ini \
     && printf '\nmax_execution_time = %s\n' ${PHP_MAX_EXECUTION_TIME} >> $PHP_INI_DIR/conf.d/custom.ini \
+    && printf '\nxdebug.file_link_format = "%s"\n' ${XDEBUG_FILE_LINK_FORMAT} >> $PHP_INI_DIR/conf.d/custom.ini \
+    && printf '\nxdebug.idekey = "%s"\n' ${XDEBUG_IDE_KEY} >> $PHP_INI_DIR/conf.d/custom.ini \
     && echo 'extension=apc.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini \
     __IMAGICK__ \
     __RABBIT_MQ__ \
