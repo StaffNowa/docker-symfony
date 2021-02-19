@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOCKER_SCRIPT_VER=1.0.13
+DOCKER_SCRIPT_VER=1.0.14
 
 OS=`uname`
 WORK_DIR=`pwd`
