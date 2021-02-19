@@ -56,3 +56,4 @@ CHANGELOG for "Docker for Symfony"
   * FEATURE     [PHP]           PHP 8 - RabbitMQ amqp extension support
   * FEATURE     [NGINX]         nginx version update
   * FEATURE     [COMPOSER]      Default composer version 2.x
+  * FEATURE     [PHP]           Changed default setting for "post_max_size" and "upload_max_filesize"

@@ -1,12 +1,16 @@
 FROM phpmyadmin/phpmyadmin
 
-MAINTAINER Vasilij Dusko <vasilij@prado.lt>
+MAINTAINER Vasilij Dusko <support@d4d.lt>
 
 ARG PHP_MEMORY_LIMIT
 ARG PHP_UPLOAD_MAX_FILESIZE
 ARG DEFAULT_TIMEZONE
+ARG PHP_MAX_EXECUTION_TIME
 
 RUN printf 'memory_limit = %s\n' ${PHP_MEMORY_LIMIT} >> $PHP_INI_DIR/conf.d/phpmyadmin-misc.ini && \
+	sed -i 's#${MAX_EXECUTION_TIME}#'"${PHP_MAX_EXECUTION_TIME}"'#g' $PHP_INI_DIR/conf.d/phpmyadmin-misc.ini && \
+	sed -i 's#${MEMORY_LIMIT}#'"${PHP_MEMORY_LIMIT}"'#g' $PHP_INI_DIR/conf.d/phpmyadmin-misc.ini && \
+	sed -i 's#${UPLOAD_LIMIT}#'"${PHP_UPLOAD_MAX_FILESIZE}"'#g' $PHP_INI_DIR/conf.d/phpmyadmin-misc.ini && \
     printf 'post_max_size = %s\n' ${PHP_UPLOAD_MAX_FILESIZE} >> $PHP_INI_DIR/conf.d/phpmyadmin-custom.ini && \
     printf 'upload_max_filesize = %s\n' ${PHP_UPLOAD_MAX_FILESIZE} >> $PHP_INI_DIR/conf.d/phpmyadmin-custom.ini && \
     printf 'session.gc_maxlifetime = %s\n' 86400 >> $PHP_INI_DIR/conf.d/phpmyadmin-custom.ini && \
