@@ -318,6 +318,10 @@ doChecks() {
 
     # Ensure all folders exists
     mkdir -p ${PROJECT_PATH}
+    mkdir -p ${SF_COMMUNITY_PATH}
+    mkdir -p ${SF_COMMUNITY_PATH}/symfony
+    mkdir -p ${SF_COMMUNITY_PATH}/recipes
+    mkdir -p ${SF_COMMUNITY_PATH}/symfony-docs
     mkdir -p ${COMPOSER_PATH}
     mkdir -p ${COMPOSER_PATH}/cache
     mkdir -p ${SSH_KEY_PATH}
