@@ -415,10 +415,6 @@ doBuild() {
       cat "${WORK_DIR}/docker/rabbitmq.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi
 
-    if [ "${BLACKFIRE}" = "yes" ]; then
-      cat "${WORK_DIR}/docker/blackfire.yml" >> "${WORK_DIR}/docker-compose.yml"
-    fi
-
     if [ "${ELASTICSEARCH}" = "yes" ]; then
       cat "${WORK_DIR}/docker/elasticsearch.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi
@@ -801,11 +797,11 @@ blackfire() {
     if [ "${BLACKFIRE}" = "yes" ]; then
          if [ "${COMMAND}" = "register" ]; then
              echo "Register Blackfire..."
-             docker-compose exec -u root php blackfire-agent --register --server-id=${BLACKFIRE_SERVER_ID} --server-token=${BLACKFIRE_SERVER_TOKEN}
+             docker-compose exec -u root php blackfire agent:config --server-id=${BLACKFIRE_SERVER_ID} --server-token=${BLACKFIRE_SERVER_TOKEN}
          fi
 
          if [ "${COMMAND}" = "start" ] || [ "${COMMAND}" == "stop" ] || [ "${COMMAND}" == "restart" ]; then
-             docker-compose exec -u root php /etc/init.d/blackfire-agent ${COMMAND}
+             docker-compose exec -u root php blackfire agent:${COMMAND}
          fi
     fi
 }
