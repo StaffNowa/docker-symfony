@@ -795,14 +795,15 @@ blackfire() {
     COMMAND=$1
 
     if [ "${BLACKFIRE}" = "yes" ]; then
-         if [ "${COMMAND}" = "register" ]; then
-             echo "Register Blackfire..."
-             docker-compose exec -u root php blackfire agent:config --server-id=${BLACKFIRE_SERVER_ID} --server-token=${BLACKFIRE_SERVER_TOKEN}
-         fi
+        if [ "${COMMAND}" = "register" ]; then
+            echo "Register Blackfire..."
+            docker-compose exec -u root php blackfire agent:config --server-id=${BLACKFIRE_SERVER_ID} --server-token=${BLACKFIRE_SERVER_TOKEN}
+            docker-compose exec -u root php mkdir -p /var/run/blackfire
+        fi
 
-         if [ "${COMMAND}" = "start" ] || [ "${COMMAND}" == "stop" ] || [ "${COMMAND}" == "restart" ]; then
-             docker-compose exec -u root php blackfire agent:${COMMAND}
-         fi
+        if [ "${COMMAND}" = "start" ] || [ "${COMMAND}" == "stop" ] || [ "${COMMAND}" == "restart" ]; then
+            docker-compose exec -u root php blackfire agent:${COMMAND}
+        fi
     fi
 }
 
