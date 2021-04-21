@@ -57,3 +57,11 @@ CHANGELOG for "Docker for Symfony"
   * FEATURE     [NGINX]         nginx version update
   * FEATURE     [COMPOSER]      Default composer version 2.x
   * FEATURE     [PHP]           Changed default setting for "post_max_size" and "upload_max_filesize"
+
+* 1.0.15 (2021-04-21)
+  * FEATURE     [PHP]           PHP - enabled XSL extension.
+  * FEATURE     [PHP]           Added ability contributing to Symfony.
+  * FEATURE     [D4D]           Added ability run default container on ./d4d start.
+  * FEATURE     [NGINX]         NGINX version update.
+  * FEATURE     [PHP]           Blackfire Agent v1 to v2 upgrade.
+  
