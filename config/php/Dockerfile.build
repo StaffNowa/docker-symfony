@@ -70,6 +70,7 @@ RUN chown -R ${USER_ID}:${GROUP_ID} /var/www/.composer \
     __WKHTMLTOPDF__ \
     __PHP_IONCUBE__ \
     __BLACKFIRE__ \
+    && curl -L https://cs.symfony.com/download/php-cs-fixer-v2.phar -o /usr/bin/php-cs-fixer && chmod a+x /usr/bin/php-cs-fixer \
     && apt-get remove --purge -y gnupg1 \
     && apt-get -y --purge autoremove \
     && rm -rf /var/lib/apt/lists/*
