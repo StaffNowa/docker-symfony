@@ -427,6 +427,10 @@ doBuild() {
       cat "${WORK_DIR}/docker/mongodb.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi
 
+    if [ "${EXTERNAL_NETWORK}" = "no" ]; then
+      sed -i 's#__NGINX_NETWORKS__#'"networks:\n      default:\n        aliases:\n          - ${PROJECT_DOMAIN_1}"'#g' "${WORK_DIR}/docker-compose.yml"
+    fi
+
     if [ "${EXTERNAL_NETWORK}" = "yes" ]; then
       cat "${WORK_DIR}/docker/network.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi

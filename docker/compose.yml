@@ -19,6 +19,7 @@ services:
     ports:
       - ${PORT_NGINX}:80
       - ${PORT_NGINX_SSL}:443
+    __NGINX_NETWORKS__
     volumes:
       - ${PROJECT_PATH}:/var/www/project:cached
       - ${NGINX_LOG_PATH}:/var/log/nginx
