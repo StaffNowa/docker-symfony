@@ -64,4 +64,10 @@ CHANGELOG for "Docker for Symfony"
   * FEATURE     [D4D]           Added ability run default container on ./d4d start.
   * FEATURE     [NGINX]         NGINX version update.
   * FEATURE     [PHP]           Blackfire Agent v1 to v2 upgrade.
-  
+
+* 1.0.16 (2021-XX-XX)
+  * FEATURE     [PHP]           Added PHP-CS-Fixer implementation.
+  * FEATURE     [D4D]           Updated docker-compose version.
+  * BUGFIX      [D4D]           NGINX + PWA network issue bug fix.
+  * BUGFIX      [PHP]           PHP configuration bugfix.
+  * FEATURE     [PHP]           Added Local PHP Security Checker implementation.
