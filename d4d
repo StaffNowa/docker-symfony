@@ -719,11 +719,14 @@ start() {
     echo ""
     echo "Project URL: http://${PROJECT_DOMAIN_1}"
     echo "phpMyAdmin: http://${PROJECT_DOMAIN_1}:${PORT_PMA}"
-    echo "MailHog: http://${PROJECT_DOMAIN_1}:${PORT_MAILHOG_HTTP}"
 
-    if [ "${RABBITMQ}" = "yes" ] || [ "${ELASTICSEARCH}" = "yes" ]; then
+    if [ "${MAILHOG}" = "yes" ] || [ "${RABBITMQ}" = "yes" ] || [ "${ELASTICSEARCH}" = "yes" ]; then
         echo ""
         echo "Extra features:"
+    fi
+
+    if [ "${MAILHOG}" = "yes" ]; then
+        echo "MailHog: http://${PROJECT_DOMAIN_1}:${PORT_MAILHOG_HTTP}"
     fi
 
     if [ "${RABBITMQ}" = "yes" ]; then
@@ -867,7 +870,6 @@ info() {
     IP_PHP=`getContainerIpAddress php`
     IP_MYSQL=`getContainerIpAddress mysql`
     IP_PMA=`getContainerIpAddress phpmyadmin`
-    IP_MAILHOG=`getContainerIpAddress mailhog`
 
     NGINX_INFO=`docker-compose exec nginx dpkg -s nginx | grep -oP '(?<=Version: ).*(?=~)' | cut -d' ' -f2 | tr -d "\r\n"`
 
@@ -894,7 +896,6 @@ info() {
     printf " | %-55s %-2s|\n" "NGINX: ${IP_NGINX}"
     printf " | %-55s %-2s|\n" "PHP: ${IP_PHP}"
     printf " | %-55s %-2s|\n" "MySQL: ${IP_MYSQL}"
-    printf " | %-55s %-2s|\n" "MailHog: ${IP_MAILHOG}"
     printf " | %-55s %-2s|\n" "phpMyAdmin: ${IP_PMA}"
     printf " +%-55s+\n" "-----------------------------------------------------------"
 }
