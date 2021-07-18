@@ -71,3 +71,9 @@ CHANGELOG for "Docker for Symfony"
   * BUGFIX      [D4D]           NGINX + PWA network issue bug fix.
   * BUGFIX      [PHP]           PHP configuration bugfix.
   * FEATURE     [PHP]           Added Local PHP Security Checker implementation.
+  * FEATURE     [NGINX]         NGINX version update.
+  * FEATURE     [COMPOSER]      Composer version update.
+  * FEATURE     [MySQL]         Default MySQL version as MariaDB.
+  * FEATURE     [D4D]           Added webpack-analyzer.
+  * FEATURE     [NGINX]         NGINX version update.
+  * FEATURE     [D4D]           Added Symfony CLI implementation.
