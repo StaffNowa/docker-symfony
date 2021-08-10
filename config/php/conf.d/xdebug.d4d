@@ -9,4 +9,4 @@ xdebug.output_dir = /tmp/xdebug
 xdebug.client_port = __PHP_XDEBUG_CLIENT_PORT__
 xdebug.remote_handler = dbgp
 xdebug.start_with_request = __PHP_XDEBUG_START_WITH_REQUEST__
-xdebug.mode = debug
+xdebug.mode = coverage,debug,develop
