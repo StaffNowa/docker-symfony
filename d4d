@@ -203,7 +203,7 @@ PMA_AUTO_LOGIN_DESC="phpMyAdmin auto login"
 
 # Help sections
 HELP_SECTIONS="DOCKER_RUN DOCKER_MYSQL DOCKER_PASSWD D4D_UPDATE DOCKER_D4D"
-DOCKER_RUN_SET="install uninstall start stop restart exec logs prune"
+DOCKER_RUN_SET="install uninstall start stop restart exec logs prune update_images"
 DOCKER_RUN_DESC="Docker for Symfony (PHP-FPM - NGINX - MySQL)"
 DOCKER_RUN_REQADD="start stop exec logs prune"
 START_ADDIT=""
