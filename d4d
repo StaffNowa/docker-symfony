@@ -871,7 +871,7 @@ info() {
     IP_MYSQL=`getContainerIpAddress mysql`
     IP_PMA=`getContainerIpAddress phpmyadmin`
 
-    NGINX_INFO=`docker-compose exec nginx dpkg -s nginx | grep -oP '(?<=Version: ).*(?=~)' | cut -d' ' -f2 | tr -d "\r\n"`
+    NGINX_INFO=`docker-compose exec nginx dpkg -s nginx | grep -oP '(?<=Version: )([0-9]{1,2}(\.[0-9]*){2})(?=.*)' | cut -d' ' -f2 | tr -d "\r\n"`
 
     if [ "${MYSQL_INST}" = "mysql" ]; then
         if [ "${MYSQL_VERSION}" != "8.0" ]; then
