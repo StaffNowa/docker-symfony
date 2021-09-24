@@ -85,7 +85,7 @@ if [ "${SUPERVISOR}" = "yes" ]; then
     PACKAGE_LIST+=('supervisor')
 fi
 
-NPM_INSTALL_GLOBAL=('grunt-cli' 'yargs' 'async' 'sass' 'gulp' 'requirejs' 'pm2' 'uglify-js' 'typescript')
+NPM_INSTALL_GLOBAL=('grunt-cli' 'yargs' 'async' 'sass' 'gulp' 'requirejs' 'pm2' 'uglify-js' 'typescript' 'eslint')
 
 if [ "${XDEBUG}" = "yes" ]; then
     if [ "${PHP_VERSION}" != "5.6" ] && [ "${PHP_VERSION}" != "7.0" ]; then
