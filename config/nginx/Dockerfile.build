@@ -44,12 +44,10 @@ RUN apt-get update \
 						nano \
 	&& rm -rf /var/lib/apt/lists/*
 
-ADD project.conf /etc/nginx/sites-available/
-ADD rewrite/project.conf /etc/nginx/rewrite/
-ADD d4d/cache.conf /etc/nginx/d4d/cache.conf
-ADD d4d/sf.conf /etc/nginx/d4d/
-ADD d4d/pwa.conf /etc/nginx/d4d/
-ADD d4d/wp.conf /etc/nginx/d4d/
+COPY project.conf /etc/nginx/sites-available/
+COPY rewrite/project.conf /etc/nginx/rewrite/
+
+COPY ["d4d/cache.conf", "d4d/sf.conf", "d4d/pwa.conf", "d4d/wp.conf", "/etc/nginx/d4d/"]
 
 __D4D_PEM__
 __D4D_KEY_PEM__
