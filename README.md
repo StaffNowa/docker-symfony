@@ -112,7 +112,6 @@ wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2
         $ sf6 doctrine:schema:update --force
         # Only if you have `doctrine/doctrine-fixtures-bundle` installed
         $ sf6 doctrine:fixtures:load --no-interaction
-
        ```
 5. Enjoy :-)
     
