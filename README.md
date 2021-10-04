@@ -18,20 +18,11 @@ adding your user to the "docker" group with something like:
 sudo usermod -aG docker ${USER}
 ```
 
-## Install the latest Docker Machine
-
-If you are running on Linux:
-```
-base=https://github.com/docker/machine/releases/download/v0.16.2 &&
-curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine &&
-sudo install /tmp/docker-machine /usr/local/bin/docker-machine
-```
-
 ## Install the latest Docker Compose
 
 If you are running on Linux:
 ```
-sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.0.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
 ```
 
 ## Install PWGen
