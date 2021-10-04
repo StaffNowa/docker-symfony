@@ -73,7 +73,7 @@ wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2
             database_password: db_password (random password)
         ```
     
-        b) SF4, SF5: .env
+        b) SF4, SF5, SF6: .env
         ```
         DATABASE_URL=mysql://db_user:db_password@mysql:3306/db_name
         MAILER_URL=smtp://mailhog:1025
@@ -106,6 +106,13 @@ wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2
         $ sf5 doctrine:schema:update --force
         # Only if you have `doctrine/doctrine-fixtures-bundle` installed
         $ sf5 doctrine:fixtures:load --no-interaction
+       
+        # Symfony 6
+        $ sf6 doctrine:database:create
+        $ sf6 doctrine:schema:update --force
+        # Only if you have `doctrine/doctrine-fixtures-bundle` installed
+        $ sf6 doctrine:fixtures:load --no-interaction
+
        ```
 5. Enjoy :-)
     
