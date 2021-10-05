@@ -77,3 +77,16 @@ CHANGELOG for "Docker for Symfony"
   * FEATURE     [D4D]           Added webpack-analyzer.
   * FEATURE     [NGINX]         NGINX version update.
   * FEATURE     [D4D]           Added Symfony CLI implementation.
+
+* 1.0.17 (2021-10-05)
+  * FEATURE     [RabbitMQ]      Updated RabbitMQ version.
+  * FEATURE     [D4D]           Updated Symfony CLI version.
+  * FEATURE     [NGINX]         Updated Nginx version.
+  * BUGFIX      [D4D]           MySQL 8.0 version not shown issue fix.
+  * FEATURE     [D4D]           Docker code optimization.
+  * FEATURE     [MariaDB]       Updated MariaDB version.
+  * FEATURE     [D4D]           Updated composer version.
+  * FEATURE     [PHP]           Added eslint implementation.
+  * FEATURE     [PHP]           Added PHPStan integration.
+  * FEATURE     [NGINX]         Nginx layer optimization.
+  * FEATURE     [D4D]           mysql_dump.sh allow non-root user.
