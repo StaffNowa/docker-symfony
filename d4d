@@ -80,7 +80,7 @@ getContainerName() {
   # $1 is option name
 
   CURRENT_DIR=`basename ${WORK_DIR}`
-  CONTAINER_NAME="${CURRENT_DIR}_${1}_1"
+  CONTAINER_NAME="${CURRENT_DIR}-${1}-1"
 
   echo ${CONTAINER_NAME}
 }
