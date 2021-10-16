@@ -539,9 +539,6 @@ doCheckPackage() {
                     fi
                 fi
                 ;;
-            docker-machine)
-                base=https://github.com/docker/machine/releases/download/v0.16.2 && curl -L $base/docker-machine-$(uname -s)-$(uname -m) >/tmp/docker-machine && sudo install /tmp/docker-machine /usr/local/bin/docker-machine
-                ;;
             docker-compose)
                 sudo curl -L "https://github.com/docker/compose/releases/download/v2.0.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
                 ;;
@@ -585,9 +582,6 @@ doRemovePackage() {
 		        else
 			        yum remove docker-ce docker-ce-cli
 		        fi
-                ;;
-            docker-machine)
-                rm /usr/local/bin/docker-machine
                 ;;
             docker-compose)
                 rm /usr/local/bin/docker-compose
@@ -637,9 +631,6 @@ doInstall() {
     # Install the latest Docker CE version
     doCheckPackage docker
 
-    # Install the latest Docker Machine
-    doCheckPackage docker-machine
-
     # Install the latest Docker Compose
     doCheckPackage docker-compose
 
@@ -666,9 +657,6 @@ doUninstall() {
 
     # Remove Docker CE
     doRemovePackage docker
-
-    # Remove Docker Machine
-    doRemovePackage docker-machine
 
     # Remove Docker Compose
     doRemovePackage docker-compose
@@ -895,7 +883,6 @@ info() {
     mainHeader
     printf " | %-55s %-2s|\n" "Docker Information:"
     printf " | %-55s %-2s|\n" "`docker --version`"
-    printf " | %-55s %-2s|\n" "`docker-machine --version`"
     printf " | %-55s %-2s|\n" "`docker-compose --version`"
     printf " +%-55s+\n" "-----------------------------------------------------------"
     printf " | %-55s %-2s|\n" "D4D Information:"
