@@ -768,6 +768,23 @@ doMysqlDump() {
     docker-compose exec mysql bash /tmp/db/mysql_dump.sh
 }
 
+doDockerBackup() {
+    if [ "$(id -u)" != "0" ]; then
+  	    echo "You must be root to execute the script. Exiting."
+        exit 1
+    fi
+
+    if [ "${OS_CENTOS_VERSION}" = "6" ]; then
+        echo "Unsupported distribution. Exiting."
+        exit 1
+    fi
+
+    PROJECT_DIR="`basename ${WORK_DIR}`"
+    FILE_NAME="${PROJECT_DIR}_$(date +%Y%m%d_%H%M%S).tar.gz"
+
+    tar -zcf "../${FILE_NAME}" --exclude={"${PROJECT_DIR}/project/vendor","${PROJECT_DIR}/project/node_modules","${PROJECT_DIR}/project/var/cache","${PROJECT_DIR}/project/var/log","${PROJECT_DIR}/symfony"} "../${PROJECT_DIR}"
+}
+
 doPrune() {
     # Remove all unused containers, networks, images (both dangling and unreferenced), and optionally, volumes.
     docker system prune --volumes -a
@@ -1005,6 +1022,8 @@ case "$1" in
     prune) doPrune
         ;;
     mysql_dump) doMysqlDump
+        ;;
+    docker_backup) doDockerBackup
         ;;
     passwd) doPasswd $2
         ;;
