@@ -90,3 +90,17 @@ CHANGELOG for "Docker for Symfony"
   * FEATURE     [PHP]           Added PHPStan integration.
   * FEATURE     [NGINX]         Nginx layer optimization.
   * FEATURE     [D4D]           mysql_dump.sh allow non-root user.
+
+* 1.0.18 ()
+  * FEATURE     [COMPOSER]      Updated composer version.
+  * FEATURE     [D4D]           Added Deployer.org implementation.
+  * FEATURE     [D4D]           Removed docker-machine from installation script.
+  * BUGFIX      [D4D]           Fix container`s IP addresses.
+  * FEATURE     [D4D]           Added docker container backup implementation.
+  * FEATURE     [RabbitMQ]      Updated RabbitMQ version.
+  * FEATURE     [PHP]           Updated Symfony CLI version.
+  * FEATURE     [D4D]           Updated D4D installation script.
+  * FEATURE     [NGINX]         Updated Nginx version.
+  * FEATURE     [PHP]           Updated PHPStan version.
+  * FEATURE     [PHP]           Updated default PHP version.
+  * FEATURE     [PHP]           Updated Local PHP Security Checker version.
