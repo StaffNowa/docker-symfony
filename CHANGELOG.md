@@ -91,7 +91,7 @@ CHANGELOG for "Docker for Symfony"
   * FEATURE     [NGINX]         Nginx layer optimization.
   * FEATURE     [D4D]           mysql_dump.sh allow non-root user.
 
-* 1.0.18 ()
+* 1.0.18 (2021-12-22)
   * FEATURE     [COMPOSER]      Updated composer version.
   * FEATURE     [D4D]           Added Deployer.org implementation.
   * FEATURE     [D4D]           Removed docker-machine from installation script.
