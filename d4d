@@ -500,6 +500,8 @@ doBuildMySQLConf() {
     sed -i 's#__MYSQL_MAX_ALLOWED_PACKET__#'"${MYSQL_MAX_ALLOWED_PACKET}"'#g' config/mysql/d4d.cnf.tmp
     sed -i 's#__MYSQL_INNODB_LOG_FILE_SIZE__#'"${MYSQL_INNODB_LOG_FILE_SIZE}"'#g' config/mysql/d4d.cnf.tmp
     sed -i 's#__MYSQL_WAIT_TIMEOUT__#'"${MYSQL_WAIT_TIMEOUT}"'#g' config/mysql/d4d.cnf.tmp
+    sed -i 's#__MYSQL_CHARACTER_SET_SERVER__#'"${MYSQL_CHARACTER_SET_SERVER}"'#g' config/mysql/d4d.cnf.tmp
+    sed -i 's#__MYSQL_COLLATION_SERVER__#'"${MYSQL_COLLATION_SERVER}"'#g' config/mysql/d4d.cnf.tmp
     cp config/mysql/d4d.cnf.tmp config/mysql/d4d.cnf
 
     rm config/mysql/d4d.cnf.tmp
