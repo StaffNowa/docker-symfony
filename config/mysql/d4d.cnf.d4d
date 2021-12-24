@@ -3,7 +3,7 @@ max_allowed_packet=__MYSQL_MAX_ALLOWED_PACKET__
 innodb_log_file_size=__MYSQL_INNODB_LOG_FILE_SIZE__
 wait_timeout=__MYSQL_WAIT_TIMEOUT__
 
-init_connect=‘SET collation_connection = __MYSQL_COLLATION_SERVER__’
+#init_connect=‘SET collation_connection = __MYSQL_COLLATION_SERVER__’
 character-set-server = __MYSQL_CHARACTER_SET_SERVER__
 collation-server = __MYSQL_COLLATION_SERVER__
 
