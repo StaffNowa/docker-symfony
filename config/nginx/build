@@ -12,21 +12,42 @@ chmod 700 ${WORK_DIR} >/dev/null 2>&1
 
 source ${WORK_DIR}/.env
 
+# stream editor (sed)
+function replace_in_file() {
+    if [ "$OS" = 'Darwin' ]; then
+        # for MacOS
+        sed -i '' "$1" "$2"
+    else
+        # for Linux and Windows
+        sed -i'' "$1" "$2"
+    fi
+}
+
+function remove_duplicate() {
+    if [ "$OS" = 'Darwin' ]; then
+        # for MacOS
+        sed -i '$!N; /^\(.*\)\n\1$/!P; D' "$1"
+    else
+        # for Linux and Windows
+        sed -i'' '$!N; /^\(.*\)\n\1$/!P; D' "$1"
+    fi
+}
+
 cp config/nginx/Dockerfile.build config/nginx/Dockerfile.tmp
 
-sed -i 's#__DEBIAN_VERSION__#'"${DEBIAN_VERSION}"'#g' config/nginx/Dockerfile.tmp
+$(replace_in_file 's,__DEBIAN_VERSION__,'"${DEBIAN_VERSION}"',' "config/nginx/Dockerfile.tmp")
 
 mkdir -p config/nginx/ssl
 cp -R user/nginx/ssl/* config/nginx/ssl/ 2>/dev/null # No error message gets printed
 
 if [ "${NGINX_SSL}" = "yes" ]; then
-    sed -i 's#__D4D_SSL__#'"COPY [\"ssl/d4d.pem\", \"ssl/d4d-key.pem\", \"/etc/nginx/ssl/\"]"'#g' config/nginx/Dockerfile.tmp
+    $(replace_in_file 's,__D4D_SSL__,'"COPY [\"ssl/d4d.pem\"\, \"ssl/d4d-key.pem\"\, \"/etc/nginx/ssl/\"]"',' "config/nginx/Dockerfile.tmp")
 else
-    sed -i 's#__D4D_SSL__#'""'#g' config/nginx/Dockerfile.tmp
+    $(replace_in_file 's,__D4D_SSL__,'""',' "config/nginx/Dockerfile.tmp")
 fi
 
 # Remove duplicate
-sed -i '$!N; /^\(.*\)\n\1$/!P; D' config/nginx/Dockerfile.tmp
+$(remove_duplicate "config/nginx/Dockerfile.tmp")
 
 cp config/nginx/Dockerfile.tmp config/nginx/Dockerfile
 rm config/nginx/Dockerfile.tmp
