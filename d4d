@@ -402,9 +402,9 @@ doChecks() {
          PMA_MYSQL_PASSWORD=
      fi
 
-     sed -i 's#__AUTH_TYPE__#'"${PMA_AUTH_TYPE}"'#g' config/phpmyadmin/config.user.inc.php.tmp
-     sed -i 's#__MYSQL_USER__#'"${PMA_MYSQL_USER}"'#g' config/phpmyadmin/config.user.inc.php.tmp
-     sed -i 's#__MYSQL_PASSWORD__#'"${PMA_MYSQL_PASSWORD}"'#g' config/phpmyadmin/config.user.inc.php.tmp
+     $(replace_in_file 's,__AUTH_TYPE__,'"${PMA_AUTH_TYPE}"',' "config/phpmyadmin/config.user.inc.php.tmp")
+     $(replace_in_file 's,__MYSQL_USER__,'"${PMA_MYSQL_USER}"',' "config/phpmyadmin/config.user.inc.php.tmp")
+     $(replace_in_file 's,__MYSQL_PASSWORD__,'"${PMA_MYSQL_PASSWORD}"',' "config/phpmyadmin/config.user.inc.php.tmp")
 
      cp config/phpmyadmin/config.user.inc.php.tmp config/phpmyadmin/config.user.inc.php
      rm config/phpmyadmin/config.user.inc.php.tmp
@@ -428,27 +428,27 @@ doBuild() {
     fi
 
     if [ "${REDIS}" = "yes" ]; then
-      cat "${WORK_DIR}/docker/redis.yml" >> "${WORK_DIR}/docker-compose.yml"
+        cat "${WORK_DIR}/docker/redis.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi
 
     if [ "${RABBITMQ}" = "yes" ]; then
-      cat "${WORK_DIR}/docker/rabbitmq.yml" >> "${WORK_DIR}/docker-compose.yml"
+        cat "${WORK_DIR}/docker/rabbitmq.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi
 
     if [ "${ELASTICSEARCH}" = "yes" ]; then
-      cat "${WORK_DIR}/docker/elasticsearch.yml" >> "${WORK_DIR}/docker-compose.yml"
+        cat "${WORK_DIR}/docker/elasticsearch.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi
 
     if [ "${NGROK}" = "yes" ]; then
-      cat "${WORK_DIR}/docker/ngrok.yml" >> "${WORK_DIR}/docker-compose.yml"
+        cat "${WORK_DIR}/docker/ngrok.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi
 
     if [ "${MONGODB}" = "yes" ]; then
-      cat "${WORK_DIR}/docker/mongodb.yml" >> "${WORK_DIR}/docker-compose.yml"
+        cat "${WORK_DIR}/docker/mongodb.yml" >> "${WORK_DIR}/docker-compose.yml"
     fi
 
     if [ "${EXTERNAL_NETWORK}" = "no" ] || [ "${EXTERNAL_NETWORK}" = "yes" ]; then
-      sed -i 's#__NGINX_NETWORKS__#'"networks:\n      default:\n        aliases:\n          - ${PROJECT_DOMAIN_1}"'#g' "${WORK_DIR}/docker-compose.yml"
+        $(replace_in_file 's,__NGINX_NETWORKS__,'"networks:\n      default:\n        aliases:\n          - ${PROJECT_DOMAIN_1}"',' "${WORK_DIR}/docker-compose.yml")
     fi
 
     if [ "${EXTERNAL_NETWORK}" = "yes" ]; then
@@ -471,37 +471,37 @@ doBuildNginxConf() {
     fi
 
     if [ "${PROJECT_TYPE}" = "SF" ]; then
-        sed -i 's#__INCLUDE__#'"/etc/nginx/d4d/sf.conf"'#g' config/nginx/project.conf.tmp
+        $(replace_in_file 's,__INCLUDE__,'"/etc/nginx/d4d/sf.conf"',' "config/nginx/project.conf.tmp")
     fi
 
     if [ "${PROJECT_TYPE}" = "SF_PWA" ]; then
-        sed -i 's#__INCLUDE__#'"/etc/nginx/d4d/pwa.conf"'#g' config/nginx/project.conf.tmp
+        $(replace_in_file 's,__INCLUDE__,'"/etc/nginx/d4d/pwa.conf"',' "config/nginx/project.conf.tmp")
     fi
 
     if [ "${PROJECT_TYPE}" = "WP" ]; then
-        sed -i 's#__INCLUDE__#'"/etc/nginx/d4d/wp.conf"'#g' config/nginx/project.conf.tmp
-        sed -i 's#location .*{#'"location ~ .php$ {"'#g' config/nginx/project.conf.tmp
+        $(replace_in_file 's,__INCLUDE__,'"/etc/nginx/d4d/wp.conf"',' "config/nginx/project.conf.tmp")
+        $(replace_in_file 's,location .*{,'"location ~ .php$ {"',' "config/nginx/project.conf.tmp")
     fi
 
-    sed -i 's#__NGINX_FASTCGI_BUFFERS__#'"${NGINX_FASTCGI_BUFFERS}"'#g' config/nginx/project.conf.tmp
-    sed -i 's#__NGINX_FASTCGI_BUFFER_SIZE__#'"${NGINX_FASTCGI_BUFFER_SIZE}"'#g' config/nginx/project.conf.tmp
+    $(replace_in_file 's,__NGINX_FASTCGI_BUFFERS__,'"${NGINX_FASTCGI_BUFFERS}"',' "config/nginx/project.conf.tmp")
+    $(replace_in_file 's,__NGINX_FASTCGI_BUFFER_SIZE__,'"${NGINX_FASTCGI_BUFFER_SIZE}"',' "config/nginx/project.conf.tmp")
 
     cp config/nginx/project.conf.tmp config/nginx/project.conf
     rm config/nginx/project.conf.tmp
 
     cp config/nginx/d4d/pwa.conf.default config/nginx/d4d/pwa.conf.default.tmp
-    sed -i 's#__SF_PATH__#'"${SF_PATH}"'#g' config/nginx/d4d/pwa.conf.default.tmp
-    sed -i 's#__SYMFONY_FRONT_CONTROLLER__#'"${SYMFONY_FRONT_CONTROLLER}"'#g' config/nginx/d4d/pwa.conf.default.tmp
+    $(replace_in_file 's,__SF_PATH__,'"${SF_PATH}"',' "config/nginx/d4d/pwa.conf.default.tmp")
+    $(replace_in_file 's,__SYMFONY_FRONT_CONTROLLER__,'"${SYMFONY_FRONT_CONTROLLER}"',' "config/nginx/d4d/pwa.conf.default.tmp")
     cp config/nginx/d4d/pwa.conf.default.tmp config/nginx/d4d/pwa.conf
     rm config/nginx/d4d/pwa.conf.default.tmp
 
     cp config/nginx/d4d/sf.conf.default config/nginx/d4d/sf.conf.default.tmp
-    sed -i 's#__SYMFONY_FRONT_CONTROLLER__#'"${SYMFONY_FRONT_CONTROLLER}"'#g' config/nginx/d4d/sf.conf.default.tmp
+    $(replace_in_file 's,__SYMFONY_FRONT_CONTROLLER__,'"${SYMFONY_FRONT_CONTROLLER}"',' "config/nginx/d4d/sf.conf.default.tmp")
     cp config/nginx/d4d/sf.conf.default.tmp config/nginx/d4d/sf.conf
     rm config/nginx/d4d/sf.conf.default.tmp
 
     cp config/nginx/d4d/wp.conf.default config/nginx/d4d/wp.conf.default.tmp
-    sed -i 's#__SYMFONY_FRONT_CONTROLLER__#'"${SYMFONY_FRONT_CONTROLLER}"'#g' config/nginx/d4d/wp.conf.default.tmp
+    $(replace_in_file 's,__SYMFONY_FRONT_CONTROLLER__,'"${SYMFONY_FRONT_CONTROLLER}"',' "config/nginx/d4d/wp.conf.default.tmp")
     cp config/nginx/d4d/wp.conf.default.tmp config/nginx/d4d/wp.conf
     rm config/nginx/d4d/wp.conf.default.tmp
 
@@ -511,18 +511,18 @@ doBuildNginxConf() {
         NGINX_INCLUDE_CACHE="include /etc/nginx/d4d/cache.conf;"
     fi
 
-    sed -i 's#__INCLUDE_CACHE__#'"${NGINX_INCLUDE_CACHE}"'#g' config/nginx/project.conf
+    $(replace_in_file 's,__INCLUDE_CACHE__,'"${NGINX_INCLUDE_CACHE}"',' "config/nginx/project.conf")
 }
 
 doBuildMySQLConf() {
     source ${D4D_ENV}
 
     cp config/mysql/d4d.cnf.d4d config/mysql/d4d.cnf.tmp
-    sed -i 's#__MYSQL_MAX_ALLOWED_PACKET__#'"${MYSQL_MAX_ALLOWED_PACKET}"'#g' config/mysql/d4d.cnf.tmp
-    sed -i 's#__MYSQL_INNODB_LOG_FILE_SIZE__#'"${MYSQL_INNODB_LOG_FILE_SIZE}"'#g' config/mysql/d4d.cnf.tmp
-    sed -i 's#__MYSQL_WAIT_TIMEOUT__#'"${MYSQL_WAIT_TIMEOUT}"'#g' config/mysql/d4d.cnf.tmp
-    sed -i 's#__MYSQL_CHARACTER_SET_SERVER__#'"${MYSQL_CHARACTER_SET_SERVER}"'#g' config/mysql/d4d.cnf.tmp
-    sed -i 's#__MYSQL_COLLATION_SERVER__#'"${MYSQL_COLLATION_SERVER}"'#g' config/mysql/d4d.cnf.tmp
+    $(replace_in_file 's,__MYSQL_MAX_ALLOWED_PACKET__,'"${MYSQL_MAX_ALLOWED_PACKET}"',' "config/mysql/d4d.cnf.tmp")
+    $(replace_in_file 's,__MYSQL_INNODB_LOG_FILE_SIZE__,'"${MYSQL_INNODB_LOG_FILE_SIZE}"',' "config/mysql/d4d.cnf.tmp")
+    $(replace_in_file 's,__MYSQL_WAIT_TIMEOUT__,'"${MYSQL_WAIT_TIMEOUT}"',' "config/mysql/d4d.cnf.tmp")
+    $(replace_in_file 's,__MYSQL_CHARACTER_SET_SERVER__,'"${MYSQL_CHARACTER_SET_SERVER}"',' "config/mysql/d4d.cnf.tmp")
+    $(replace_in_file 's,__MYSQL_COLLATION_SERVER__,'"${MYSQL_COLLATION_SERVER}"',' "config/mysql/d4d.cnf.tmp")
     cp config/mysql/d4d.cnf.tmp config/mysql/d4d.cnf
 
     rm config/mysql/d4d.cnf.tmp
@@ -887,7 +887,14 @@ allSettings() {
 
 git() {
     awk 'NR==1,/.env.secret/' ${D4D_ENV} > ${WORK_DIR}/.env.git
-    sed -i '$d' ${WORK_DIR}/.env.git
+
+    if [ "$OS" = 'Darwin' ]; then
+        # for MacOS
+        sed -i '' '$d' ${WORK_DIR}/.env.git
+    else
+        # for Linux and Windows
+        sed -i'' '$d' ${WORK_DIR}/.env.git
+    fi
 }
 
 info() {
