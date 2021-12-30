@@ -2,6 +2,7 @@
 
 # This script will prepare a Dockerfile
 
+OS=`uname`
 WORK_DIR=$(pwd)
 
 cd ${WORK_DIR}
@@ -26,7 +27,7 @@ function replace_in_file() {
 function remove_duplicate() {
     if [ "$OS" = 'Darwin' ]; then
         # for MacOS
-        sed -i '$!N; /^\(.*\)\n\1$/!P; D' "$1"
+        sed -i '' '$!N; /^\(.*\)\n\1$/!P; D' "$1"
     else
         # for Linux and Windows
         sed -i'' '$!N; /^\(.*\)\n\1$/!P; D' "$1"
