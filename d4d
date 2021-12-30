@@ -31,6 +31,27 @@ if [ ! -e ${D4D_ENV} ]; then
   cp "${D4D_ENV}" "${ENV}"
 fi
 
+# stream editor (sed)
+function replace_in_file() {
+    if [ "$OS" = 'Darwin' ]; then
+        # for MacOS
+        sed -i '' "$1" "$2"
+    else
+        # for Linux and Windows
+        sed -i'' "$1" "$2"
+    fi
+}
+
+function remove_duplicate() {
+    if [ "$OS" = 'Darwin' ]; then
+        # for MacOS
+        sed -i '' '$!N; /^\(.*\)\n\1$/!P; D' "$1"
+    else
+        # for Linux and Windows
+        sed -i'' '$!N; /^\(.*\)\n\1$/!P; D' "$1"
+    fi
+}
+
 # Emulate ${!variable}
 eval_var() {
     var=${1}
@@ -299,12 +320,12 @@ doChecks() {
     TMP_GROUP_ID=`id -g`
 
     # Always validate user id and group id before start using .env file
-    sed -i 's#USER_ID=.*#'"USER_ID=${TMP_USER_ID}"'#g' ${D4D_ENV}
-    sed -i 's#GROUP_ID=.*#'"GROUP_ID=${TMP_USER_ID}"'#g' ${D4D_ENV}
-    sed -i 's#MYSQL_ROOT_PASSWORD=root#'"MYSQL_ROOT_PASSWORD=`pwgen -s 20 1`"'#g' ${ENV_SECRET}
-    sed -i 's#MYSQL_PASSWORD=db_password#'"MYSQL_PASSWORD=`pwgen -s 20 1`"'#g' ${ENV_SECRET}
-    sed -i 's#MONGODB_ROOT_PASSWORD=root#'"MONGODB_ROOT_PASSWORD=`pwgen -s 20 1`"'#g' ${ENV_SECRET}
-    sed -i 's#MONGODB_PASSWORD=db_password#'"MONGODB_PASSWORD=`pwgen -s 20 1`"'#g' ${ENV_SECRET}
+    $(replace_in_file 's,USER_ID=.*,'"USER_ID=${TMP_USER_ID}"',' "${D4D_ENV}")
+    $(replace_in_file 's,GROUP_ID=.*,'"GROUP_ID=${TMP_USER_ID}"',' "${D4D_ENV}")
+    $(replace_in_file 's,MYSQL_ROOT_PASSWORD=root,'"MYSQL_ROOT_PASSWORD=`pwgen -s 20 1`"',' "${D4D_ENV}")
+    $(replace_in_file 's,MYSQL_PASSWORD=db_password,'"MYSQL_PASSWORD=`pwgen -s 20 1`"',' "${D4D_ENV}")
+    $(replace_in_file 's,MONGODB_ROOT_PASSWORD=root,'"MONGODB_ROOT_PASSWORD=`pwgen -s 20 1`"',' "${D4D_ENV}")
+    $(replace_in_file 's,MONGODB_PASSWORD=db_password,'"MONGODB_PASSWORD=`pwgen -s 20 1`"',' "${D4D_ENV}")
 
     IN_IN_FILE=$(cat ${D4D_ENV} | grep -c ".env.secret")
     if [ ${IN_IN_FILE} -eq 0 ]; then
