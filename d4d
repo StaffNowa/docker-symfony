@@ -910,22 +910,20 @@ info() {
     case "${MYSQL_INST}" in
         mysql)
             if [ "${MYSQL_VERSION}" != "8.0" ]; then
-                MYSQL_PACKAGE='mysql-server'
+               MYSQL_INFO=`docker-compose exec mysql dpkg -s mysql-server | grep '^Version' | cut -d ':' -f2 | cut -d ' ' -f2 | cut -d '-' -f1`
             else
-                MYSQL_PACKAGE='mysql-common'
+                MYSQL_INFO=`docker-compose exec mysql dpkg -s mysql-common | grep '^Version' | cut -d ':' -f2 | cut -d ' ' -f2 | cut -d '-' -f1`
             fi
             ;;
         mariadb)
-            MYSQL_PACKAGE='mariadb-server'
+            MYSQL_INFO=`docker-compose exec mysql dpkg -s mariadb-server | grep '^Version' | cut -d ':' -f3 | cut -d '+' -f1`
             ;;
         * )
-            MYSQL_PACKAGE='mysql-server'
+            MYSQL_INFO=`docker-compose exec mysql dpkg -s mysql-server | grep '^Version' | cut -d ':' -f2 | cut -d ' ' -f2 | cut -d '-' -f1`
             ;;
     esac
 
-    MYSQL_INFO=`docker-compose exec mysql dpkg -s ${MYSQL_PACKAGE} | grep -oP 'Version: (1:)?\K([0-9]{1,2}(\.[0-9]*){2})(?=.*)' | cut -d' ' -f2 | tr -d "\r\n"`
-
-    PHP_INFO=`docker-compose exec php php -v | grep -oP '(?<=PHP ).*(?= \(cli\))' | cut -d' ' -f2 | tr -d "\r\n"`
+    PHP_INFO=`docker-compose exec php php -v | grep '^PHP' | cut -d ' ' -f2 | tr -d "\r\n"`
 
     mainHeader
     printf " | %-55s %-2s|\n" "Docker Information:"
