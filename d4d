@@ -103,7 +103,13 @@ getContainerName() {
   # $1 is option name
 
   CURRENT_DIR=`basename ${WORK_DIR}`
-  CONTAINER_NAME="${CURRENT_DIR}-${1}-1"
+  if [ "$OS" = 'Darwin' ]; then
+      # for MacOS
+      CONTAINER_NAME="${CURRENT_DIR}_${1}_1"
+  else
+      # for Linux and Windows
+      CONTAINER_NAME="${CURRENT_DIR}-${1}-1"
+  fi
 
   echo ${CONTAINER_NAME}
 }
