@@ -48,7 +48,7 @@ if [ "${PHP_VERSION}" != "8.0" ] && [ "${PHP_VERSION}" != "8.1" ]; then
 fi
 
 if [ "${PHP_VERSION}" = "5.6" ] || [ "${PHP_VERSION}" = "8.0" ] || [ "${PHP_VERSION}" = "8.1" ]; then
-    $(replace_in_file 's,\&\& echo 'extension=apc.so' >> \$PHP_INI_DIR\/conf.d\/docker\-php\-ext\-apcu.ini,'""',' "config/php/Dockerfile.tmp")
+    $(replace_in_file 's,\&\& echo \'\'extension=apc.so\'\ \>\>\ \$PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini\ \\\\','""',' "config/php/Dockerfile.tmp")
 fi
 
 if [ "${PHP_VERSION}" != "5.6" ] && [ "${PHP_VERSION}" != "8.0" ] && [ "${PHP_VERSION}" != "8.1" ]; then
