@@ -65,7 +65,9 @@ eval_var() {
 
 # Get OS version
 DEBIAN_VERSION=/etc/debian_version
-if [ "${OS}" = "FreeBSD" ]; then
+if [ "${OS}" = "Darwin" ]; then
+    OS_VERSION=`uname -r | cut -d- -f1`
+elif [ "${OS}" = "FreeBSD" ]; then
     OS_VERSION=`uname -r | cut -d- -f1`
 	  OS_FREEBSD_VERSION=`echo ${OS_VER} | cut -d. -f1`
 elif [ -e ${DEBIAN_VERSION} ]; then
