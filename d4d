@@ -826,7 +826,7 @@ doPasswd() {
     COMMAND=$1
 
     if [ "${COMMAND}" = "show" ]; then
-        showPasswords
+        ./main d4d:passwd:show
     fi
 }
 
