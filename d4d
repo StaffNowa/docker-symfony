@@ -306,236 +306,6 @@ generateHelp() {
     done
 }
 
-doChecks() {
-    # Prerequisites
-    pwgen > /dev/null 2>&1 || { echo >&2 "pwgen not found."; exit 1; }
-    docker --version > /dev/null 2>&1 || { echo >&2 "Docker not found. Please install it via https://docs.docker.com/install/"; exit 1; }
-    docker-compose --version > /dev/null 2>&1 || { echo >&2 "Docker compose not found. Please install it via https://docs.docker.com/compose/install/"; exit 1; }
-
-    if [ ! -f "${D4D_ENV}" ]; then
-        if [ -f "${ENV_DIST}" ]; then
-            cp "{$ENV_DIST}" "${D4D_ENV}"
-            SECRET=`cat ${ENV_SECRET}`
-            echo "${SECRET}" >> "${D4D_ENV}"
-        else
-            echo >&2 "The ${ENV} file does not exist. Project setup will not work"
-            exit 1
-        fi
-    fi
-
-    # Assign user id and group id into variables
-    TMP_USER_ID=`id -u`
-    TMP_GROUP_ID=`id -g`
-
-    # Always validate user id and group id before start using .env file
-    $(replace_in_file 's,USER_ID=.*,'"USER_ID=${TMP_USER_ID}"',' "${D4D_ENV}")
-    $(replace_in_file 's,GROUP_ID=.*,'"GROUP_ID=${TMP_USER_ID}"',' "${D4D_ENV}")
-    $(replace_in_file 's,MYSQL_ROOT_PASSWORD=root,'"MYSQL_ROOT_PASSWORD=`pwgen -s 20 1`"',' "${D4D_ENV}")
-    $(replace_in_file 's,MYSQL_PASSWORD=db_password,'"MYSQL_PASSWORD=`pwgen -s 20 1`"',' "${D4D_ENV}")
-    $(replace_in_file 's,MONGODB_ROOT_PASSWORD=root,'"MONGODB_ROOT_PASSWORD=`pwgen -s 20 1`"',' "${D4D_ENV}")
-    $(replace_in_file 's,MONGODB_PASSWORD=db_password,'"MONGODB_PASSWORD=`pwgen -s 20 1`"',' "${D4D_ENV}")
-
-    IN_IN_FILE=$(cat ${D4D_ENV} | grep -c ".env.secret")
-    if [ ${IN_IN_FILE} -eq 0 ]; then
-        SECRET=`cat ${ENV_SECRET}`
-        echo "${SECRET}" >> "${D4D_ENV}"
-    fi
-
-    # Load .env file into the current shell script
-    source ${D4D_ENV}
-
-    # Ensure all folders exists
-    mkdir -p ${PROJECT_PATH}
-    mkdir -p ${SF_COMMUNITY_PATH}
-    mkdir -p ${SF_COMMUNITY_PATH}/symfony
-    mkdir -p ${SF_COMMUNITY_PATH}/recipes
-    mkdir -p ${SF_COMMUNITY_PATH}/symfony-docs
-    mkdir -p ${COMPOSER_PATH}
-    mkdir -p ${COMPOSER_PATH}/cache
-    mkdir -p ${SSH_KEY_PATH}
-    mkdir -p ${MYSQL_DUMP_PATH}
-
-    # Create an SSH private and public keys if we do not have it
-    if [ ! -f "${SSH_KEY_PATH}/id_rsa" ]; then
-        ssh-keygen -b 4096 -t rsa -C ${USER}@d4d.lt -f ${SSH_KEY_PATH}/id_rsa -q -P ""
-    fi
-
-    # Create a file if it does not exist
-    if [ ! -f "${SSH_KEY_PATH}/known_hosts" ]
-    then
-        touch ${SSH_KEY_PATH}/known_hosts
-    fi
-
-    # Ensure all folders exists
-    mkdir -p ${NGINX_SSL_PATH}
-    mkdir -p ${NGINX_LOG_PATH}
-    mkdir -p ${MYSQL_DATA_PATH}
-    mkdir -p ${USER_CONFIG_PATH}
-    mkdir -p -m 777 ${MONGODB_LOG_PATH}
-    mkdir -p -m 777 ${MONGODB_DATA_PATH}
-
-    # Create a file if it does not exist
-    touch ${USER_CONFIG_PATH}/.bash_history
-    touch ${USER_CONFIG_PATH}/.gitconfig
-    touch ${USER_CONFIG_PATH}/.gitignore
-
-    if [ ! -f "${USER_CONFIG_PATH}/.my.cnf" ]; then
-        printf "[client]\nuser=${MYSQL_USER}\npassword=${MYSQL_PASSWORD}\n" >> ${USER_CONFIG_PATH}/.my.cnf
-    fi
-
-    if [ "${NGINX_SSL}" = "yes" ]; then
-        if [ ! -f "${WORK_DIR}/user/nginx/ssl/d4d.pem" ] || [ ! -f "${WORK_DIR}/user/nginx/ssl/d4d-key.pem" ]; then
-            ./d4d mkcert ssl
-        fi
-    fi
-
-    ./config/nginx/build
-    ./config/php/build
-
-    # phpMyAdmin configuration
-     cp config/phpmyadmin/config.user.inc.php.d4d config/phpmyadmin/config.user.inc.php.tmp
-
-     if [ "${PMA_AUTO_LOGIN}" = "yes" ]; then
-             PMA_AUTH_TYPE="config"
-         if [ "${PMA_AUTO_LOGIN_ROOT}" = "no" ]; then
-             PMA_MYSQL_USER=${MYSQL_USER}
-             PMA_MYSQL_PASSWORD=${MYSQL_PASSWORD}
-         else
-             PMA_MYSQL_USER=root
-             PMA_MYSQL_PASSWORD=${MYSQL_ROOT_PASSWORD}
-         fi
-     else
-         PMA_AUTH_TYPE="cookie"
-         PMA_MYSQL_USER=
-         PMA_MYSQL_PASSWORD=
-     fi
-
-     $(replace_in_file 's,__AUTH_TYPE__,'"${PMA_AUTH_TYPE}"',' "config/phpmyadmin/config.user.inc.php.tmp")
-     $(replace_in_file 's,__MYSQL_USER__,'"${PMA_MYSQL_USER}"',' "config/phpmyadmin/config.user.inc.php.tmp")
-     $(replace_in_file 's,__MYSQL_PASSWORD__,'"${PMA_MYSQL_PASSWORD}"',' "config/phpmyadmin/config.user.inc.php.tmp")
-
-     cp config/phpmyadmin/config.user.inc.php.tmp config/phpmyadmin/config.user.inc.php
-     rm config/phpmyadmin/config.user.inc.php.tmp
-}
-
-doBuild() {
-    cp "${WORK_DIR}/docker/compose.yml" "${WORK_DIR}/docker-compose.yml"
-
-    if [ "${MYSQL_INST}" = "mysql" ]; then
-        cat "${WORK_DIR}/docker/mysql.yml" >> "${WORK_DIR}/docker-compose.yml"
-    elif [ "${MYSQL_INST}" = "mariadb" ]; then
-        cat "${WORK_DIR}/docker/mariadb.yml" >> "${WORK_DIR}/docker-compose.yml"
-    fi
-
-    if [ "${MAILHOG}" = "yes" ]; then
-        cat "${WORK_DIR}/docker/mailhog.yml" >> "${WORK_DIR}/docker-compose.yml"
-    fi
-
-    if [ "${PMA}" = "yes" ]; then
-        cat "${WORK_DIR}/docker/phpmyadmin.yml" >> "${WORK_DIR}/docker-compose.yml"
-    fi
-
-    if [ "${REDIS}" = "yes" ]; then
-        cat "${WORK_DIR}/docker/redis.yml" >> "${WORK_DIR}/docker-compose.yml"
-    fi
-
-    if [ "${RABBITMQ}" = "yes" ]; then
-        cat "${WORK_DIR}/docker/rabbitmq.yml" >> "${WORK_DIR}/docker-compose.yml"
-    fi
-
-    if [ "${ELASTICSEARCH}" = "yes" ]; then
-        cat "${WORK_DIR}/docker/elasticsearch.yml" >> "${WORK_DIR}/docker-compose.yml"
-    fi
-
-    if [ "${NGROK}" = "yes" ]; then
-        cat "${WORK_DIR}/docker/ngrok.yml" >> "${WORK_DIR}/docker-compose.yml"
-    fi
-
-    if [ "${MONGODB}" = "yes" ]; then
-        cat "${WORK_DIR}/docker/mongodb.yml" >> "${WORK_DIR}/docker-compose.yml"
-    fi
-
-    if [ "${EXTERNAL_NETWORK}" = "no" ] || [ "${EXTERNAL_NETWORK}" = "yes" ]; then
-        $(replace_in_file 's,__NGINX_NETWORKS__,'"networks:\n      default:\n        aliases:\n          - ${PROJECT_DOMAIN_1}"',' "${WORK_DIR}/docker-compose.yml")
-    fi
-
-    if [ "${EXTERNAL_NETWORK}" = "yes" ]; then
-      cat "${WORK_DIR}/docker/network.yml" >> "${WORK_DIR}/docker-compose.yml"
-    fi
-
-    COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build --parallel
-
-    # Clears the screen.
-    clear
-}
-
-doBuildNginxConf() {
-    source ${D4D_ENV}
-
-    if [ "${NGINX_SSL}" = "yes" ]; then
-        cp config/nginx/project-ssl.conf.default config/nginx/project.conf.tmp
-    else
-        cp config/nginx/project.conf.default config/nginx/project.conf.tmp
-    fi
-
-    if [ "${PROJECT_TYPE}" = "SF" ]; then
-        $(replace_in_file 's,__INCLUDE__,'"/etc/nginx/d4d/sf.conf"',' "config/nginx/project.conf.tmp")
-    fi
-
-    if [ "${PROJECT_TYPE}" = "SF_PWA" ]; then
-        $(replace_in_file 's,__INCLUDE__,'"/etc/nginx/d4d/pwa.conf"',' "config/nginx/project.conf.tmp")
-    fi
-
-    if [ "${PROJECT_TYPE}" = "WP" ]; then
-        $(replace_in_file 's,__INCLUDE__,'"/etc/nginx/d4d/wp.conf"',' "config/nginx/project.conf.tmp")
-        $(replace_in_file 's,location .*{,'"location ~ .php$ {"',' "config/nginx/project.conf.tmp")
-    fi
-
-    $(replace_in_file 's,__NGINX_FASTCGI_BUFFERS__,'"${NGINX_FASTCGI_BUFFERS}"',' "config/nginx/project.conf.tmp")
-    $(replace_in_file 's,__NGINX_FASTCGI_BUFFER_SIZE__,'"${NGINX_FASTCGI_BUFFER_SIZE}"',' "config/nginx/project.conf.tmp")
-
-    cp config/nginx/project.conf.tmp config/nginx/project.conf
-    rm config/nginx/project.conf.tmp
-
-    cp config/nginx/d4d/pwa.conf.default config/nginx/d4d/pwa.conf.default.tmp
-    $(replace_in_file 's,__SF_PATH__,'"${SF_PATH}"',' "config/nginx/d4d/pwa.conf.default.tmp")
-    $(replace_in_file 's,__SYMFONY_FRONT_CONTROLLER__,'"${SYMFONY_FRONT_CONTROLLER}"',' "config/nginx/d4d/pwa.conf.default.tmp")
-    cp config/nginx/d4d/pwa.conf.default.tmp config/nginx/d4d/pwa.conf
-    rm config/nginx/d4d/pwa.conf.default.tmp
-
-    cp config/nginx/d4d/sf.conf.default config/nginx/d4d/sf.conf.default.tmp
-    $(replace_in_file 's,__SYMFONY_FRONT_CONTROLLER__,'"${SYMFONY_FRONT_CONTROLLER}"',' "config/nginx/d4d/sf.conf.default.tmp")
-    cp config/nginx/d4d/sf.conf.default.tmp config/nginx/d4d/sf.conf
-    rm config/nginx/d4d/sf.conf.default.tmp
-
-    cp config/nginx/d4d/wp.conf.default config/nginx/d4d/wp.conf.default.tmp
-    $(replace_in_file 's,__SYMFONY_FRONT_CONTROLLER__,'"${SYMFONY_FRONT_CONTROLLER}"',' "config/nginx/d4d/wp.conf.default.tmp")
-    cp config/nginx/d4d/wp.conf.default.tmp config/nginx/d4d/wp.conf
-    rm config/nginx/d4d/wp.conf.default.tmp
-
-    NGINX_INCLUDE_CACHE=""
-
-    if [ "${NGINX_CACHE}" = "yes" ]; then
-        NGINX_INCLUDE_CACHE="include /etc/nginx/d4d/cache.conf;"
-    fi
-
-    $(replace_in_file 's,__INCLUDE_CACHE__,'"${NGINX_INCLUDE_CACHE}"',' "config/nginx/project.conf")
-}
-
-doBuildMySQLConf() {
-    source ${D4D_ENV}
-
-    cp config/mysql/d4d.cnf.d4d config/mysql/d4d.cnf.tmp
-    $(replace_in_file 's,__MYSQL_MAX_ALLOWED_PACKET__,'"${MYSQL_MAX_ALLOWED_PACKET}"',' "config/mysql/d4d.cnf.tmp")
-    $(replace_in_file 's,__MYSQL_INNODB_LOG_FILE_SIZE__,'"${MYSQL_INNODB_LOG_FILE_SIZE}"',' "config/mysql/d4d.cnf.tmp")
-    $(replace_in_file 's,__MYSQL_WAIT_TIMEOUT__,'"${MYSQL_WAIT_TIMEOUT}"',' "config/mysql/d4d.cnf.tmp")
-    $(replace_in_file 's,__MYSQL_CHARACTER_SET_SERVER__,'"${MYSQL_CHARACTER_SET_SERVER}"',' "config/mysql/d4d.cnf.tmp")
-    $(replace_in_file 's,__MYSQL_COLLATION_SERVER__,'"${MYSQL_COLLATION_SERVER}"',' "config/mysql/d4d.cnf.tmp")
-    cp config/mysql/d4d.cnf.tmp config/mysql/d4d.cnf
-
-    rm config/mysql/d4d.cnf.tmp
-}
-
 doCheckPackage() {
     # $1 package name
 
@@ -699,24 +469,14 @@ doUninstall() {
     doRemovePackage mkcert
 }
 
-doBeforeStart() {
-    if [ "${CLEAN_NGINX_LOGS}" = "yes" ]; then
-        echo > "${WORK_DIR}/var/logs/nginx/project_access.log"
-        echo > "${WORK_DIR}/var/logs/nginx/project_access.log"
-    fi
-
-    if [ "${CLEAN_SF_logs}" = "yes" ]; then
-        # SF 2.x
-        rm -rf "${WORK_DIR}/project/app/cache/"
-        rm -rf "${WORK_DIR}/project/app/logs/"
-
-        # SF 3.x, 4.x, 5.x
-        rm -rf "${WORK_DIR}/project/var/cache/"
-        rm -rf "${WORK_DIR}/project/var/log/"
-    fi
-}
-
 start() {
+    COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build --parallel
+
+    # Clears the screen.
+    clear
+
+    ./main start
+
     # Start server
     echo "Starting docker containers..."
     docker-compose --env-file ${D4D_ENV} up -d --remove-orphans
@@ -1009,31 +769,6 @@ mainHeader() {
     printf " +%-55s+\n" "-----------------------------------------------------------"
 }
 
-showPasswords() {
-    source ${D4D_ENV}
-
-    mainHeader
-    printf " +%-55s+\n" "-----------------------------------------------------------"
-    printf " | %-55s %-2s|\n" "The following information has been set:"
-    printf " +%-55s+\n" "-----------------------------------------------------------"
-    printf " | %-55s %-2s|\n" "Server IP: 127.0.0.1"
-    printf " | %-55s %-2s|\n" "Server Hostname: ${PROJECT_DOMAIN_1}"
-    printf " +%-55s+\n" "-----------------------------------------------------------"
-    printf " | %-55s %-2s|\n" "MySQL root username: root"
-    printf " | %-55s %-2s|\n" "MySQL root password: ${MYSQL_ROOT_PASSWORD}"
-    printf " +%-55s+\n" "-----------------------------------------------------------"
-    printf " | %-55s %-2s|\n" "MySQL database name: ${MYSQL_DATABASE}"
-    printf " | %-55s %-2s|\n" "MySQL username: ${MYSQL_USER}"
-    printf " | %-55s %-2s|\n" "MySQL password: ${MYSQL_PASSWORD}"
-    printf " +%-55s+\n" "-----------------------------------------------------------"
-    printf " | %-55s %-2s|\n" "To login now, follow this link:"
-    printf " +%-55s+\n" "-----------------------------------------------------------"
-    printf " | %-55s %-2s|\n" "Project URL: http://${PROJECT_DOMAIN_1}"
-    printf " | %-55s %-2s|\n" "phpMyAdmin: http://${PROJECT_DOMAIN_1}:${PORT_PMA}"
-    printf " | %-55s %-2s|\n" "MailHog: http://${PROJECT_DOMAIN_1}:${PORT_MAILHOG_HTTP}"
-    printf " +%-55s+\n" "-----------------------------------------------------------"
-}
-
 showHelp() {
     mainHeader
     generateHelp
@@ -1045,7 +780,7 @@ case "$1" in
         ;;
     uninstall) doUninstall;
         ;;
-    start) doChecks; doBuildNginxConf; doBuildMySQLConf; doBuild; doBeforeStart; start
+    start) start
         ;;
     stop) stop
         ;;
