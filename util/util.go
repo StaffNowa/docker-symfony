@@ -58,6 +58,15 @@ func AppendFile(filePath string, data string) {
 	}
 }
 
+func FileGetContents(filename string) string {
+	fileData, err := ioutil.ReadFile(filename)
+	if err != nil {
+		os.Exit(1)
+	}
+
+	return string(fileData)
+}
+
 func GeneratePassword(length int) string {
 	res, err := password.Generate(length, 10, 0, false, false)
 	if err != nil {

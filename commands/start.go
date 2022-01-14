@@ -356,10 +356,10 @@ func doBuildNginxConf() {
 	util.Sed("__SF_PATH__", os.Getenv("SF_PATH"), "config/nginx/d4d/pwa.conf")
 	util.Sed("__SYMFONY_FRONT_CONTROLLER__", os.Getenv("SYMFONY_FRONT_CONTROLLER"), "config/nginx/d4d/pwa.conf")
 
-	util.Copy("cp config/nginx/d4d/sf.conf.default", "cp config/nginx/d4d/sf.conf")
+	util.Copy("config/nginx/d4d/sf.conf.default", "config/nginx/d4d/sf.conf")
 	util.Sed("__SYMFONY_FRONT_CONTROLLER__", os.Getenv("SYMFONY_FRONT_CONTROLLER"), "cp config/nginx/d4d/sf.conf")
 
-	util.Copy("cp config/nginx/d4d/wp.conf.default", "cp config/nginx/d4d/wp.conf")
+	util.Copy("config/nginx/d4d/wp.conf.default", "config/nginx/d4d/wp.conf")
 	util.Sed("__SYMFONY_FRONT_CONTROLLER__", os.Getenv("SYMFONY_FRONT_CONTROLLER"), "cp config/nginx/d4d/wp.conf")
 
 	nginxIncludeCache := ""
@@ -384,93 +384,39 @@ func doBuild() {
 	util.Copy("docker/compose.yml", "docker-compose.yml")
 
 	if os.Getenv("MYSQL_INST") == "mysql" {
-		fileData, err := ioutil.ReadFile("docker/mysql.yml")
-		if err != nil {
-			os.Exit(1)
-		}
-
-		fileString := string(fileData)
-		util.AppendFile("docker-compose.yml", fileString)
+		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mysql.yml"))
 	} else {
 		if os.Getenv("MYSQL_INST") == "mariadb" {
-			fileData, err := ioutil.ReadFile("docker/mariadb.yml")
-			if err != nil {
-				os.Exit(1)
-			}
-
-			fileString := string(fileData)
-			util.AppendFile("docker-compose.yml", fileString)
+			util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mariadb.yml"))
 		}
 	}
 
 	if os.Getenv("MAILHOG") == "yes" {
-		fileData, err := ioutil.ReadFile("docker/mailhog.yml")
-		if err != nil {
-			os.Exit(1)
-		}
-
-		fileString := string(fileData)
-		util.AppendFile("docker-compose.yml", fileString)
+		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mailhog.yml"))
 	}
 
 	if os.Getenv("PMA") == "yes" {
-		fileData, err := ioutil.ReadFile("docker/phpmyadmin.yml")
-		if err != nil {
-			os.Exit(1)
-		}
-
-		fileString := string(fileData)
-		util.AppendFile("docker-compose.yml", fileString)
+		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/phpmyadmin.yml"))
 	}
 
 	if os.Getenv("REDIS") == "yes" {
-		fileData, err := ioutil.ReadFile("docker/redis.yml")
-		if err != nil {
-			os.Exit(1)
-		}
-
-		fileString := string(fileData)
-		util.AppendFile("docker-compose.yml", fileString)
+		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/redis.yml"))
 	}
 
 	if os.Getenv("RABBITMQ") == "yes" {
-		fileData, err := ioutil.ReadFile("docker/rabbitmq.yml")
-		if err != nil {
-			os.Exit(1)
-		}
-
-		fileString := string(fileData)
-		util.AppendFile("docker-compose.yml", fileString)
+		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/rabbitmq.yml"))
 	}
 
 	if os.Getenv("ELASTICSEARCH") == "yes" {
-		fileData, err := ioutil.ReadFile("docker/elasticsearch.yml")
-		if err != nil {
-			os.Exit(1)
-		}
-
-		fileString := string(fileData)
-		util.AppendFile("docker-compose.yml", fileString)
+		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/elasticsearch.yml"))
 	}
 
 	if os.Getenv("NGROK") == "yes" {
-		fileData, err := ioutil.ReadFile("docker/ngrok.yml")
-		if err != nil {
-			os.Exit(1)
-		}
-
-		fileString := string(fileData)
-		util.AppendFile("docker-compose.yml", fileString)
+		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/ngrok.yml"))
 	}
 
 	if os.Getenv("MONGODB") == "yes" {
-		fileData, err := ioutil.ReadFile("docker/mongodb.yml")
-		if err != nil {
-			os.Exit(1)
-		}
-
-		fileString := string(fileData)
-		util.AppendFile("docker-compose.yml", fileString)
+		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mongodb.yml"))
 	}
 
 	if os.Getenv("EXTERNAL_NETWORK") == "no" || os.Getenv("EXTERNAL_NETWORK") == "yes" {
@@ -478,19 +424,8 @@ func doBuild() {
 	}
 
 	if os.Getenv("EXTERNAL_NETWORK") == "yes" {
-		fileData, err := ioutil.ReadFile("docker/network.yml")
-		if err != nil {
-			os.Exit(1)
-		}
-
-		fileString := string(fileData)
-		util.AppendFile("docker-compose.yml", fileString)
+		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/network.yml"))
 	}
-
-	//util.ExecCommand("docker-compose build")
-
-	// Clears the screen.
-	//util.ExecCommand("cleaer")
 }
 
 func doBeforeStart() {
@@ -507,52 +442,4 @@ func doBeforeStart() {
 		os.RemoveAll("project/var/cache")
 		os.RemoveAll("project/var/log")
 	}
-}
-
-func start() {
-	// Start server
-	fmt.Println("Starting docker containers...")
-	util.ExecCommand("docker-compose --env-file .env up -d --remove-orphans")
-
-	if os.Getenv("SUPERVISOR") == "yes" {
-		fmt.Println("Starting supervisor...")
-	}
-	//docker-compose exec -u root php service supervisor start && docker-compose exec -u root php supervisorctl reread && docker-compose exec -u root php supervisorctl update && docker-compose exec -u root php supervisorctl start messenger-consume:*
-	//fi
-	//
-	// Documentation for end user
-	//echo ""
-	//echo "The following information has been set:"
-	//echo ""
-	//echo "Server IP: 127.0.0.1"
-	//echo "Server Hostname: ${PROJECT_DOMAIN_1}"
-	//echo ""
-	//echo "To login now, follow this link:"
-	//echo ""
-	//echo "Project URL: http://${PROJECT_DOMAIN_1}"
-	//echo "phpMyAdmin: http://${PROJECT_DOMAIN_1}:${PORT_PMA}"
-	//
-	//if [ "${MAILHOG}" = "yes" ] || [ "${RABBITMQ}" = "yes" ] || [ "${ELASTICSEARCH}" = "yes" ]; then
-	//echo ""
-	//echo "Extra features:"
-	//fi
-	//
-	//if [ "${MAILHOG}" = "yes" ]; then
-	//echo "MailHog: http://${PROJECT_DOMAIN_1}:${PORT_MAILHOG_HTTP}"
-	//fi
-	//
-	//if [ "${RABBITMQ}" = "yes" ]; then
-	//echo "RabbitMQ: http://${PROJECT_DOMAIN_1}:${PORT_RABBITMQ_MANAGEMENT}"
-	//fi
-	//
-	//if [ "${ELASTICSEARCH}" = "yes" ]; then
-	//echo "Elasticsearch: http://${PROJECT_DOMAIN_1}:${PORT_ELASTICSEARCH_HEAD}"
-	//fi
-	//
-	//echo ""
-	//echo "Thank you for using Docker for Symfony. Should you have any questions, don't hesitate to contact us at support@d4d.lt"
-	//
-	//if [ "${DEFAULT_CONTAINER}" != "" ]; then
-	//dockerComposeExec ${DEFAULT_CONTAINER}
-	//fi
 }
