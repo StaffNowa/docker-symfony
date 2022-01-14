@@ -470,12 +470,12 @@ doUninstall() {
 }
 
 start() {
+    ./main start
+
     COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build --parallel
 
     # Clears the screen.
     clear
-
-    ./main start
 
     # Start server
     echo "Starting docker containers..."
@@ -797,10 +797,6 @@ case "$1" in
     docker_backup) doDockerBackup
         ;;
     passwd) doPasswd $2
-        ;;
-    set) setOpt $2 $3
-        ;;
-    update_env) updateEnv
         ;;
     blackfire) blackfire $2
         ;;
