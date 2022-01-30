@@ -139,7 +139,7 @@ func doChecks() {
 	util.CreateFileIfNotExists(os.Getenv("USER_CONFIG_PATH") + "/.gitignore")
 
 	if !util.FileExists(os.Getenv("USER_CONFIG_PATH") + "/.my.cnf") {
-		data := fmt.Sprintf("[client]\nuser=%s\npassword=%\n", os.Getenv("MYSQL_USER"), os.Getenv("MYSQL_PASSWORD"))
+		data := fmt.Sprintf("[client]\nuser=%s\npassword=%s\n", os.Getenv("MYSQL_USER"), os.Getenv("MYSQL_PASSWORD"))
 		util.AppendFile(os.Getenv("USER_CONFIG_PATH")+"/.my.cnf", data)
 	}
 
