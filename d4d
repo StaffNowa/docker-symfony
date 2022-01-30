@@ -472,6 +472,9 @@ doUninstall() {
 start() {
     ./main start
 
+    # Load .env file into the current shell script
+    source ${D4D_ENV}
+
     COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build --parallel
 
     # Clears the screen.
