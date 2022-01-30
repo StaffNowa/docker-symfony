@@ -83,12 +83,7 @@ COPY conf.d/* /usr/local/etc/php/conf.d/
 
 # Map user id from host user when it's provided
 RUN if [ ! -z ${USER_ID} ] && [ ${USER_ID} -ne 0 ]; then usermod -u ${USER_ID} www-data; fi \
-    && if [ ! -z ${GROUP_ID} ] && [ ${GROUP_ID} -ne 0 ]; then groupmod -g ${GROUP_ID} www-data; fi \
-    && echo 'alias sf="php bin/console"' >> /var/www/.bashrc \
-    && echo 'alias sf2="php app/console"' >> /var/www/.bashrc \
-    && echo 'alias sf3="php bin/console"' >> /var/www/.bashrc \
-    && echo 'alias sf4="php bin/console"' >> /var/www/.bashrc \
-    && echo 'alias sf5="php bin/console"' >> /var/www.bashrc
+    && if [ ! -z ${GROUP_ID} ] && [ ${GROUP_ID} -ne 0 ]; then groupmod -g ${GROUP_ID} www-data; fi
 
 # set default user and working directory
 USER ${USER_ID}

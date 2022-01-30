@@ -15,6 +15,7 @@ docker-compose.yml
 /config/nginx/d4d/*.conf
 /config/nginx/ssl/*.pem
 /config/nginx/project.conf
+config/nginx/Dockerfile
 config/php/Dockerfile
 
 /config/php/conf.d/xdebug.ini
@@ -29,3 +30,5 @@ config/php/Dockerfile
 
 # System files
 .DS_Store
+
+main
