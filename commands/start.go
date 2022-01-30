@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"os/user"
+	"runtime"
 	"strings"
 )
 
@@ -62,8 +63,10 @@ func doChecks() {
 	}
 
 	// Always validate user id and group id before start using .env file
-	util.Sed("USER_ID=.*", fmt.Sprintf("USER_ID=%d", os.Getuid()), envFile)
-	util.Sed("GROUP_ID=.*", fmt.Sprintf("GROUP_ID=%d", os.Getgid()), envFile)
+	if runtime.GOOS != "darwin" {
+		util.Sed("USER_ID=.*", fmt.Sprintf("USER_ID=%d", os.Getuid()), envFile)
+		util.Sed("GROUP_ID=.*", fmt.Sprintf("GROUP_ID=%d", os.Getgid()), envFile)
+	}
 	util.Sed("MYSQL_ROOT_PASSWORD=root", fmt.Sprintf("MYSQL_ROOT_PASSWORD=%s", util.GeneratePassword(20)), envSecretFile)
 	util.Sed("MYSQL_PASSWORD=db_password", fmt.Sprintf("MYSQL_PASSWORD=%s", util.GeneratePassword(20)), envSecretFile)
 	util.Sed("MONGODB_ROOT_PASSWORD=root", fmt.Sprintf("MONGODB_ROOT_PASSWORD=%s", util.GeneratePassword(20)), envSecretFile)
@@ -231,6 +234,10 @@ func doPhpBuild() {
 		util.Sed("__IMAGICK__", "&& cd /tmp && git clone https://github.com/Imagick/imagick && cd imagick && phpize && ./configure && make && make install && echo extension=imagick.so > /usr/local/etc/php/conf.d/docker-php-ext-imagick.ini && rm -rf /tmp/imagick && cd /tmp", "config/php/Dockerfile")
 	}
 
+	if os.Getenv("PHP_VERSION") == "8.1" {
+		phpExtInstall = remove(phpExtInstall, "sockets")
+	}
+
 	if os.Getenv("REDIS") == "yes" {
 		peclInstall = append(peclInstall, "redis")
 		phpExtEnable = append(phpExtEnable, "redis")
@@ -326,6 +333,15 @@ func doPhpBuild() {
 	util.Sed("__CLEANUP__", "&& apt-get clean && rm -rf /var/lib/apt/lists/*", "config/php/Dockerfile")
 
 	util.Sed("    \n", "", "config/php/Dockerfile")
+}
+
+func remove(haystack []string, needle string) []string {
+	for index, value := range haystack {
+		if value == needle {
+			return append(haystack[:index], haystack[index+1:]...)
+		}
+	}
+	return haystack
 }
 
 func doBuildNginxConf() {
