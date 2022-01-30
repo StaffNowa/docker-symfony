@@ -70,8 +70,8 @@ RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --
     __BLACKFIRE__ \
     && curl -L https://cs.symfony.com/download/php-cs-fixer-v3.phar -o /usr/bin/php-cs-fixer && chmod a+x /usr/bin/php-cs-fixer \
     && curl -L https://github.com/fabpot/local-php-security-checker/releases/download/v1.2.0/local-php-security-checker_1.2.0_linux_amd64 -o /usr/bin/local-php-security-checker && chmod a+x /usr/bin/local-php-security-checker \
-    && curl -L https://github.com/symfony/cli/releases/download/v4.27.3/symfony_linux_amd64.gz -o symfony.gz && gunzip -c symfony.gz > /usr/bin/symfony && chmod a+x /usr/bin/symfony \
-    && curl -L https://github.com/phpstan/phpstan/raw/1.2.0/phpstan.phar -o /usr/local/bin/phpstan && chmod a+x /usr/local/bin/phpstan \
+    && curl -L https://github.com/symfony/cli/releases/download/v4.28.1/symfony_linux_amd64.gz -o symfony.gz && gunzip -c symfony.gz > /usr/bin/symfony && chmod a+x /usr/bin/symfony \
+    && curl -L https://github.com/phpstan/phpstan/raw/1.4.3/phpstan.phar -o /usr/local/bin/phpstan && chmod a+x /usr/local/bin/phpstan \
     && curl -L https://deployer.org/deployer.phar -o /usr/local/bin/dep && chmod a+x /usr/local/bin/dep \
 
     && apt-get remove --purge -y gnupg1 \
