@@ -1,0 +1,55 @@
+project_name: d4d
+before:
+  hooks:
+    - go mod download
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - 386
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+      - goos: darwin
+        goarch: 386
+    main: ./
+    binary: main
+
+archives:
+  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - config/*
+      - docker/*
+      - scripts/*
+      - user/*
+      - .env.dist
+      - .env.secret.dist
+      - .gitignore
+      - CHANGELOG.md
+      - LICENSE
+      - README.md
+      - d4d
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "next"
+
+universal_binaries:
+  - replace: true
+    name_template: main
+
+release:
+  footer: |
+    **Full Changelog**: https://github.com/StaffNowa/docker-symfony/compare/{{ .PreviousTag }}...{{ .Tag }}
