@@ -373,10 +373,10 @@ func doBuildNginxConf() {
 	util.Sed("__SYMFONY_FRONT_CONTROLLER__", os.Getenv("SYMFONY_FRONT_CONTROLLER"), "config/nginx/d4d/pwa.conf")
 
 	util.Copy("config/nginx/d4d/sf.conf.default", "config/nginx/d4d/sf.conf")
-	util.Sed("__SYMFONY_FRONT_CONTROLLER__", os.Getenv("SYMFONY_FRONT_CONTROLLER"), "cp config/nginx/d4d/sf.conf")
+	util.Sed("__SYMFONY_FRONT_CONTROLLER__", os.Getenv("SYMFONY_FRONT_CONTROLLER"), "config/nginx/d4d/sf.conf")
 
 	util.Copy("config/nginx/d4d/wp.conf.default", "config/nginx/d4d/wp.conf")
-	util.Sed("__SYMFONY_FRONT_CONTROLLER__", os.Getenv("SYMFONY_FRONT_CONTROLLER"), "cp config/nginx/d4d/wp.conf")
+	util.Sed("__SYMFONY_FRONT_CONTROLLER__", os.Getenv("SYMFONY_FRONT_CONTROLLER"), "config/nginx/d4d/wp.conf")
 
 	nginxIncludeCache := ""
 
