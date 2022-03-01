@@ -47,7 +47,6 @@ archives:
       - .env.dist
       - .env.secret.dist
       - .gitignore
-      - CHANGELOG.md
       - LICENSE
       - README.md
       - d4d

@@ -197,7 +197,7 @@ func doNginxBuild() {
 func doPhpBuild() {
 	util.Copy("config/php/Dockerfile.build", "config/php/Dockerfile")
 
-	packageList := []string{"gnupg1", "openssl", "git", "unzip", "libzip-dev", "nano", "libpng-dev", "libmagickwand-dev", "curl", "openssh-client", "less", "inkscape", "cron", "exiftool", "libicu-dev", "libmcrypt-dev", "libc-client-dev", "libkrb5-dev", "libssl-dev", "libxslt1-dev", "bash-completion"}
+	packageList := []string{"symfony-cli", "gnupg1", "openssl", "git", "unzip", "libzip-dev", "nano", "libpng-dev", "libmagickwand-dev", "curl", "openssh-client", "less", "inkscape", "cron", "exiftool", "libicu-dev", "libmcrypt-dev", "libc-client-dev", "libkrb5-dev", "libssl-dev", "libxslt1-dev", "bash-completion"}
 	peclInstall := []string{}
 	phpExtInstall := []string{"pdo", "pdo_mysql", "opcache", "zip", "gd", "mysqli", "exif", "bcmath", "calendar", "intl", "soap", "imap", "sockets", "xsl"}
 	phpExtEnable := []string{"mysqli", "calendar", "exif", "bcmath"}
@@ -291,7 +291,7 @@ func doPhpBuild() {
 	}
 
 	if os.Getenv("IONCUBE") == "yes" {
-		util.Sed("__PHP_IONCUBE__", "&& curl -fsSL 'https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz' -o ioncube.tar.gz && mkdir -p /tmp/ioncube && tar -xvvzf ioncube.tar.gz && mv ioncube/ioncube_loader_lin_${PHP_VERSION}.so `php-config --extension-dir` && rm -Rf ioncube.tar.gz ioncube && docker-php-ext-enable ioncube_loader_lin_${PHP_VERSION}", "config/php/Dockerfile")
+		util.Sed("__PHP_IONCUBE__", "&& curl -fsSL 'https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz' -o ioncube.tar.gz && mkdir -p /tmp/ioncube && tar -xvzf ioncube.tar.gz && mv ioncube/ioncube_loader_lin_${PHP_VERSION}.so `php-config --extension-dir` && rm -Rf ioncube.tar.gz ioncube && docker-php-ext-enable ioncube_loader_lin_${PHP_VERSION}", "config/php/Dockerfile")
 	} else {
 		util.Sed("__PHP_IONCUBE__ \\\\", "", "config/php/Dockerfile")
 	}
