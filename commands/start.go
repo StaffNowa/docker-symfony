@@ -129,7 +129,7 @@ func doChecks() {
 		os.Create(sshKeyPath + "/known_hosts")
 	}
 
-	os.Mkdir(os.Getenv("NGINX_SSL_PATH"), 0755)
+	os.MkdirAll(os.Getenv("NGINX_SSL_PATH"), 0755)
 	os.Mkdir(os.Getenv("NGINX_LOG_PATH"), 0755)
 	os.Mkdir(os.Getenv("MYSQL_DATA_PATH"), 0755)
 	os.Mkdir(os.Getenv("USER_CONFIG_PATH"), 0755)
@@ -185,9 +185,10 @@ func doNginxBuild() {
 	if os.Getenv("NGINX_SSL") == "yes" {
 		os.Mkdir("config/nginx/ssl", 0755)
 
-		//cp -R user/nginx/ssl/* config/nginx/ssl/ 2>/dev/null # No error message gets printed
+		util.Copy("user/nginx/ssl/d4d.pem", "config/nginx/ssl/d4d.pem")
+		util.Copy("user/nginx/ssl/d4d-key.pem", "config/nginx/ssl/d4d-key.pem")
 
-		//util.Sed("__D4D_SSL__", "COPY [\"ssl/d4d.pem\"\, \"ssl/d4d-key.pem\"\, \"/etc/nginx/ssl/\"]", "config/nginx/Dockerfile")
+		util.Sed("__D4D_SSL__", "COPY [\"ssl/d4d.pem\", \"ssl/d4d-key.pem\", \"/etc/nginx/ssl/\"]", "config/nginx/Dockerfile")
 
 	} else {
 		util.Sed("__D4D_SSL__", "", "config/nginx/Dockerfile")

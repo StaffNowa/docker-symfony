@@ -618,16 +618,18 @@ mkcert() {
     # $1 command
     COMMAND=$1
     if [ "${NGINX_SSL}" = "yes" ]; then
+        MKCERT=$(whereis mkcert) | awk '{print $2}'
+
         if [ "${COMMAND}" = "install" ]; then
             echo "Install the local CA in the system trust store."
-            /usr/local/bin/mkcert -install
+            /opt/homebrew/bin/mkcert -install
 
             ./d4d mkcert ssl
         fi
 
         if [ "${COMMAND}" = "ssl" ]; then
             DOMAINS="${PROJECT_DOMAIN_1} ${PROJECT_DOMAIN_2} ${PROJECT_DOMAIN_3} ${PROJECT_DOMAIN_4}"
-            /usr/local/bin/mkcert -cert-file ${WORK_DIR}/user/nginx/ssl/d4d.pem -key-file ${WORK_DIR}/user/nginx/ssl/d4d-key.pem ${DOMAINS}
+            MKCERT -cert-file ${WORK_DIR}/user/nginx/ssl/d4d.pem -key-file ${WORK_DIR}/user/nginx/ssl/d4d-key.pem ${DOMAINS}
         fi
     fi
 }
