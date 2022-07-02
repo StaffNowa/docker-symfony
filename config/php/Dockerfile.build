@@ -25,7 +25,7 @@ ARG WKHTMLTOPDF_VERSION
 
 MAINTAINER Vasilij Dusko <support@d4d.lt>
 
-RUN echo "deb [trusted=yes] https://repo.symfony.com/apt/ /" | tee /etc/apt/sources.list.d/symfony-cli.list && \
+RUN __SYMFONY_CLI__
     apt-get update && \
     apt-get install --no-install-recommends --no-install-suggests -y \
     __PACKAGE_LIST__ \

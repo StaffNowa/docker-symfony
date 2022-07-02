@@ -198,14 +198,18 @@ func doNginxBuild() {
 func doPhpBuild() {
 	util.Copy("config/php/Dockerfile.build", "config/php/Dockerfile")
 
-	packageList := []string{"symfony-cli", "gnupg1", "openssl", "git", "unzip", "libzip-dev", "nano", "libpng-dev", "libmagickwand-dev", "curl", "openssh-client", "less", "inkscape", "cron", "exiftool", "libicu-dev", "libmcrypt-dev", "libc-client-dev", "libkrb5-dev", "libssl-dev", "libxslt1-dev", "bash-completion"}
+	packageList := []string{"gnupg1", "openssl", "git", "unzip", "libzip-dev", "nano", "libpng-dev", "libmagickwand-dev", "curl", "openssh-client", "less", "inkscape", "cron", "exiftool", "libicu-dev", "libmcrypt-dev", "libc-client-dev", "libkrb5-dev", "libssl-dev", "libxslt1-dev", "bash-completion"}
 	peclInstall := []string{}
 	phpExtInstall := []string{"pdo", "pdo_mysql", "opcache", "zip", "gd", "mysqli", "exif", "bcmath", "calendar", "intl", "soap", "imap", "sockets", "xsl"}
 	phpExtEnable := []string{"mysqli", "calendar", "exif", "bcmath"}
 	npmInstallGlobal := []string{}
 
-	if os.Getenv("PHP_VERSION") != "8.0" && os.Getenv("PHP_VERSION") != "8.1" {
-		phpExtInstall = append(phpExtInstall, "imagick")
+	if os.Getenv("PHP_VERSION") != "5.6" && os.Getenv("PHP_VERSION") != "7.0" && os.Getenv("PHP_VERSION") != "7.1" {
+		packageList = append(packageList, "symfony-cli")
+	}
+
+	if os.Getenv("PHP_VERSION") != "8.2" {
+		peclInstall = append(peclInstall, "imagick")
 		phpExtEnable = append(phpExtEnable, "imagick")
 		util.Sed("__IMAGICK__", "", "config/php/Dockerfile")
 	}
@@ -219,8 +223,13 @@ func doPhpBuild() {
 		phpExtEnable = append(phpExtEnable, "apcu")
 	}
 
-	if os.Getenv("PHP_VERSION") == "5.6" || os.Getenv("PHP_VERSION") == "7.0" || os.Getenv("PHP_VERSION") == "7.1" || os.Getenv("PHP_VERSION") == "7.2" || os.Getenv("PHP_VERSION") == "7.3" || os.Getenv("PHP_VERSION") == "7.4" {
+	if os.Getenv("PHP_VERSION") == "5.6" || os.Getenv("PHP_VERSION") == "7.0" || os.Getenv("PHP_VERSION") == "7.1" {
 		phpExtInstall = append(phpExtInstall, "mcrypt")
+		phpExtEnable = append(phpExtEnable, "mcrypt")
+	}
+
+	if os.Getenv("PHP_VERSION") == "7.2" || os.Getenv("PHP_VERSION") == "7.3" || os.Getenv("PHP_VERSION") == "7.4" || os.Getenv("PHP_VERSION") == "8.0" || os.Getenv("PHP_VERSION") == "8.1" {
+		peclInstall = append(peclInstall, "mcrypt")
 		phpExtEnable = append(phpExtEnable, "mcrypt")
 	}
 
@@ -332,6 +341,12 @@ func doPhpBuild() {
 	util.Sed("__PECL_INSTALL__", strings.Join(peclInstall, " "), "config/php/Dockerfile")
 	util.Sed("__NPM_INSTALL_GLOBAL__", strings.Join(npmInstallGlobal, " "), "config/php/Dockerfile")
 	util.Sed("__CLEANUP__", "&& apt-get clean && rm -rf /var/lib/apt/lists/*", "config/php/Dockerfile")
+
+	if os.Getenv("PHP_VERSION") != "5.6" && os.Getenv("PHP_VERSION") != "7.0" && os.Getenv("PHP_VERSION") != "7.1" {
+		util.Sed("__SYMFONY_CLI__", "echo \"deb [trusted=yes] https://repo.symfony.com/apt/ /\" | tee /etc/apt/sources.list.d/symfony-cli.list && \\", "config/php/Dockerfile")
+	} else {
+		util.Sed("__SYMFONY_CLI__", "\\", "config/php/Dockerfile")
+	}
 
 	util.Sed("    \n", "", "config/php/Dockerfile")
 }
