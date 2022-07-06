@@ -277,7 +277,7 @@ func doPhpBuild() {
 		packageList = append(packageList, "supervisor")
 	}
 
-	npmInstallGlobal = append(npmInstallGlobal, "grunt-cli", "yargs", "async", "sass", "gulp", "requirejs", "pm2", "uglify-js", "typescript", "eslint")
+	npmInstallGlobal = append(npmInstallGlobal, "npm", "grunt-cli", "yargs", "async", "sass", "gulp", "requirejs", "pm2", "uglify-js", "typescript", "eslint")
 
 	if os.Getenv("XDEBUG") == "yes" {
 		if os.Getenv("PHP_VERSION") != "5.6" && os.Getenv("PHP_VERSION") != "7.0" {
@@ -346,6 +346,12 @@ func doPhpBuild() {
 		util.Sed("__SYMFONY_CLI__", "echo \"deb [trusted=yes] https://repo.symfony.com/apt/ /\" | tee /etc/apt/sources.list.d/symfony-cli.list && \\", "config/php/Dockerfile")
 	} else {
 		util.Sed("__SYMFONY_CLI__", "\\", "config/php/Dockerfile")
+	}
+
+	if os.Getenv("PHP_VERSION") == "5.6" || os.Getenv("PHP_VERSION") == "7.0" {
+		util.Sed("__CURL_INSECURE__", "-k", "config/php/Dockerfile")
+	} else {
+		util.Sed(" __CURL_INSECURE__", "", "config/php/Dockerfile")
 	}
 
 	util.Sed("    \n", "", "config/php/Dockerfile")

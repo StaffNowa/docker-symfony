@@ -57,11 +57,14 @@ RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --
     && chown ${USER_ID}:${GROUP_ID} /var/www \
     # npm & node
     && mkdir -p /var/www/.npm \
+    && mkdir -p /var/www/html \
+    && printf '{"name": "d4d", "version": "1.0.0"}' > /var/www/html/package.json \
     && chown -R ${USER_ID}:${GROUP_ID} /var/www/.npm \
+    && chown -R ${USER_ID}:${GROUP_ID} /var/www/html \
     && printf 'Package: *\nPin: origin deb.nodesource.com\nPin-Priority: 600' > /etc/apt/preferences.d/nodejs \
     && curl -sL https://deb.nodesource.com/setup_${NODE_JS_VERSION} | bash \
     && apt-get install -y nodejs \
-    && npm install -g __NPM_INSTALL_GLOBAL__ \
+    && npm install --location=global __NPM_INSTALL_GLOBAL__ \
     # Yarn package manager
     # bugfix: remove cmdtest to install yarn correctly.
     __YARN__ \
@@ -69,10 +72,10 @@ RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --
     __WKHTMLTOPDF__ \
     __PHP_IONCUBE__ \
     __BLACKFIRE__ \
-    && curl -L https://cs.symfony.com/download/php-cs-fixer-v3.phar -o /usr/bin/php-cs-fixer && chmod a+x /usr/bin/php-cs-fixer \
-    && curl -L https://github.com/fabpot/local-php-security-checker/releases/download/v2.0.3/local-php-security-checker_2.0.3_linux_amd64 -o /usr/bin/local-php-security-checker && chmod a+x /usr/bin/local-php-security-checker \
-    && curl -L https://github.com/phpstan/phpstan/raw/1.7.15/phpstan.phar -o /usr/local/bin/phpstan && chmod a+x /usr/local/bin/phpstan \
-    && curl -L https://deployer.org/deployer.phar -o /usr/local/bin/dep && chmod a+x /usr/local/bin/dep \
+    && curl -L __CURL_INSECURE__ https://cs.symfony.com/download/php-cs-fixer-v3.phar -o /usr/bin/php-cs-fixer && chmod a+x /usr/bin/php-cs-fixer \
+    && curl -L __CURL_INSECURE__ https://github.com/fabpot/local-php-security-checker/releases/download/v2.0.3/local-php-security-checker_2.0.3_linux_amd64 -o /usr/bin/local-php-security-checker && chmod a+x /usr/bin/local-php-security-checker \
+    && curl -L __CURL_INSECURE__ https://github.com/phpstan/phpstan/raw/1.7.15/phpstan.phar -o /usr/local/bin/phpstan && chmod a+x /usr/local/bin/phpstan \
+    && curl -L __CURL_INSECURE__ https://deployer.org/deployer.phar -o /usr/local/bin/dep && chmod a+x /usr/local/bin/dep \
 
     && apt-get remove --purge -y gnupg1 \
     && apt-get -y --purge autoremove \
