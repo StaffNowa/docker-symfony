@@ -330,7 +330,7 @@ func doPhpBuild() {
 	}
 
 	if os.Getenv("BLACKFIRE") == "yes" {
-		util.Sed("", "&& curl -sS https://packages.blackfire.io/gpg.key | apt-key add - && echo \"deb http://packages.blackfire.io/debian any main\" | tee /etc/apt/sources.list.d/blackfire.list && apt-get update && apt-get install -y blackfire blackfire-php", "config/php/Dockerfile")
+		util.Sed("__BLACKFIRE__", "&& curl -sS https://packages.blackfire.io/gpg.key | apt-key add - && echo \"deb http://packages.blackfire.io/debian any main\" | tee /etc/apt/sources.list.d/blackfire.list && apt-get update && apt-get install -y blackfire blackfire-php", "config/php/Dockerfile")
 	} else {
 		util.Sed("__BLACKFIRE__ \\\\", "", "config/php/Dockerfile")
 	}
