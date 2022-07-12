@@ -164,3 +164,10 @@ wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2
       <img src="https://www.prado.lt/wp-content/uploads/banners/hostinger.png" width="120" title="hover text">
   </a>
 </p>
+
+# Blackfire.io support us!
+<p align="center">
+  <a href="https://www.blackfire.io" target="_blank">
+      <img src="support/blackfire_io.png" width="120" title="hover text">
+  </a>
+</p>
