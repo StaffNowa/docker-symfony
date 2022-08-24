@@ -457,6 +457,10 @@ func doBuild() {
 		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mongodb.yml"))
 	}
 
+	if os.Getenv("ELK") == "yes" {
+		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/elk.yml"))
+	}
+
 	if os.Getenv("EXTERNAL_NETWORK") == "no" || os.Getenv("EXTERNAL_NETWORK") == "yes" {
 		util.Sed("__NGINX_NETWORKS__", fmt.Sprintf("networks:\n      default:\n        aliases:\n          - %s", os.Getenv("PROJECT_DOMAIN_1")), "docker-compose.yml")
 	}
