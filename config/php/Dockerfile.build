@@ -74,7 +74,7 @@ RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --
     __BLACKFIRE__ \
     && curl -L __CURL_INSECURE__ https://cs.symfony.com/download/php-cs-fixer-v3.phar -o /usr/bin/php-cs-fixer && chmod a+x /usr/bin/php-cs-fixer \
     && curl -L __CURL_INSECURE__ https://github.com/fabpot/local-php-security-checker/releases/download/v2.0.3/local-php-security-checker_2.0.3_linux_amd64 -o /usr/bin/local-php-security-checker && chmod a+x /usr/bin/local-php-security-checker \
-    && curl -L __CURL_INSECURE__ https://github.com/phpstan/phpstan/raw/1.8.5/phpstan.phar -o /usr/local/bin/phpstan && chmod a+x /usr/local/bin/phpstan \
+    && curl -L __CURL_INSECURE__ https://github.com/phpstan/phpstan/raw/1.8.9/phpstan.phar -o /usr/local/bin/phpstan && chmod a+x /usr/local/bin/phpstan \
     && curl -L __CURL_INSECURE__ https://deployer.org/deployer.phar -o /usr/local/bin/dep && chmod a+x /usr/local/bin/dep \
 
     && apt-get remove --purge -y gnupg1 \
