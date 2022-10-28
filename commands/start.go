@@ -204,7 +204,7 @@ func doPhpBuild() {
 	phpExtEnable := []string{"mysqli", "calendar", "exif", "bcmath"}
 	npmInstallGlobal := []string{}
 
-	if os.Getenv("PHP_VERSION") != "5.6" && os.Getenv("PHP_VERSION") != "7.0" && os.Getenv("PHP_VERSION") != "7.1" {
+	if os.Getenv("SF_CLI") == "yes" {
 		packageList = append(packageList, "symfony-cli")
 	}
 
@@ -342,7 +342,7 @@ func doPhpBuild() {
 	util.Sed("__NPM_INSTALL_GLOBAL__", strings.Join(npmInstallGlobal, " "), "config/php/Dockerfile")
 	util.Sed("__CLEANUP__", "&& apt-get clean && rm -rf /var/lib/apt/lists/*", "config/php/Dockerfile")
 
-	if os.Getenv("PHP_VERSION") != "5.6" && os.Getenv("PHP_VERSION") != "7.0" && os.Getenv("PHP_VERSION") != "7.1" {
+	if os.Getenv("SF_CLI") == "yes" {
 		util.Sed("__SYMFONY_CLI__", "echo \"deb [trusted=yes] https://repo.symfony.com/apt/ /\" | tee /etc/apt/sources.list.d/symfony-cli.list && \\", "config/php/Dockerfile")
 	} else {
 		util.Sed("__SYMFONY_CLI__", "\\", "config/php/Dockerfile")
