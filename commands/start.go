@@ -421,6 +421,10 @@ func doBuildMySQLConf() {
 func doBuild() {
 	util.Copy("docker/compose.yml", "docker-compose.yml")
 
+	if os.Getenv("DOCKER_ENV_PHP") == "yes" {
+		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/env/php.yml"))
+	}
+
 	if os.Getenv("MYSQL_INST") == "mysql" {
 		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mysql.yml"))
 	} else {
