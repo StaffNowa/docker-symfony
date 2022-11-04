@@ -154,6 +154,7 @@ func doChecks() {
 
 	doNginxBuild()
 	doPhpBuild()
+	doPhpMyAdminBuild()
 
 	// phpMyAdmin configuration
 	pmaAuthType := "cookie"
@@ -355,6 +356,16 @@ func doPhpBuild() {
 	}
 
 	util.Sed("    \n", "", "config/php/Dockerfile")
+}
+
+func doPhpMyAdminBuild() {
+	util.Copy("config/phpmyadmin/Dockerfile.build", "config/phpmyadmin/Dockerfile")
+
+	if runtime.GOOS != "darwin" {
+		util.Sed("__PHP_MY_ADMIN__", "phpmyadmin/phpmyadmin", "config/phpmyadmin/Dockerfile")
+	} else {
+		util.Sed("__PHP_MY_ADMIN__", "arm64v8/phpmyadmin", "config/phpmyadmin/Dockerfile")
+	}
 }
 
 func remove(haystack []string, needle string) []string {
