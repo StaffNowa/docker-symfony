@@ -17,10 +17,10 @@ docker-compose.yml
 /config/nginx/project.conf
 config/nginx/Dockerfile
 config/php/Dockerfile
+
 /config/php/conf.d/xdebug.ini
 
 /config/phpmyadmin/config.user.inc.php
-config/phpmyadmin/Dockerfile
 
 # IDEs
 /.idea

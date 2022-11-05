@@ -12,6 +12,7 @@ func CommonCommands() []*console.Command {
 	d4dCommands := []*console.Command{
 		startCmd,
 		passwordShowCmd,
+		selfUpdateCmd,
 	}
 
 	return d4dCommands
