@@ -815,6 +815,8 @@ case "$1" in
         ;;
     update_images) updateImages
         ;;
+    self-update) ./main self-update
+        ;;
     * ) showHelp
         exit 0
         ;;
