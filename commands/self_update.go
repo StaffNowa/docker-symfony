@@ -27,7 +27,7 @@ var selfUpdateCmd = &console.Command{
 			filename = "d4d_darwin_all.tar.gz"
 		}
 
-		util.DownloadFile(filename, "https://github.com/StaffNowa/docker-symfony/releases/latest/download/d4d_darwin_all.tar.gz")
+		util.DownloadFile(filename, "https://github.com/StaffNowa/docker-symfony/releases/latest/download/"+filename)
 		util.ExecCommand("tar xzfv " + filename)
 		terminal.Println("Docker for Symfony successfully upgraded to the latest version.")
 
