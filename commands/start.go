@@ -215,21 +215,26 @@ func doPhpBuild() {
 		util.Sed("__IMAGICK__", "", "config/php/Dockerfile")
 	}
 
-	if os.Getenv("PHP_VERSION") == "5.6" || os.Getenv("PHP_VERSION") == "8.0" || os.Getenv("PHP_VERSION") == "8.1" {
+	if os.Getenv("PHP_VERSION") == "5.6" || os.Getenv("PHP_VERSION") == "8.0" || os.Getenv("PHP_VERSION") == "8.1" || os.Getenv("PHP_VERSION") == "8.2" {
 		util.Sed("&& echo 'extension=apc.so' >> \\$PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini \\\\", "", "config/php/Dockerfile")
 	}
 
-	if os.Getenv("PHP_VERSION") != "5.6" && os.Getenv("PHP_VERSION") != "8.0" && os.Getenv("PHP_VERSION") != "8.1" {
+	if os.Getenv("PHP_VERSION") != "5.6" && os.Getenv("PHP_VERSION") != "8.0" && os.Getenv("PHP_VERSION") != "8.1" && os.Getenv("PHP_VERSION") != "8.2" {
 		peclInstall = append(peclInstall, "apcu", "apcu_bc")
 		phpExtEnable = append(phpExtEnable, "apcu")
 	}
 
-	if os.Getenv("PHP_VERSION") == "5.6" || os.Getenv("PHP_VERSION") == "7.0" || os.Getenv("PHP_VERSION") == "7.1" {
+	if os.Getenv("PHP_VERSION") == "5.6" {
 		phpExtInstall = append(phpExtInstall, "mcrypt")
 		phpExtEnable = append(phpExtEnable, "mcrypt")
 	}
 
-	if os.Getenv("PHP_VERSION") == "7.2" || os.Getenv("PHP_VERSION") == "7.3" || os.Getenv("PHP_VERSION") == "7.4" || os.Getenv("PHP_VERSION") == "8.0" || os.Getenv("PHP_VERSION") == "8.1" {
+	if os.Getenv("PHP_VERSION") == "7.0" || os.Getenv("PHP_VERSION") == "7.1" || os.Getenv("PHP_VERSION") == "7.2" || os.Getenv("PHP_VERSION") == "7.3" || os.Getenv("PHP_VERSION") == "7.4" {
+		phpExtInstall = append(phpExtInstall, "mcrypt")
+		phpExtEnable = append(phpExtEnable, "mcrypt")
+	}
+
+	if os.Getenv("PHP_VERSION") == "8.0" || os.Getenv("PHP_VERSION") == "8.1" {
 		peclInstall = append(peclInstall, "mcrypt")
 		phpExtEnable = append(phpExtEnable, "mcrypt")
 	}
@@ -239,7 +244,7 @@ func doPhpBuild() {
 		util.Sed("docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && ", "docker-php-ext-configure gd --with-freetype --with-jpeg && ", "config/php/Dockerfile")
 	}
 
-	if os.Getenv("PHP_VERSION") == "8.0" || os.Getenv("PHP_VERSION") == "8.1" {
+	if os.Getenv("PHP_VERSION") == "8.0" || os.Getenv("PHP_VERSION") == "8.1" || os.Getenv("PHP_VERSION") == "8.2" {
 		util.Sed("docker-php-ext-configure zip --with-libzip", "docker-php-ext-configure zip", "config/php/Dockerfile")
 		util.Sed("docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ &&", "docker-php-ext-configure gd --with-freetype --with-jpeg &&", "config/php/Dockerfile")
 		util.Sed("__IMAGICK__", "&& cd /tmp && git clone https://github.com/Imagick/imagick && cd imagick && phpize && ./configure && make && make install && echo extension=imagick.so > /usr/local/etc/php/conf.d/docker-php-ext-imagick.ini && rm -rf /tmp/imagick && cd /tmp", "config/php/Dockerfile")
