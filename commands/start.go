@@ -250,10 +250,6 @@ func doPhpBuild() {
 		util.Sed("__IMAGICK__", "&& cd /tmp && git clone https://github.com/Imagick/imagick && cd imagick && phpize && ./configure && make && make install && echo extension=imagick.so > /usr/local/etc/php/conf.d/docker-php-ext-imagick.ini && rm -rf /tmp/imagick && cd /tmp", "config/php/Dockerfile")
 	}
 
-	if os.Getenv("PHP_VERSION") == "8.0" || os.Getenv("PHP_VERSION") == "8.1" {
-		phpExtInstall = remove(phpExtInstall, "sockets")
-	}
-
 	if os.Getenv("REDIS") == "yes" {
 		peclInstall = append(peclInstall, "redis")
 		phpExtEnable = append(phpExtEnable, "redis")
@@ -261,7 +257,7 @@ func doPhpBuild() {
 
 	if os.Getenv("RABBITMQ") == "yes" {
 		packageList = append(packageList, "librabbitmq-dev", "librabbitmq4")
-		if os.Getenv("PHP_VERSION") != "8.0" && os.Getenv("PHP_VERSION") != "8.1" {
+		if os.Getenv("PHP_VERSION") != "8.0" && os.Getenv("PHP_VERSION") != "8.1" && os.Getenv("PHP_VERSION") != "8.2" {
 			peclInstall = append(peclInstall, "amqp")
 			util.Sed("__RABBIT_MQ__", "&& echo 'extension=amqp.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-amqp.ini", "config/php/Dockerfile")
 		} else {
