@@ -66,6 +66,9 @@ func doChecks() {
 	if runtime.GOOS != "darwin" {
 		util.Sed("USER_ID=.*", fmt.Sprintf("USER_ID=%d", os.Getuid()), envFile)
 		util.Sed("GROUP_ID=.*", fmt.Sprintf("GROUP_ID=%d", os.Getgid()), envFile)
+	} else {
+		util.Sed("USER_ID=.*", fmt.Sprintf("USER_ID=%d", os.Getuid()), envFile)
+		util.Sed("GROUP_ID=.*", fmt.Sprintf("GROUP_ID=%d", os.Getuid()), envFile)
 	}
 	util.Sed("MYSQL_ROOT_PASSWORD=root", fmt.Sprintf("MYSQL_ROOT_PASSWORD=%s", util.GeneratePassword(20)), envSecretFile)
 	util.Sed("MYSQL_PASSWORD=db_password", fmt.Sprintf("MYSQL_PASSWORD=%s", util.GeneratePassword(20)), envSecretFile)
