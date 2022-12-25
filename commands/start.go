@@ -232,8 +232,13 @@ func doPhpBuild() {
 		phpExtEnable = append(phpExtEnable, "mcrypt")
 	}
 
-	if os.Getenv("PHP_VERSION") == "7.0" || os.Getenv("PHP_VERSION") == "7.1" || os.Getenv("PHP_VERSION") == "7.2" || os.Getenv("PHP_VERSION") == "7.3" || os.Getenv("PHP_VERSION") == "7.4" {
+	if os.Getenv("PHP_VERSION") == "7.0" || os.Getenv("PHP_VERSION") == "7.1" {
 		phpExtInstall = append(phpExtInstall, "mcrypt")
+		phpExtEnable = append(phpExtEnable, "mcrypt")
+	}
+
+	if os.Getenv("PHP_VERSION") == "7.2" || os.Getenv("PHP_VERSION") == "7.3" || os.Getenv("PHP_VERSION") == "7.4" {
+		peclInstall = append(peclInstall, "mcrypt")
 		phpExtEnable = append(phpExtEnable, "mcrypt")
 	}
 
@@ -285,10 +290,27 @@ func doPhpBuild() {
 	npmInstallGlobal = append(npmInstallGlobal, "npm", "grunt-cli", "yargs", "async", "sass", "gulp", "requirejs", "pm2", "uglify-js", "typescript", "eslint")
 
 	if os.Getenv("XDEBUG") == "yes" {
-		if os.Getenv("PHP_VERSION") != "5.6" && os.Getenv("PHP_VERSION") != "7.0" {
-			phpExtInstall = append(phpExtInstall, "xdebug")
-			phpExtEnable = append(phpExtEnable, "xdebug")
+		if os.Getenv("PHP_VERSION") == "5.6" {
+			peclInstall = append(peclInstall, "xdebug-2.5.0")
 		}
+
+		if os.Getenv("PHP_VERSION") == "7.0" {
+			peclInstall = append(peclInstall, "xdebug-2.7.0")
+		}
+
+		if os.Getenv("PHP_VERSION") == "7.1" {
+			peclInstall = append(peclInstall, "xdebug-2.9.0")
+		}
+
+		if os.Getenv("PHP_VERSION") == "7.2" || os.Getenv("PHP_VERSION") == "7.3" || os.Getenv("PHP_VERSION") == "7.4" {
+			peclInstall = append(peclInstall, "xdebug-3.1.0")
+		}
+
+		if os.Getenv("PHP_VERSION") == "8.0" || os.Getenv("PHP_VERSION") == "8.1" || os.Getenv("PHP_VERSION") == "8.2" {
+			peclInstall = append(peclInstall, "xdebug-3.2.0")
+		}
+
+		phpExtEnable = append(phpExtEnable, "xdebug")
 
 		util.Copy("config/php/conf.d/xdebug.d4d", "config/php/conf.d/xdebug.ini")
 
