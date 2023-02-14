@@ -278,7 +278,7 @@ func doPhpBuild() {
 
 	if os.Getenv("MONGODB") == "yes" {
 		peclInstall = append(peclInstall, "mongodb")
-		util.Sed("__MONGODB__", "&& echo 'extension=mongodb.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-mongodb.ini", "config/php/Dockerfile")
+		util.Sed("__MONGODB__", "&& echo 'extension=mongodb.so' >> $$PHP_INI_DIR/conf.d/docker-php-ext-mongodb.ini", "config/php/Dockerfile")
 	} else {
 		util.Sed("__MONGODB__", "", "config/php/Dockerfile")
 	}
@@ -412,23 +412,13 @@ func doBuildNginxConf() {
 		util.Copy("config/nginx/project.conf.default", projectConfFile)
 	}
 
-	switch projectType := os.Getenv("PROJECT_TYPE"); projectType {
-	case "SF_PWA":
-		util.Sed("__INCLUDE__", "/etc/nginx/d4d/pwa.conf", projectConfFile)
-	case "WP":
-		util.Sed("__INCLUDE__", "/etc/nginx/d4d/wp.conf", projectConfFile)
-		util.Sed("location .*{,", "location ~ .php$ {", projectConfFile)
-	default:
-		util.Sed("__INCLUDE__", "/etc/nginx/d4d/sf.conf", projectConfFile)
-	}
-
+	util.Sed("__INCLUDE__", "/etc/nginx/d4d/sf.conf", projectConfFile)
 	util.Sed("__PHP_MAX_EXECUTION_TIME__", os.Getenv("PHP_MAX_EXECUTION_TIME"), projectConfFile)
 	util.Sed("__NGINX_FASTCGI_BUFFERS__", os.Getenv("NGINX_FASTCGI_BUFFERS"), projectConfFile)
 	util.Sed("__NGINX_FASTCGI_BUFFER_SIZE__", os.Getenv("NGINX_FASTCGI_BUFFER_SIZE"), projectConfFile)
 	util.Sed("__PHP_UPLOAD_MAX_FILESIZE__", os.Getenv("PHP_UPLOAD_MAX_FILESIZE"), projectConfFile)
 
 	util.Copy("config/nginx/d4d/pwa.conf.default", "config/nginx/d4d/pwa.conf")
-	util.Sed("__SF_PATH__", os.Getenv("SF_PATH"), "config/nginx/d4d/pwa.conf")
 	util.Sed("__SYMFONY_FRONT_CONTROLLER__", os.Getenv("SYMFONY_FRONT_CONTROLLER"), "config/nginx/d4d/pwa.conf")
 
 	util.Copy("config/nginx/d4d/sf.conf.default", "config/nginx/d4d/sf.conf")
@@ -472,6 +462,10 @@ func doBuild() {
 
 	if os.Getenv("MAILHOG") == "yes" {
 		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mailhog.yml"))
+	}
+
+	if os.Getenv("MAILPIT") == "yes" {
+		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mailpit.yml"))
 	}
 
 	if os.Getenv("PMA") == "yes" {

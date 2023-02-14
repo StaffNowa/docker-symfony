@@ -1,6 +1,6 @@
 
-  mailhog:
-    image: mailhog/mailhog
+  mailpit:
+    image: axllent/mailpit
     ports:
       - "${PORT_MAIL_SMTP}:1025"
       - "${PORT_MAIL_HTTP}:8025"
