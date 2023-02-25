@@ -47,7 +47,7 @@ RUN apt-get update \
 COPY project.conf /etc/nginx/sites-available/
 COPY rewrite/project.conf /etc/nginx/rewrite/
 
-COPY ["d4d/cache.conf", "d4d/sf.conf", "d4d/pwa.conf", "d4d/wp.conf", "/etc/nginx/d4d/"]
+COPY ["d4d/cache.conf", "d4d/sf.conf", "/etc/nginx/d4d/"]
 __D4D_SSL__
 
 # optional commands to run at shell inside container at build time
