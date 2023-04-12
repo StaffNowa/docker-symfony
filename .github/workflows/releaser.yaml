@@ -46,7 +46,7 @@ jobs:
         run: go test -v ./...
       -
         name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
+        uses: goreleaser/goreleaser-action@v3
         with:
           version: latest
           args: release --rm-dist
@@ -54,7 +54,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
       -
         name: Archive binaries
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           retention-days: 5
           path: dist
