@@ -25,16 +25,6 @@ If you are running on Linux:
 sudo curl -L "https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
 ```
 
-## Install PWGen
-### Debian / Ubuntu
-```
-sudo apt-get install pwgen
-``` 
-### CentOS
-```
-wget http://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/p/pwgen-2.08-1.el7.x86_64.rpm && rpm -ivh pwgen-2.08-1.el7.x86_64.rpm
-```
-
 # Configuration
 1. Create a `.env` from the `.env.dist` file. Adapt it according to your symfony application
 

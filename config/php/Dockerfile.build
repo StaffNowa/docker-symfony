@@ -77,7 +77,7 @@ RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --
     && curl -L __CURL_INSECURE__ https://github.com/phpstan/phpstan/releases/latest/download/phpstan.phar -o /usr/local/bin/phpstan && chmod a+x /usr/local/bin/phpstan \
     && curl -L __CURL_INSECURE__ https://github.com/deployphp/deployer/releases/latest/download/deployer.phar -o /usr/local/bin/dep && chmod a+x /usr/local/bin/dep \
 
-    && apt-get remove --purge -y gnupg1 \
+    && apt-get remove --purge -y gnupg2 \
     && apt-get -y --purge autoremove \
     __CLEANUP__
 
