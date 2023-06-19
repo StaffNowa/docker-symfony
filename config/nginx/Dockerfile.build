@@ -17,7 +17,7 @@ ARG PORT_PHP
 MAINTAINER Vasilij Dusko <support@d4d.lt>
 
 RUN apt-get update \
-	&& apt-get install --no-install-recommends --no-install-suggests -y gnupg1 \
+	&& apt-get install --no-install-recommends --no-install-suggests -y gnupg2 \
 	&& \
 	NGINX_GPGKEY=ABF5BD827BD9BF62; \
 	found=''; \
@@ -31,7 +31,7 @@ RUN apt-get update \
 		apt-key adv --keyserver "$server" --keyserver-options timeout=10 --recv-keys "$NGINX_GPGKEY" && found=yes && break; \
 	done; \
 	test -z "$found" && echo >&2 "error: failed to fetch GPG key $NGINX_GPGKEY" && exit 1; \
-	apt-get remove --purge -y gnupg1 && apt-get -y --purge autoremove && rm -rf /var/lib/apt/lists/* \
+	apt-get remove --purge -y gnupg2 && apt-get -y --purge autoremove && rm -rf /var/lib/apt/lists/* \
 	&& echo "deb http://nginx.org/packages/mainline/debian/ __DEBIAN_VERSION__ nginx" >> /etc/apt/sources.list \
 	&& apt-get update \
 	&& apt-get install --no-install-recommends --no-install-suggests -y \

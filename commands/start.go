@@ -202,7 +202,7 @@ func doNginxBuild() {
 func doPhpBuild() {
 	util.Copy("config/php/Dockerfile.build", "config/php/Dockerfile")
 
-	packageList := []string{"gnupg1", "openssl", "git", "unzip", "libzip-dev", "nano", "libpng-dev", "libmagickwand-dev", "curl", "openssh-client", "less", "inkscape", "cron", "exiftool", "libicu-dev", "libmcrypt-dev", "libc-client-dev", "libkrb5-dev", "libssl-dev", "libxslt1-dev", "bash-completion"}
+	packageList := []string{"gnupg2", "openssl", "git", "unzip", "libzip-dev", "nano", "libpng-dev", "libmagickwand-dev", "curl", "openssh-client", "less", "inkscape", "cron", "exiftool", "libicu-dev", "libmcrypt-dev", "libc-client-dev", "libkrb5-dev", "libssl-dev", "libxslt1-dev", "bash-completion"}
 	peclInstall := []string{}
 	phpExtInstall := []string{"pdo", "pdo_mysql", "opcache", "zip", "gd", "mysqli", "exif", "bcmath", "calendar", "intl", "soap", "imap", "sockets", "xsl"}
 	phpExtEnable := []string{"mysqli", "calendar", "exif", "bcmath"}
