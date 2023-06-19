@@ -36,9 +36,9 @@ RUN apt-get update \
 	&& apt-get update \
 	&& apt-get install --no-install-recommends --no-install-suggests -y \
 						nginx=${NGINX_VERSION} \
-						nginx-module-xslt=${NGINX_VERSION} \
-						nginx-module-geoip=${NGINX_VERSION} \
-						nginx-module-image-filter=${NGINX_VERSION} \
+#						nginx-module-xslt=${NGINX_VERSION} \
+#						nginx-module-geoip=${NGINX_VERSION} \
+#						nginx-module-image-filter=${NGINX_VERSION} \
 #						nginx-module-njs=${NJS_VERSION} \
 						gettext-base \
 						nano \
