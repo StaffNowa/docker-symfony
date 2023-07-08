@@ -204,12 +204,28 @@ func doPhpBuild() {
 
 	packageList := []string{"gnupg2", "openssl", "git", "unzip", "libzip-dev", "nano", "libpng-dev", "libmagickwand-dev", "curl", "openssh-client", "less", "inkscape", "cron", "exiftool", "libicu-dev", "libmcrypt-dev", "libc-client-dev", "libkrb5-dev", "libssl-dev", "libxslt1-dev", "bash-completion"}
 	peclInstall := []string{}
-	phpExtInstall := []string{"pdo", "pdo_mysql", "opcache", "zip", "gd", "mysqli", "exif", "bcmath", "calendar", "intl", "soap", "imap", "sockets", "xsl"}
+	phpExtInstall := []string{"pdo", "pdo_mysql", "opcache", "zip", "mysqli", "exif", "bcmath", "calendar", "intl", "soap", "sockets", "xsl"}
 	phpExtEnable := []string{"mysqli", "calendar", "exif", "bcmath"}
 	npmInstallGlobal := []string{}
 
 	if os.Getenv("SF_CLI") == "yes" {
 		packageList = append(packageList, "symfony-cli")
+	}
+
+	if os.Getenv("PHP_GD") == "yes" {
+		phpExtInstall = append(phpExtInstall, "gd")
+
+		util.Sed("__PHP_GD__", "&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/", "config/php/Dockerfile")
+	} else {
+		util.Sed("__PHP_GD__", "", "config/php/Dockerfile")
+	}
+
+	if os.Getenv("PHP_IMAP") == "yes" {
+		phpExtInstall = append(phpExtInstall, "imap")
+
+		util.Sed("__PHP_IMAP__", "&& docker-php-ext-configure imap --with-kerberos --with-imap-ssl", "config/php/Dockerfile")
+	} else {
+		util.Sed("__PHP_IMAP__", "", "config/php/Dockerfile")
 	}
 
 	if os.Getenv("PHP_VERSION") != "8.2" {
