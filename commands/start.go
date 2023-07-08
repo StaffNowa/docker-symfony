@@ -213,9 +213,11 @@ func doPhpBuild() {
 	}
 
 	if os.Getenv("PHP_VERSION") != "8.2" {
-		peclInstall = append(peclInstall, "imagick")
-		phpExtEnable = append(phpExtEnable, "imagick")
-		util.Sed("__IMAGICK__", "", "config/php/Dockerfile")
+		if os.Getenv("PHP_IMAGICK") == "yes" {
+			peclInstall = append(peclInstall, "imagick")
+			phpExtEnable = append(phpExtEnable, "imagick")
+			util.Sed("__IMAGICK__", "", "config/php/Dockerfile")
+		}
 	}
 
 	if os.Getenv("PHP_VERSION") == "5.6" || os.Getenv("PHP_VERSION") == "8.0" || os.Getenv("PHP_VERSION") == "8.1" || os.Getenv("PHP_VERSION") == "8.2" {
@@ -255,7 +257,10 @@ func doPhpBuild() {
 	if os.Getenv("PHP_VERSION") == "8.0" || os.Getenv("PHP_VERSION") == "8.1" || os.Getenv("PHP_VERSION") == "8.2" {
 		util.Sed("docker-php-ext-configure zip --with-libzip", "docker-php-ext-configure zip", "config/php/Dockerfile")
 		util.Sed("docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ &&", "docker-php-ext-configure gd --with-freetype --with-jpeg &&", "config/php/Dockerfile")
-		util.Sed("__IMAGICK__", "&& cd /tmp && git clone https://github.com/Imagick/imagick && cd imagick && phpize && ./configure && make && make install && echo extension=imagick.so > /usr/local/etc/php/conf.d/docker-php-ext-imagick.ini && rm -rf /tmp/imagick && cd /tmp", "config/php/Dockerfile")
+
+		if os.Getenv("PHP_IMAGICK") == "yes" {
+			util.Sed("__IMAGICK__", "&& cd /tmp && git clone https://github.com/Imagick/imagick && cd imagick && phpize && ./configure && make && make install && echo extension=imagick.so > /usr/local/etc/php/conf.d/docker-php-ext-imagick.ini && rm -rf /tmp/imagick && cd /tmp", "config/php/Dockerfile")
+		}
 	}
 
 	if os.Getenv("REDIS") == "yes" {
