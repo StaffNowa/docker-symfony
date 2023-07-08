@@ -452,17 +452,23 @@ func doBuildMySQLConf() {
 
 func doBuild() {
 	util.Copy("docker/compose.yml", "docker-compose.yml")
+	util.AppendFile("docker-compose.yml", util.FileGetContents("docker/php.yml"))
 
 	if os.Getenv("DOCKER_ENV_PHP") == "yes" {
 		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/env/php.yml"))
 	}
 
-	if os.Getenv("MYSQL_INST") == "mysql" {
-		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mysql.yml"))
-	} else {
-		if os.Getenv("MYSQL_INST") == "mariadb" {
-			util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mariadb.yml"))
+	if os.Getenv("MYSQL") == "yes" {
+		if os.Getenv("MYSQL_INST") == "mysql" {
+			util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mysql.yml"))
+		} else {
+			if os.Getenv("MYSQL_INST") == "mariadb" {
+				util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mariadb.yml"))
+			}
 		}
+		util.Sed("#php_depends_on", "depends_on:\r\n      - mysql", "docker-compose.yml")
+	} else {
+		util.Sed("#php_depends_on", "", "docker-compose.yml")
 	}
 
 	if os.Getenv("MAILHOG") == "yes" {
@@ -473,7 +479,7 @@ func doBuild() {
 		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mailpit.yml"))
 	}
 
-	if os.Getenv("PMA") == "yes" {
+	if os.Getenv("PMA") == "yes" && os.Getenv("MYSQL") == "yes" {
 		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/phpmyadmin.yml"))
 	}
 
