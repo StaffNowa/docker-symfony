@@ -56,15 +56,7 @@ RUN docker-php-ext-configure zip --with-libzip && docker-php-ext-configure gd --
     && chown -R ${USER_ID}:${GROUP_ID} /var/www/.composer \
     && chown ${USER_ID}:${GROUP_ID} /var/www \
     # npm & node
-    && mkdir -p /var/www/.npm \
-    && mkdir -p /var/www/html \
-    && printf '{"name": "d4d", "version": "1.0.0"}' > /var/www/html/package.json \
-    && chown -R ${USER_ID}:${GROUP_ID} /var/www/.npm \
-    && chown -R ${USER_ID}:${GROUP_ID} /var/www/html \
-    && printf 'Package: *\nPin: origin deb.nodesource.com\nPin-Priority: 600' > /etc/apt/preferences.d/nodejs \
-    && curl -sL https://deb.nodesource.com/setup_${NODE_JS_VERSION} | bash \
-    && apt-get install -y nodejs \
-    && npm install --location=global __NPM_INSTALL_GLOBAL__ \
+    __NODEJS__ \
     # Yarn package manager
     # bugfix: remove cmdtest to install yarn correctly.
     __YARN__ \

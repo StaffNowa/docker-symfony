@@ -344,6 +344,12 @@ func doPhpBuild() {
 		util.Sed("__YARN__", "", "config/php/Dockerfile")
 	}
 
+	if os.Getenv("NODEJS") == "yes" {
+		util.Sed("__NODEJS__", "&& mkdir -p /var/www/.npm && mkdir -p /var/www/html && printf '{\"name\": \"d4d\", \"version\": \"1.0.0\"}' > /var/www/html/package.json && chown -R $${USER_ID}:$${GROUP_ID} /var/www/.npm && chown -R $${USER_ID}:$${GROUP_ID} /var/www/html && printf 'Package: *\\nPin: origin deb.nodesource.com\\nPin-Priority: 600' > /etc/apt/preferences.d/nodejs && curl -sL https://deb.nodesource.com/setup_$${NODE_JS_VERSION} | bash && apt-get install -y nodejs && npm install --location=global __NPM_INSTALL_GLOBAL__ \\\n    ", "config/php/Dockerfile")
+	} else {
+		util.Sed("__NODEJS__", "", "config/php/Dockerfile")
+	}
+
 	if os.Getenv("WKHTMLTOPDF") == "yes" {
 		if os.Getenv("WKHTMLTOPDF_VERSION") == "0.12.3" {
 			util.Sed("__WKHTMLTOPDF__", "&& curl -o wkhtmltox-${WKHTMLTOPDF_VERSION}_linux-generic-amd64.tar.xz -sL https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/${WKHTMLTOPDF_VERSION}/wkhtmltox-${WKHTMLTOPDF_VERSION}_linux-generic-amd64.tar.xz  && echo '9066ab2c7b2035c6eaa043d31aeb7260191e6c88 wkhtmltox-${WKHTMLTOPDF_VERSION}_linux-generic-amd64.tar.xz' | sha1sum -c - && tar -xvf wkhtmltox-${WKHTMLTOPDF_VERSION}_linux-generic-amd64.tar.xz && cp wkhtmltox/lib/* /usr/lib/ && cp wkhtmltox/bin/* /usr/bin/ && cp -r wkhtmltox/share/man/man1 /usr/share/man/ && chmod a+x /usr/bin/wkhtmltopdf && chmod a+x /usr/bin/wkhtmltoimage", "config/php/Dockerfile")
