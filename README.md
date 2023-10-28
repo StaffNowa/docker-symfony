@@ -147,12 +147,10 @@ sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker
   </a>
 </p>
 
-# Hostinger.lt support us!
+# Digital Ocean support us!
 
 <p align="center">
-  <a href="https://www.hostinger.lt/vasilij" target="_blank">
-      <img src="https://www.prado.lt/wp-content/uploads/banners/hostinger.png" width="120" title="hover text">
-  </a>
+<a href="https://www.digitalocean.com/?refcode=c832ae92ce6c&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge"><img src="https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%201.svg" alt="DigitalOcean Referral Badge" /></a>
 </p>
 
 # Blackfire.io support us!
