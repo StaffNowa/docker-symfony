@@ -276,6 +276,8 @@ func doPhpBuild() {
 
 		if os.Getenv("PHP_IMAGICK") == "yes" {
 			util.Sed("__IMAGICK__", "&& cd /tmp && git clone https://github.com/Imagick/imagick && cd imagick && phpize && ./configure && make && make install && echo extension=imagick.so > /usr/local/etc/php/conf.d/docker-php-ext-imagick.ini && rm -rf /tmp/imagick && cd /tmp", "config/php/Dockerfile")
+		} else {
+			util.Sed("__IMAGICK__", "", "config/php/Dockerfile")
 		}
 	}
 
@@ -361,7 +363,7 @@ func doPhpBuild() {
 	}
 
 	if os.Getenv("NODEJS") == "yes" {
-		util.Sed("__NODEJS__", "&& mkdir -p /var/www/.npm && mkdir -p /var/www/html && printf '{\"name\": \"d4d\", \"version\": \"1.0.0\"}' > /var/www/html/package.json && chown -R $${USER_ID}:$${GROUP_ID} /var/www/.npm && chown -R $${USER_ID}:$${GROUP_ID} /var/www/html && printf 'Package: *\\nPin: origin deb.nodesource.com\\nPin-Priority: 600' > /etc/apt/preferences.d/nodejs && curl -sL https://deb.nodesource.com/setup_$${NODE_JS_VERSION} | bash && apt-get install -y nodejs && npm install --location=global __NPM_INSTALL_GLOBAL__ \\\n    ", "config/php/Dockerfile")
+		util.Sed("__NODEJS__", "&& mkdir -p /var/www/.npm && mkdir -p /var/www/html && printf '{\"name\": \"d4d\", \"version\": \"1.0.0\"}' > /var/www/html/package.json && chown -R $${USER_ID}:$${GROUP_ID} /var/www/.npm && chown -R $${USER_ID}:$${GROUP_ID} /var/www/html && mkdir -p /etc/apt/keyrings && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && NODE_MAJOR=$${NODE_JS_VERSION} && echo \"deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$${NODE_MAJOR}.x nodistro main\" | tee /etc/apt/sources.list.d/nodesource.list && apt-get update && apt-get install -y nodejs && npm install --location=global __NPM_INSTALL_GLOBAL__ \\\n    ", "config/php/Dockerfile")
 	} else {
 		util.Sed("__NODEJS__", "", "config/php/Dockerfile")
 	}
