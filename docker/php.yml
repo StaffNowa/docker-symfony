@@ -17,14 +17,13 @@
             XDEBUG_REMOTE_CONNECT_BACK: ${XDEBUG_REMOTE_CONNECT_BACK}
             XDEBUG_FILE_LINK_FORMAT: ${XDEBUG_FILE_LINK_FORMAT}
             XDEBUG_IDE_KEY: ${XDEBUG_IDE_KEY}
-            COMPOSER_VERSION: ${COMPOSER_VERSION}
     ports:
         - ${PORT_PHP}:9000
         - 8888:8888
     volumes:
         - ${PROJECT_PATH}:/var/www/project:cached
         - ${SF_COMMUNITY_PATH}:/var/www/symfony:cached
-        - ${COMPOSER_PATH}/cache:/var/www/.composer/cache:cached
+        - ./.composer/cache:/var/www/.composer/cache:cached
         - ${SSH_KEY_PATH}/id_rsa:/var/www/.ssh/id_rsa
         - ${SSH_KEY_PATH}/id_rsa.pub:/var/www/.ssh/id_rsa.pub
         - ${SSH_KEY_PATH}/known_hosts:/var/www/.ssh/known_hosts

@@ -19,8 +19,6 @@ ARG XDEBUG_REMOTE_CONNECT_BACK
 ARG XDEBUG_FILE_LINK_FORMAT
 ARG XDEBUG_IDE_KEY
 
-ARG COMPOSER_VERSION
-
 ARG WKHTMLTOPDF_VERSION
 
 MAINTAINER Vasilij Dusko <support@d4d.lt>
@@ -48,7 +46,7 @@ RUN docker-php-ext-configure zip --with-libzip __PHP_GD__ && docker-php-ext-conf
     __MONGODB__ \
     # Install composer
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && php composer-setup.php --version=${COMPOSER_VERSION} \
+    && php composer-setup.php \
     && php -r "unlink('composer-setup.php');" \
     && mv composer.phar /usr/local/bin/composer \
     && mkdir -p /var/www/.composer \

@@ -101,8 +101,8 @@ func doChecks() {
 		os.Getenv("SF_COMMUNITY_PATH") + "/symfony",
 		os.Getenv("SF_COMMUNITY_PATH") + "/recipes",
 		os.Getenv("SF_COMMUNITY_PATH") + "/symfony-docs",
-		os.Getenv("COMPOSER_PATH"),
-		os.Getenv("COMPOSER_PATH") + "/cache",
+		"./.composer",
+		"./.composer/cache",
 		sshKeyPath,
 		os.Getenv("MYSQL_DUMP_PATH"),
 	}
