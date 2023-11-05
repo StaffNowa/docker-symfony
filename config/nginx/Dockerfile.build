@@ -2,7 +2,6 @@ ARG DEBIAN_VERSION
 
 FROM debian:${DEBIAN_VERSION}
 
-ARG NGINX_VERSION
 ARG PROJECT_DOMAIN_1
 ARG PROJECT_DOMAIN_2
 ARG PROJECT_DOMAIN_3
@@ -17,32 +16,23 @@ ARG PORT_PHP
 MAINTAINER Vasilij Dusko <support@d4d.lt>
 
 RUN apt-get update \
-	&& apt-get install --no-install-recommends --no-install-suggests -y gnupg2 \
-	&& \
-	NGINX_GPGKEY=ABF5BD827BD9BF62; \
-	found=''; \
-	for server in \
-		ha.pool.sks-keyservers.net \
-		hkp://keyserver.ubuntu.com:80 \
-		hkp://p80.pool.sks-keyservers.net:80 \
-		pgp.mit.edu \
-	; do \
-		echo "Fetching GPG key $NGINX_GPGKEY from $server"; \
-		apt-key adv --keyserver "$server" --keyserver-options timeout=10 --recv-keys "$NGINX_GPGKEY" && found=yes && break; \
-	done; \
-	test -z "$found" && echo >&2 "error: failed to fetch GPG key $NGINX_GPGKEY" && exit 1; \
-	apt-get remove --purge -y gnupg2 && apt-get -y --purge autoremove && rm -rf /var/lib/apt/lists/* \
-	&& echo "deb http://nginx.org/packages/mainline/debian/ __DEBIAN_VERSION__ nginx" >> /etc/apt/sources.list \
-	&& apt-get update \
+    && apt-get install --no-install-recommends --no-install-suggests -y \
+    curl gnupg2 ca-certificates lsb-release debian-archive-keyring \
+    && curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor \
+        | tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null \
+    && gpg --dry-run --quiet --no-keyring --import --import-options import-show /usr/share/keyrings/nginx-archive-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] \
+       http://nginx.org/packages/debian `lsb_release -cs` nginx" \
+           | tee /etc/apt/sources.list.d/nginx.list \
+    && printf 'Package: *\nPin: origin nginx.org\nPin: release o=nginx\nPin-Priority: 900\n' > /etc/apt/preferences.d/99nginx \
+    && apt-get update \
 	&& apt-get install --no-install-recommends --no-install-suggests -y \
-						nginx=${NGINX_VERSION} \
-#						nginx-module-xslt=${NGINX_VERSION} \
-#						nginx-module-geoip=${NGINX_VERSION} \
-#						nginx-module-image-filter=${NGINX_VERSION} \
-#						nginx-module-njs=${NJS_VERSION} \
+						nginx \
 						gettext-base \
 						nano \
-	&& rm -rf /var/lib/apt/lists/*
+	&& apt-get remove --purge -y gnupg2 \
+    && apt-get -y --purge autoremove \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY project.conf /etc/nginx/sites-available/
 COPY rewrite/project.conf /etc/nginx/rewrite/
