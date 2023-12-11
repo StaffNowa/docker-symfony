@@ -30,8 +30,10 @@ RUN __SYMFONY_CLI__
     __CLEANUP__
 
 # Install PHP extensions. Type docker-php-ext-install to see available extensions
-RUN docker-php-ext-configure zip --with-libzip __PHP_GD__ && docker-php-ext-configure intl __PHP_IMAP__ && docker-php-ext-install -j$(nproc) __PHP_EXT_INSTALL__ \
-    && pecl install __PECL_INSTALL__ && docker-php-ext-enable __PHP_EXT_ENABLE__ \
+RUN __PHP_EXT_CONFIGURE__
+    __PHP_EXT_INSTALL__
+    __PECL_INSTALL__
+    __PHP_EXT_ENABLE__
     && ln -snf /usr/share/zoneinfo/${DEFAULT_TIMEZONE} /etc/localtime && echo ${DEFAULT_TIMEZONE} > /etc/timezone \
     && printf '[PHP]\ndate.timezone = "%s"\n' ${DEFAULT_TIMEZONE} > $PHP_INI_DIR/conf.d/tzone.ini \
     && printf '[CUSTOM]\nmemory_limit = "%s"\n' ${PHP_MEMORY_LIMIT} >> $PHP_INI_DIR/conf.d/custom.ini \
@@ -40,10 +42,9 @@ RUN docker-php-ext-configure zip --with-libzip __PHP_GD__ && docker-php-ext-conf
     && printf '\nmax_execution_time = %s\n' ${PHP_MAX_EXECUTION_TIME} >> $PHP_INI_DIR/conf.d/custom.ini \
     && printf '\nxdebug.file_link_format = "%s"\n' ${XDEBUG_FILE_LINK_FORMAT} >> $PHP_INI_DIR/conf.d/custom.ini \
     && printf '\nxdebug.idekey = "%s"\n' ${XDEBUG_IDE_KEY} >> $PHP_INI_DIR/conf.d/custom.ini \
-    && echo 'extension=apc.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini \
-    __IMAGICK__ \
-    __RABBIT_MQ__ \
-    __MONGODB__ \
+    __RABBIT_MQ__
+    __MONGODB__
+    __XDEBUG__
     # Install composer
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php \
@@ -60,7 +61,6 @@ RUN docker-php-ext-configure zip --with-libzip __PHP_GD__ && docker-php-ext-conf
     __YARN__ \
     # Install wkhtmltopdf
     __WKHTMLTOPDF__ \
-    __PHP_IONCUBE__ \
     __BLACKFIRE__ \
     && curl -L __CURL_INSECURE__ https://cs.symfony.com/download/php-cs-fixer-v3.phar -o /usr/bin/php-cs-fixer && chmod a+x /usr/bin/php-cs-fixer \
     && curl -L __CURL_INSECURE__ https://github.com/fabpot/local-php-security-checker/releases/download/v2.0.3/local-php-security-checker_2.0.3_linux_amd64 -o /usr/bin/local-php-security-checker && chmod a+x /usr/bin/local-php-security-checker \

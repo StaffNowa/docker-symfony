@@ -103,6 +103,7 @@ func doChecks() {
 		os.Getenv("SF_COMMUNITY_PATH") + "/symfony-docs",
 		"./.composer",
 		"./.composer/cache",
+		"./scripts/",
 		sshKeyPath,
 		os.Getenv("MYSQL_DUMP_PATH"),
 	}
@@ -204,136 +205,118 @@ func doPhpBuild() {
 
 	packageList := []string{"gnupg2", "openssl", "git", "unzip", "libzip-dev", "nano", "libpng-dev", "libmagickwand-dev", "curl", "openssh-client", "less", "inkscape", "cron", "exiftool", "libicu-dev", "libmcrypt-dev", "libc-client-dev", "libkrb5-dev", "libssl-dev", "libxslt1-dev", "bash-completion"}
 	peclInstall := []string{}
+	phpExtConfigure := []string{}
 	phpExtInstall := []string{"pdo", "pdo_mysql", "opcache", "zip", "mysqli", "exif", "bcmath", "calendar", "intl", "soap", "sockets", "xsl"}
 	phpExtEnable := []string{"mysqli", "calendar", "exif", "bcmath"}
 	npmInstallGlobal := []string{}
 
-	if os.Getenv("SF_CLI") == "yes" {
-		packageList = append(packageList, "symfony-cli")
+	phpVersion := os.Getenv("PHP_VERSION")
+
+	if phpVersion == "7.1" {
+		phpExtInstall = append(phpExtInstall, "mcrypt")
+		phpExtEnable = append(phpExtEnable, "mcrypt")
+	}
+
+	if phpVersion >= "7.1" && phpVersion <= "7.3" {
+		phpExtConfigure = append(phpExtConfigure, "docker-php-ext-configure zip --with-libzip")
+	}
+
+	if phpVersion >= "7.4" && phpVersion <= "8.3" {
+		phpExtConfigure = append(phpExtConfigure, "docker-php-ext-configure zip")
+	}
+
+	phpExtConfigure = append(phpExtConfigure, "&& docker-php-ext-configure intl")
+
+	if os.Getenv("PHP_IMAGICK") == "yes" {
+		peclInstall = append(peclInstall, "imagick")
+		phpExtEnable = append(phpExtEnable, "imagick")
 	}
 
 	if os.Getenv("PHP_GD") == "yes" {
-		phpExtInstall = append(phpExtInstall, "gd")
-
-		util.Sed("__PHP_GD__", "&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/", "config/php/Dockerfile")
-	} else {
-		util.Sed("__PHP_GD__", "", "config/php/Dockerfile")
-	}
-
-	if os.Getenv("PHP_IMAP") == "yes" {
-		phpExtInstall = append(phpExtInstall, "imap")
-
-		util.Sed("__PHP_IMAP__", "&& docker-php-ext-configure imap --with-kerberos --with-imap-ssl", "config/php/Dockerfile")
-	} else {
-		util.Sed("__PHP_IMAP__", "", "config/php/Dockerfile")
-	}
-
-	if os.Getenv("PHP_VERSION") != "8.2" {
-		if os.Getenv("PHP_IMAGICK") == "yes" {
-			peclInstall = append(peclInstall, "imagick")
-			phpExtEnable = append(phpExtEnable, "imagick")
-			util.Sed("__IMAGICK__", "", "config/php/Dockerfile")
-		}
-	}
-
-	if os.Getenv("PHP_VERSION") == "5.6" || os.Getenv("PHP_VERSION") == "8.0" || os.Getenv("PHP_VERSION") == "8.1" || os.Getenv("PHP_VERSION") == "8.2" {
-		util.Sed("&& echo 'extension=apc.so' >> \\$PHP_INI_DIR/conf.d/docker-php-ext-apcu.ini \\\\", "", "config/php/Dockerfile")
-	}
-
-	if os.Getenv("PHP_VERSION") != "5.6" && os.Getenv("PHP_VERSION") != "8.0" && os.Getenv("PHP_VERSION") != "8.1" && os.Getenv("PHP_VERSION") != "8.2" {
-		peclInstall = append(peclInstall, "apcu", "apcu_bc")
-		phpExtEnable = append(phpExtEnable, "apcu")
-	}
-
-	if os.Getenv("PHP_VERSION") == "5.6" {
-		phpExtInstall = append(phpExtInstall, "mcrypt")
-		phpExtEnable = append(phpExtEnable, "mcrypt")
-	}
-
-	if os.Getenv("PHP_VERSION") == "7.0" || os.Getenv("PHP_VERSION") == "7.1" {
-		phpExtInstall = append(phpExtInstall, "mcrypt")
-		phpExtEnable = append(phpExtEnable, "mcrypt")
-	}
-
-	if os.Getenv("PHP_VERSION") == "7.2" || os.Getenv("PHP_VERSION") == "7.3" || os.Getenv("PHP_VERSION") == "7.4" {
-		peclInstall = append(peclInstall, "mcrypt")
-		phpExtEnable = append(phpExtEnable, "mcrypt")
-	}
-
-	if os.Getenv("PHP_VERSION") == "8.0" || os.Getenv("PHP_VERSION") == "8.1" {
-		peclInstall = append(peclInstall, "mcrypt")
-		phpExtEnable = append(phpExtEnable, "mcrypt")
-	}
-
-	if os.Getenv("PHP_VERSION") == "7.4" {
-		util.Sed("docker-php-ext-configure zip --with-libzip && ", "", "config/php/Dockerfile")
-		util.Sed("docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && ", "docker-php-ext-configure gd --with-freetype --with-jpeg && ", "config/php/Dockerfile")
-	}
-
-	if os.Getenv("PHP_VERSION") == "8.0" || os.Getenv("PHP_VERSION") == "8.1" || os.Getenv("PHP_VERSION") == "8.2" {
-		util.Sed("docker-php-ext-configure zip --with-libzip", "docker-php-ext-configure zip", "config/php/Dockerfile")
-		util.Sed("docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ &&", "docker-php-ext-configure gd --with-freetype --with-jpeg &&", "config/php/Dockerfile")
-
-		if os.Getenv("PHP_IMAGICK") == "yes" {
-			util.Sed("__IMAGICK__", "&& cd /tmp && git clone https://github.com/Imagick/imagick && cd imagick && phpize && ./configure && make && make install && echo extension=imagick.so > /usr/local/etc/php/conf.d/docker-php-ext-imagick.ini && rm -rf /tmp/imagick && cd /tmp", "config/php/Dockerfile")
+		supportedVersions := []string{"7.4", "8.0", "8.1", "8.2", "8.3"}
+		gdConfigure := "&& docker-php-ext-configure gd"
+		if !util.Contains(supportedVersions, phpVersion) {
+			gdConfigure += " --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/"
 		} else {
-			util.Sed("__IMAGICK__", "", "config/php/Dockerfile")
+			gdConfigure += " --with-freetype --with-jpeg"
 		}
-	}
-
-	if os.Getenv("REDIS") == "yes" {
-		peclInstall = append(peclInstall, "redis")
-		phpExtEnable = append(phpExtEnable, "redis")
+		phpExtConfigure = append(phpExtConfigure, gdConfigure)
+		phpExtInstall = append(phpExtInstall, "gd")
 	}
 
 	if os.Getenv("RABBITMQ") == "yes" {
 		packageList = append(packageList, "librabbitmq-dev", "librabbitmq4")
-		if os.Getenv("PHP_VERSION") != "8.0" && os.Getenv("PHP_VERSION") != "8.1" && os.Getenv("PHP_VERSION") != "8.2" {
-			peclInstall = append(peclInstall, "amqp")
-			util.Sed("__RABBIT_MQ__", "&& echo 'extension=amqp.so' >> $PHP_INI_DIR/conf.d/docker-php-ext-amqp.ini", "config/php/Dockerfile")
-		} else {
-			util.Sed("__RABBIT_MQ__", "&& cd /tmp && git clone https://github.com/php-amqp/php-amqp && cd php-amqp && phpize && ./configure && make && make install && echo 'extension=amqp.so' > /usr/local/etc/php/conf.d/docker-php-ext-amqp.ini && rm -rf /tmp/php-amqp && cd /tmp", "config/php/Dockerfile")
+
+		if phpVersion >= "7.1" && phpVersion <= "7.3" {
+			peclInstall = append(peclInstall, "amqp-1.11.0")
 		}
 
+		if phpVersion >= "7.3" && phpVersion <= "8.3" {
+			peclInstall = append(peclInstall, "amqp-2.1.1")
+		}
+
+		util.Sed("__RABBIT_MQ__", "&& echo 'extension=amqp.so' >> $$PHP_INI_DIR/conf.d/docker-php-ext-amqp.ini"+" \\", "config/php/Dockerfile")
 	} else {
-		util.Sed("__RABBIT_MQ__ \\\\", "", "config/php/Dockerfile")
+		util.Sed("__RABBIT_MQ__", "", "config/php/Dockerfile")
 	}
 
 	if os.Getenv("MONGODB") == "yes" {
-		peclInstall = append(peclInstall, "mongodb")
-		util.Sed("__MONGODB__", "&& echo 'extension=mongodb.so' >> $$PHP_INI_DIR/conf.d/docker-php-ext-mongodb.ini", "config/php/Dockerfile")
+		if phpVersion == "7.1" {
+			peclInstall = append(peclInstall, "mongodb-1.11.1")
+			util.Sed("__MONGODB__", "&& echo 'extension=mongodb.so' >> $$PHP_INI_DIR/conf.d/docker-php-ext-mongodb.ini"+" \\", "config/php/Dockerfile")
+		}
+
+		if phpVersion >= "7.2" && phpVersion <= "7.3" {
+			peclInstall = append(peclInstall, "mongodb-1.16.2")
+		}
+
+		if phpVersion >= "7.4" && phpVersion <= "8.3" {
+			peclInstall = append(peclInstall, "mongodb-1.17.1")
+		}
+
+		if phpVersion != "7.2" {
+			util.Sed("__MONGODB__", "&& echo 'extension=mongodb.so' >> $$PHP_INI_DIR/conf.d/docker-php-ext-mongodb.ini"+" \\", "config/php/Dockerfile")
+		} else {
+			util.Sed("__MONGODB__", "&& echo 'extension=mongodb' >> $$PHP_INI_DIR/conf.d/docker-php-ext-mongodb.ini"+" \\", "config/php/Dockerfile")
+		}
 	} else {
 		util.Sed("__MONGODB__", "", "config/php/Dockerfile")
+	}
+
+	if os.Getenv("PHP_IMAP") == "yes" {
+		phpExtConfigure = append(phpExtConfigure, "&& docker-php-ext-configure imap --with-kerberos --with-imap-ssl")
+
+		phpExtInstall = append(phpExtInstall, "imap")
+	}
+
+	if os.Getenv("REDIS") == "yes" {
+		if phpVersion == "7.1" {
+			peclInstall = append(peclInstall, "redis-5.3.7")
+		}
+
+		if phpVersion >= "7.2" && phpVersion <= "8.3" {
+			peclInstall = append(peclInstall, "redis-6.0.2")
+		}
+
+		phpExtEnable = append(phpExtEnable, "redis")
 	}
 
 	if os.Getenv("SUPERVISOR") == "yes" {
 		packageList = append(packageList, "supervisor")
 	}
 
-	npmInstallGlobal = append(npmInstallGlobal, "npm", "grunt-cli", "yargs", "async", "sass", "gulp", "requirejs", "pm2", "uglify-js", "typescript", "eslint")
-
 	if os.Getenv("XDEBUG") == "yes" {
-		if os.Getenv("PHP_VERSION") == "5.6" {
-			peclInstall = append(peclInstall, "xdebug-2.5.0")
+		if phpVersion == "7.1" {
+			peclInstall = append(peclInstall, "xdebug-2.9.8")
 		}
 
-		if os.Getenv("PHP_VERSION") == "7.0" {
-			peclInstall = append(peclInstall, "xdebug-2.7.0")
+		if phpVersion >= "7.2" && phpVersion <= "7.4" {
+			peclInstall = append(peclInstall, "xdebug-3.1.6")
 		}
 
-		if os.Getenv("PHP_VERSION") == "7.1" {
-			peclInstall = append(peclInstall, "xdebug-2.9.0")
+		if phpVersion >= "8.0" && phpVersion <= "8.3" {
+			peclInstall = append(peclInstall, "xdebug-3.3.1")
 		}
-
-		if os.Getenv("PHP_VERSION") == "7.2" || os.Getenv("PHP_VERSION") == "7.3" || os.Getenv("PHP_VERSION") == "7.4" {
-			peclInstall = append(peclInstall, "xdebug-3.1.0")
-		}
-
-		if os.Getenv("PHP_VERSION") == "8.0" || os.Getenv("PHP_VERSION") == "8.1" || os.Getenv("PHP_VERSION") == "8.2" {
-			peclInstall = append(peclInstall, "xdebug-3.2.0")
-		}
-
-		phpExtEnable = append(phpExtEnable, "xdebug")
 
 		util.Copy("config/php/conf.d/xdebug.d4d", "config/php/conf.d/xdebug.ini")
 
@@ -346,15 +329,23 @@ func doPhpBuild() {
 		if os.Getenv("XDEBUG_REMOTE_CONNECT_BACK") != "" {
 			util.AppendFile("config/php/conf.d/xdebug.ini", fmt.Sprintf("\nxdebug.remote_connect_back = %s", os.Getenv("XDEBUG_REMOTE_CONNECT_BACK")))
 		}
+
+		if phpVersion >= "7.1" && phpVersion <= "8.3" {
+			util.Sed("__XDEBUG__", "&& echo 'zend_extension=xdebug.so' >> $$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"+" \\", "config/php/Dockerfile")
+		} else {
+			util.Sed("__XDEBUG__", "&& echo 'extension=xdebug.so' >> $$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"+" \\", "config/php/Dockerfile")
+		}
 	} else {
-		util.Sed("__PHP_XDEBUG__", "", "config/php/Dockerfile")
+		util.Sed("__XDEBUG__", "", "config/php/Dockerfile")
 	}
 
-	if os.Getenv("IONCUBE") == "yes" {
-		util.Sed("__PHP_IONCUBE__", "&& curl -fsSL 'https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz' -o ioncube.tar.gz && mkdir -p /tmp/ioncube && tar -xvzf ioncube.tar.gz && mv ioncube/ioncube_loader_lin_${PHP_VERSION}.so `php-config --extension-dir` && rm -Rf ioncube.tar.gz ioncube && docker-php-ext-enable ioncube_loader_lin_${PHP_VERSION}", "config/php/Dockerfile")
-	} else {
-		util.Sed("__PHP_IONCUBE__ \\\\", "", "config/php/Dockerfile")
+	util.Sed(" __CURL_INSECURE__", "", "config/php/Dockerfile")
+
+	if os.Getenv("SF_CLI") == "yes" {
+		packageList = append(packageList, "symfony-cli")
 	}
+
+	npmInstallGlobal = append(npmInstallGlobal, "npm", "grunt-cli", "yargs", "async", "sass", "gulp", "requirejs", "pm2", "uglify-js", "typescript", "eslint")
 
 	if os.Getenv("YARN") == "yes" {
 		util.Sed("__YARN__", "&& apt-get remove -y cmdtest && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | tee /etc/apt/sources.list.d/yarn.list && apt-get update && apt-get install -y yarn", "config/php/Dockerfile")
@@ -392,9 +383,21 @@ func doPhpBuild() {
 	}
 
 	util.Sed("__PACKAGE_LIST__", strings.Join(packageList, " "), "config/php/Dockerfile")
-	util.Sed("__PHP_EXT_INSTALL__", strings.Join(phpExtInstall, " "), "config/php/Dockerfile")
-	util.Sed("__PHP_EXT_ENABLE__", strings.Join(phpExtEnable, " "), "config/php/Dockerfile")
-	util.Sed("__PECL_INSTALL__", strings.Join(peclInstall, " "), "config/php/Dockerfile")
+	util.Sed("__PHP_EXT_CONFIGURE__", strings.Join(phpExtConfigure, " ")+" \\", "config/php/Dockerfile")
+	util.Sed("__PHP_EXT_INSTALL__", "&& docker-php-ext-install -j$(nproc) "+strings.Join(phpExtInstall, " ")+" \\", "config/php/Dockerfile")
+
+	if len(peclInstall) > 0 {
+		util.Sed("__PECL_INSTALL__", "&& pecl install "+strings.Join(peclInstall, " ")+" \\", "config/php/Dockerfile")
+	} else {
+		util.Sed("__PECL_INSTALL__", "", "config/php/Dockerfile")
+	}
+
+	if len(phpExtEnable) > 0 {
+		util.Sed("__PHP_EXT_ENABLE__", "&& docker-php-ext-enable "+strings.Join(phpExtEnable, " ")+" \\", "config/php/Dockerfile")
+	} else {
+		util.Sed("__PHP_EXT_ENABLE__", "", "config/php/Dockerfile")
+	}
+
 	util.Sed("__NPM_INSTALL_GLOBAL__", strings.Join(npmInstallGlobal, " "), "config/php/Dockerfile")
 	util.Sed("__CLEANUP__", "&& apt-get clean && rm -rf /var/lib/apt/lists/*", "config/php/Dockerfile")
 
@@ -402,12 +405,6 @@ func doPhpBuild() {
 		util.Sed("__SYMFONY_CLI__", "echo \"deb [trusted=yes] https://repo.symfony.com/apt/ /\" | tee /etc/apt/sources.list.d/symfony-cli.list && \\", "config/php/Dockerfile")
 	} else {
 		util.Sed("__SYMFONY_CLI__", "\\", "config/php/Dockerfile")
-	}
-
-	if os.Getenv("PHP_VERSION") == "5.6" || os.Getenv("PHP_VERSION") == "7.0" {
-		util.Sed("__CURL_INSECURE__", "-k", "config/php/Dockerfile")
-	} else {
-		util.Sed(" __CURL_INSECURE__", "", "config/php/Dockerfile")
 	}
 
 	util.Sed("    \n", "", "config/php/Dockerfile")

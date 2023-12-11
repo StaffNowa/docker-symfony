@@ -138,6 +138,14 @@ sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker
     docker-symfony_redis_1        docker-entrypoint.sh redis ...   Up      6379/tcp          
     ```
 
+# PHP extensions
+| Extension | PHP 7.1 | PHP 7.2 | PHP 7.3 | PHP 7.4 | PHP 8.0 | PHP 8.1 | PHP 8.2 | PHP 8.3 |
+|-----------|---------|---------|---------|---------|---------|---------|---------|---------|
+| amqp      | 1.11.0  | 1.11.0  | 1.11.0  | 2.1.1   | 2.1.1   | 2.1.1   | 2.1.1   | 2.1.1   |
+| mongodb   | 1.11.1  | 1.16.2  | 1.16.2  | 1.17.1  | 1.17.1  | 1.17.1  | 1.17.1  | 1.17.1  |
+| redis     | 5.3.7   | 6.0.2   | 6.0.2   | 6.0.2   | 6.0.2   | 6.0.2   | 6.0.2   | 6.0.2   |
+| xdebug    | 2.9.8   | 3.1.6   | 3.1.6   | 3.1.6   | 3.1.6   | 3.1.6   | 3.1.6   | 3.1.6   |
+
 
 # JetBrains support us! 
 
