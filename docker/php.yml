@@ -35,4 +35,5 @@
         - ./config/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf:ro
         - ./config/php/php-fpm.d/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf:ro
         - ./config/supervisor/conf.d/messenger-worker.conf:/etc/supervisor/conf.d/messenger-worker.conf
+        - ./scripts/check_php_extensions.sh:/var/www/scripts/check_php_extensions.sh
     #php_depends_on
