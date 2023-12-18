@@ -7,7 +7,7 @@ require (
 	github.com/sethvargo/go-password v0.2.0
 	github.com/symfony-cli/console v1.0.1
 	github.com/symfony-cli/terminal v0.0.0-20211113151828-3b1d22f17f52
-	golang.org/x/crypto v0.1.0
+	golang.org/x/crypto v0.17.0
 )
 
 require (
@@ -17,6 +17,6 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rs/zerolog v1.26.0 // indirect
-	golang.org/x/sys v0.1.0 // indirect
-	golang.org/x/term v0.1.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/term v0.15.0 // indirect
 )
