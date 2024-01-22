@@ -33,7 +33,7 @@ jobs:
         id: git
         run: |
           RESULT=$(git status --untracked-files=no --porcelain)
-          echo "::set-output name=gitstatus::$RESULT"
+          echo "gitstatus=$RESULT" >> $GITHUB_OUTPUT
       -
         name: Check if go prepare updated generated Go code
         if: steps.git.outputs.gitstatus != ''
