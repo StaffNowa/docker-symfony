@@ -10,7 +10,6 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/sethvargo/go-password/password"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -28,7 +27,7 @@ func IsCommandExist(cmd string) bool {
 }
 
 func Sed(old, new, filePath string) error {
-	fileData, err := ioutil.ReadFile(filePath)
+	fileData, err := os.ReadFile(filePath)
 	if err != nil {
 		return err
 	}
@@ -39,7 +38,7 @@ func Sed(old, new, filePath string) error {
 	fileString = m1.ReplaceAllString(string(fileData), new)
 	fileData = []byte(fileString)
 
-	err = ioutil.WriteFile(filePath, fileData, 0644)
+	err = os.WriteFile(filePath, fileData, 0644)
 	if err != nil {
 		return err
 	}
@@ -60,7 +59,7 @@ func AppendFile(filePath string, data string) {
 }
 
 func FileGetContents(filename string) string {
-	fileData, err := ioutil.ReadFile(filename)
+	fileData, err := os.ReadFile(filename)
 	if err != nil {
 		os.Exit(1)
 	}

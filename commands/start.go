@@ -4,7 +4,6 @@ import (
 	"docker-symfony/util"
 	"fmt"
 	"github.com/symfony-cli/console"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/user"
@@ -49,7 +48,7 @@ func doChecks() {
 		if util.FileExists(envDistFile) {
 			util.Copy(envDistFile, envFile)
 
-			fileData, err := ioutil.ReadFile(envSecretFile)
+			fileData, err := os.ReadFile(envSecretFile)
 			if err != nil {
 				os.Exit(1)
 			}
@@ -75,13 +74,13 @@ func doChecks() {
 	util.Sed("MONGODB_ROOT_PASSWORD=root", fmt.Sprintf("MONGODB_ROOT_PASSWORD=%s", util.GeneratePassword(20)), envSecretFile)
 	util.Sed("MONGODB_PASSWORD=db_password", fmt.Sprintf("MONGODB_PASSWORD=%s", util.GeneratePassword(20)), envSecretFile)
 
-	fileData, err := ioutil.ReadFile(envFile)
+	fileData, err := os.ReadFile(envFile)
 	if err != nil {
 		os.Exit(1)
 	}
 
 	if !strings.Contains(string(fileData), "# .env.secret") {
-		fileData, err := ioutil.ReadFile(envSecretFile)
+		fileData, err := os.ReadFile(envSecretFile)
 		if err != nil {
 			os.Exit(1)
 		}
