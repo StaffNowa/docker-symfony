@@ -150,8 +150,8 @@ sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker
 # JetBrains support us! 
 
 <p align="center">
-  <a href="https://www.jetbrains.com" target="_blank">
-      <img src="https://account.jetbrains.com/static/images/jetbrains-logo-inv.svg" width="120" title="hover text">
+  <a href="https://jb.gg/OpenSourceSupport" target="_blank">
+      <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg?_ga=2.45490276.1766793921.1706436584-1545167499.1706436583" width="120" title="hover text">
   </a>
 </p>
 
