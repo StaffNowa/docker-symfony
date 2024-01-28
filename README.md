@@ -155,15 +155,14 @@ sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker
   </a>
 </p>
 
-# Digital Ocean support us!
-
-<p align="center">
-<a href="https://www.digitalocean.com/?refcode=c832ae92ce6c&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge"><img src="https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%201.svg" alt="DigitalOcean Referral Badge" /></a>
-</p>
-
 # Blackfire.io support us!
 <p align="center">
   <a href="https://www.blackfire.io" target="_blank">
       <img src="support/blackfire_io.png" width="120" title="hover text">
   </a>
+</p>
+
+## Get $200 to try DigitalOcean!
+<p align="center">
+<a href="https://www.digitalocean.com/?refcode=c832ae92ce6c&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge"><img src="https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%201.svg" alt="DigitalOcean Referral Badge" /></a>
 </p>
