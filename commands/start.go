@@ -23,7 +23,6 @@ var startCmd = &console.Command{
 	Usage:    "",
 	Action: func(c *console.Context) error {
 		doChecks()
-		doBuildNginxConf()
 		doBuildMySQLConf()
 		doBuild()
 		doBeforeStart()
@@ -132,8 +131,6 @@ func doChecks() {
 		os.Create(sshKeyPath + "/known_hosts")
 	}
 
-	os.MkdirAll(os.Getenv("NGINX_SSL_PATH"), 0755)
-	os.Mkdir(os.Getenv("NGINX_LOG_PATH"), 0755)
 	os.Mkdir(os.Getenv("MYSQL_DATA_PATH"), 0755)
 	os.Mkdir(os.Getenv("USER_CONFIG_PATH"), 0755)
 	os.Mkdir(os.Getenv("MONGODB_LOG_PATH"), 0755)
@@ -149,13 +146,6 @@ func doChecks() {
 		util.AppendFile(os.Getenv("USER_CONFIG_PATH")+"/.my.cnf", data)
 	}
 
-	if os.Getenv("NGINX_SSL") == "yes" {
-		if !util.FileExists("user/nginx/ssl/d4d.pem") || !util.FileExists("user/nginx/ssl/d4d-key.pem") {
-			// ./d4d mkcert ssl
-		}
-	}
-
-	doNginxBuild()
 	doPhpBuild()
 	doPhpMyAdminBuild()
 
@@ -179,24 +169,6 @@ func doChecks() {
 	util.Sed("__AUTH_TYPE__", pmaAuthType, "config/phpmyadmin/config.user.inc.php")
 	util.Sed("__MYSQL_USER__", pmaMySQLUser, "config/phpmyadmin/config.user.inc.php")
 	util.Sed("__MYSQL_PASSWORD__", pmaMySQLPassword, "config/phpmyadmin/config.user.inc.php")
-}
-
-func doNginxBuild() {
-	util.Copy("config/nginx/Dockerfile.build", "config/nginx/Dockerfile")
-
-	util.Sed("__DEBIAN_VERSION__", os.Getenv("DEBIAN_VERSION"), "config/nginx/Dockerfile")
-
-	if os.Getenv("NGINX_SSL") == "yes" {
-		os.Mkdir("config/nginx/ssl", 0755)
-
-		util.Copy("user/nginx/ssl/d4d.pem", "config/nginx/ssl/d4d.pem")
-		util.Copy("user/nginx/ssl/d4d-key.pem", "config/nginx/ssl/d4d-key.pem")
-
-		util.Sed("__D4D_SSL__", "COPY [\"ssl/d4d.pem\", \"ssl/d4d-key.pem\", \"/etc/nginx/ssl/\"]", "config/nginx/Dockerfile")
-
-	} else {
-		util.Sed("__D4D_SSL__", "", "config/nginx/Dockerfile")
-	}
 }
 
 func doPhpBuild() {
@@ -428,39 +400,6 @@ func remove(haystack []string, needle string) []string {
 	return haystack
 }
 
-func doBuildNginxConf() {
-	projectConfFile := "config/nginx/project.conf"
-
-	if os.Getenv("NGINX_SSL") == "yes" {
-		util.Copy("config/nginx/project-ssl.conf.default", projectConfFile)
-	} else {
-		util.Copy("config/nginx/project.conf.default", projectConfFile)
-	}
-
-	util.Sed("__INCLUDE__", "/etc/nginx/d4d/sf.conf", projectConfFile)
-	util.Sed("__PHP_MAX_EXECUTION_TIME__", os.Getenv("PHP_MAX_EXECUTION_TIME"), projectConfFile)
-	util.Sed("__NGINX_FASTCGI_BUFFERS__", os.Getenv("NGINX_FASTCGI_BUFFERS"), projectConfFile)
-	util.Sed("__NGINX_FASTCGI_BUFFER_SIZE__", os.Getenv("NGINX_FASTCGI_BUFFER_SIZE"), projectConfFile)
-	util.Sed("__PHP_UPLOAD_MAX_FILESIZE__", os.Getenv("PHP_UPLOAD_MAX_FILESIZE"), projectConfFile)
-
-	util.Copy("config/nginx/d4d/pwa.conf.default", "config/nginx/d4d/pwa.conf")
-	util.Sed("__SYMFONY_FRONT_CONTROLLER__", os.Getenv("SYMFONY_FRONT_CONTROLLER"), "config/nginx/d4d/pwa.conf")
-
-	util.Copy("config/nginx/d4d/sf.conf.default", "config/nginx/d4d/sf.conf")
-	util.Sed("__SYMFONY_FRONT_CONTROLLER__", os.Getenv("SYMFONY_FRONT_CONTROLLER"), "config/nginx/d4d/sf.conf")
-
-	util.Copy("config/nginx/d4d/wp.conf.default", "config/nginx/d4d/wp.conf")
-	util.Sed("__SYMFONY_FRONT_CONTROLLER__", os.Getenv("SYMFONY_FRONT_CONTROLLER"), "config/nginx/d4d/wp.conf")
-
-	nginxIncludeCache := ""
-
-	if os.Getenv("NGINX_CACHE") == "yes" {
-		nginxIncludeCache = "include /etc/nginx/d4d/cache.conf;"
-	}
-
-	util.Sed("__INCLUDE_CACHE__", nginxIncludeCache, projectConfFile)
-}
-
 func doBuildMySQLConf() {
 	util.Copy("config/mysql/d4d.cnf.d4d", "config/mysql/d4d.cnf")
 	util.Sed("__MYSQL_MAX_ALLOWED_PACKET__", os.Getenv("MYSQL_MAX_ALLOWED_PACKET"), "config/mysql/d4d.cnf")
@@ -527,10 +466,6 @@ func doBuild() {
 		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/elk.yml"))
 	}
 
-	if os.Getenv("EXTERNAL_NETWORK") == "no" || os.Getenv("EXTERNAL_NETWORK") == "yes" {
-		util.Sed("__NGINX_NETWORKS__", fmt.Sprintf("networks:\n      default:\n        aliases:\n          - %s", os.Getenv("PROJECT_DOMAIN_1")), "docker-compose.yml")
-	}
-
 	if os.Getenv("EXTERNAL_NETWORK") == "yes" {
 		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/network.yml"))
 	}
@@ -539,12 +474,6 @@ func doBuild() {
 func doBeforeStart() {
 	envFile := util.GetCurrentDir() + "/.env"
 	util.LoadEnvFile(envFile)
-
-	if os.Getenv("CLEAN_NGINX_LOGS") == "yes" {
-		if err := os.Truncate("var/logs/nginx/project_access.log", 0); err != nil {
-			log.Printf("Failed to truncate: %v", err)
-		}
-	}
 
 	if os.Getenv("CLEAN_SF_logs") == "yes" {
 		os.RemoveAll("project/var/cache")
