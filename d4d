@@ -623,10 +623,10 @@ mkcert() {
             ./d4d mkcert ssl
         fi
 
-        if [ "${COMMAND}" = "ssl" ]; then
-            DOMAINS="${PROJECT_DOMAIN_1} ${PROJECT_DOMAIN_2} ${PROJECT_DOMAIN_3} ${PROJECT_DOMAIN_4}"
-            MKCERT -cert-file ${WORK_DIR}/user/nginx/ssl/d4d.pem -key-file ${WORK_DIR}/user/nginx/ssl/d4d-key.pem ${DOMAINS}
-        fi
+#        if [ "${COMMAND}" = "ssl" ]; then
+#            DOMAINS="${PROJECT_DOMAIN_1} ${PROJECT_DOMAIN_2} ${PROJECT_DOMAIN_3} ${PROJECT_DOMAIN_4}"
+#            MKCERT -cert-file ${WORK_DIR}/user/nginx/ssl/d4d.pem -key-file ${WORK_DIR}/user/nginx/ssl/d4d-key.pem ${DOMAINS}
+#        fi
     fi
 }
 

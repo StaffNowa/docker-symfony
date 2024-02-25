@@ -18,8 +18,7 @@
             XDEBUG_FILE_LINK_FORMAT: ${XDEBUG_FILE_LINK_FORMAT}
             XDEBUG_IDE_KEY: ${XDEBUG_IDE_KEY}
     ports:
-        - ${PORT_PHP}:9000
-        - 8888:8888
+        - ${PORT_WEB}:80
     volumes:
         - ${PROJECT_PATH}:/var/www/project:cached
         - ${SF_COMMUNITY_PATH}:/var/www/symfony:cached

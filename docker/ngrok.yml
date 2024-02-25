@@ -7,5 +7,5 @@
       - nginx
     environment:
       - NGROK_LOOK_DOMAIN=${PROJECT_DOMAIN_1}
-      - NGROK_PORT=${PORT_NGINX}
+      - NGROK_PORT=${PORT_WEB}
       - NGROK_AUTH=${NGROK_AUTH}

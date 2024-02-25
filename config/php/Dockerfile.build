@@ -1,6 +1,6 @@
 ARG PHP_VERSION
 
-FROM php:${PHP_VERSION}-fpm
+FROM php:${PHP_VERSION}-apache
 
 ARG DEFAULT_TIMEZONE
 ARG PHP_MEMORY_LIMIT
@@ -73,6 +73,8 @@ RUN __PHP_EXT_CONFIGURE__
 
 # Copy xdebug and php config.
 COPY conf.d/* /usr/local/etc/php/conf.d/
+
+COPY apache/000-default.conf /etc/apache2/sites-available/000-default.conf
 
 # Map user id from host user when it's provided
 RUN if [ ! -z ${USER_ID} ] && [ ${USER_ID} -ne 0 ]; then usermod -u ${USER_ID} www-data; fi \
