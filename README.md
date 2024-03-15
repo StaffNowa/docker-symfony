@@ -148,13 +148,11 @@ sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker
 
 # DirectAdmin support us!
 
-<p align="center" style="background: #003954">
-<div style="background: #003954">
+<div align="center" style="background: #003954;">
   <a href="https://www.directadmin.com/" target="_blank">
-      <img src="https://directadmin.com/img/logo/logo_directadmin-light.svg" width="400px" title="hover text">
+    <img src="https://directadmin.com/img/logo/logo_directadmin-light.svg" width="400px" title="hover text">
   </a>
 </div>
-</p>
 
 # JetBrains support us! 
 
