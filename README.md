@@ -146,6 +146,13 @@ sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.2/docker
 | redis     | 5.3.7   | 6.0.2   | 6.0.2   | 6.0.2   | 6.0.2   | 6.0.2   | 6.0.2   | 6.0.2   |
 | xdebug    | 2.9.8   | 3.1.6   | 3.1.6   | 3.1.6   | 3.1.6   | 3.1.6   | 3.1.6   | 3.1.6   |
 
+# DirectAdmin support us!
+
+<p align="center">
+  <a href="https://www.directadmin.com/" target="_blank">
+      <img src="https://directadmin.com/img/logo/logo_directadmin-light.svg" width="auto" title="hover text">
+  </a>
+</p>
 
 # JetBrains support us! 
 
