@@ -347,7 +347,7 @@ func doPhpBuild() {
 	npmInstallGlobal = append(npmInstallGlobal, "npm", "grunt-cli", "yargs", "async", "sass", "gulp", "requirejs", "pm2", "uglify-js", "typescript", "eslint")
 
 	if os.Getenv("YARN") == "yes" {
-		util.Sed("__YARN__", "&& apt-get remove -y cmdtest && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | tee /etc/apt/sources.list.d/yarn.list && apt-get update && apt-get install -y yarn", "config/php/Dockerfile")
+		util.Sed("__YARN__", "&& apt-get remove -y cmdtest && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /etc/apt/trusted.gpg.d/yarn.gpg >/dev/null && echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | tee /etc/apt/sources.list.d/yarn.list && apt-get update && apt-get install -y yarn", "config/php/Dockerfile")
 	} else {
 		util.Sed("__YARN__", "", "config/php/Dockerfile")
 	}
