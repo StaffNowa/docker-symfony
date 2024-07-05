@@ -336,9 +336,6 @@ doCheckPackage() {
                     fi
                 fi
                 ;;
-            docker-compose)
-                sudo curl -L "https://github.com/docker/compose/releases/download/v2.12.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
-                ;;
             certutil)
                 if [ ${OS} = "FreeBSD" ]; then
 			        pkg install libnss3-tools
@@ -379,9 +376,6 @@ doRemovePackage() {
 		        else
 			        yum remove docker-ce docker-ce-cli
 		        fi
-                ;;
-            docker-compose)
-                rm /usr/local/bin/docker-compose
                 ;;
             certutil)
                 if [ ${OS} = "FreeBSD" ]; then
@@ -428,9 +422,6 @@ doInstall() {
     # Install the latest Docker CE version
     doCheckPackage docker
 
-    # Install the latest Docker Compose
-    doCheckPackage docker-compose
-
     # Install certutil
     doCheckPackage certutil
 
@@ -455,9 +446,6 @@ doUninstall() {
     # Remove Docker CE
     doRemovePackage docker
 
-    # Remove Docker Compose
-    doRemovePackage docker-compose
-
     # Remove certutil
     doRemovePackage certutil
 
@@ -471,18 +459,18 @@ start() {
     # Load .env file into the current shell script
     source ${D4D_ENV}
 
-    COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build --parallel
+    COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose build --parallel
 
     # Clears the screen.
     clear
 
     # Start server
     echo "Starting docker containers..."
-    docker-compose --env-file ${D4D_ENV} up -d --remove-orphans
+    docker compose --env-file ${D4D_ENV} up -d --remove-orphans
 
     if [ "${SUPERVISOR}" = "yes" ]; then
         echo "Starting supervisor..."
-        docker-compose exec -u root php service supervisor start && docker-compose exec -u root php supervisorctl reread && docker-compose exec -u root php supervisorctl update && docker-compose exec -u root php supervisorctl start messenger-consume:*
+        docker compose exec -u root php service supervisor start && docker compose exec -u root php supervisorctl reread && docker compose exec -u root php supervisorctl update && docker compose exec -u root php supervisorctl start messenger-consume:*
     fi
 
     # Documentation for end user
@@ -523,7 +511,7 @@ start() {
 }
 
 stop() {
-    docker-compose down
+    docker compose down
 }
 
 restart() {
@@ -535,9 +523,9 @@ dockerComposeExec() {
     # $2 user
 
     if [ "${1}" == "php" ] && [ "${2}" != "" ]; then
-        docker-compose exec -u $2 $1 bash
+        docker compose exec -u $2 $1 bash
     else
-        docker-compose exec $1 bash
+        docker compose exec $1 bash
     fi
 }
 
@@ -555,7 +543,7 @@ doMysqlDump() {
     # Load .env file into the current shell script
     source ${D4D_ENV}
 
-    docker-compose exec mysql bash /tmp/db/mysql_dump.sh
+    docker compose exec mysql bash /tmp/db/mysql_dump.sh
 }
 
 doDockerBackup() {
@@ -598,12 +586,12 @@ blackfire() {
     if [ "${BLACKFIRE}" = "yes" ]; then
         if [ "${COMMAND}" = "register" ]; then
             echo "Register Blackfire..."
-            docker-compose exec -u root php blackfire agent:config --server-id=${BLACKFIRE_SERVER_ID} --server-token=${BLACKFIRE_SERVER_TOKEN}
-            docker-compose exec -u root php mkdir -p /var/run/blackfire
+            docker compose exec -u root php blackfire agent:config --server-id=${BLACKFIRE_SERVER_ID} --server-token=${BLACKFIRE_SERVER_TOKEN}
+            docker compose exec -u root php mkdir -p /var/run/blackfire
         fi
 
         if [ "${COMMAND}" = "start" ] || [ "${COMMAND}" == "stop" ] || [ "${COMMAND}" == "restart" ]; then
-            docker-compose exec -u root php blackfire agent:${COMMAND}
+            docker compose exec -u root php blackfire agent:${COMMAND}
         fi
     fi
 }
@@ -674,30 +662,30 @@ info() {
     IP_MYSQL=`getContainerIpAddress mysql`
     IP_PMA=`getContainerIpAddress phpmyadmin`
 
-    NGINX_INFO=`docker-compose exec nginx dpkg -s nginx | grep '^Version: ' | cut -d '-' -f1`
+    NGINX_INFO=`docker compose exec nginx dpkg -s nginx | grep '^Version: ' | cut -d '-' -f1`
 
     case "${MYSQL_INST}" in
         mysql)
             if [ "${MYSQL_VERSION}" != "8.0" ]; then
-               MYSQL_INFO=`docker-compose exec mysql dpkg -s mysql-server | grep '^Version' | cut -d ':' -f2 | cut -d ' ' -f2 | cut -d '-' -f1`
+               MYSQL_INFO=`docker compose exec mysql dpkg -s mysql-server | grep '^Version' | cut -d ':' -f2 | cut -d ' ' -f2 | cut -d '-' -f1`
             else
-                MYSQL_INFO=`docker-compose exec mysql dpkg -s mysql-common | grep '^Version' | cut -d ':' -f2 | cut -d ' ' -f2 | cut -d '-' -f1`
+                MYSQL_INFO=`docker compose exec mysql dpkg -s mysql-common | grep '^Version' | cut -d ':' -f2 | cut -d ' ' -f2 | cut -d '-' -f1`
             fi
             ;;
         mariadb)
-            MYSQL_INFO=`docker-compose exec mysql dpkg -s mariadb-server | grep '^Version' | cut -d ':' -f3 | cut -d '+' -f1`
+            MYSQL_INFO=`docker compose exec mysql dpkg -s mariadb-server | grep '^Version' | cut -d ':' -f3 | cut -d '+' -f1`
             ;;
         * )
-            MYSQL_INFO=`docker-compose exec mysql dpkg -s mysql-server | grep '^Version' | cut -d ':' -f2 | cut -d ' ' -f2 | cut -d '-' -f1`
+            MYSQL_INFO=`docker compose exec mysql dpkg -s mysql-server | grep '^Version' | cut -d ':' -f2 | cut -d ' ' -f2 | cut -d '-' -f1`
             ;;
     esac
 
-    PHP_INFO=`docker-compose exec php php -v | grep '^PHP' | cut -d ' ' -f2 | tr -d "\r\n"`
+    PHP_INFO=`docker compose exec php php -v | grep '^PHP' | cut -d ' ' -f2 | tr -d "\r\n"`
 
     mainHeader
     printf " | %-55s %-2s|\n" "Docker Information:"
     printf " | %-55s %-2s|\n" "`docker --version`"
-    printf " | %-55s %-2s|\n" "`docker-compose --version`"
+    printf " | %-55s %-2s|\n" "`docker compose --version`"
     printf " +%-55s+\n" "-----------------------------------------------------------"
     printf " | %-55s %-2s|\n" "D4D Information:"
     printf " | %-55s %-2s|\n" "NGINX: ${NGINX_INFO}"
