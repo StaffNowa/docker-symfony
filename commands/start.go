@@ -39,11 +39,6 @@ func doChecks() {
 		os.Exit(1)
 	}
 
-	if !util.IsCommandExist("docker-compose") {
-		fmt.Println("Docker compose not found. Please install it via https://docs.docker.com/compose/install/")
-		os.Exit(1)
-	}
-
 	if !util.FileExists(envFile) {
 		if util.FileExists(envDistFile) {
 			util.Copy(envDistFile, envFile)
