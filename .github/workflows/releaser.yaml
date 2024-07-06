@@ -49,7 +49,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v6
         with:
           version: '~> v2'
-          args: release --clean --snapshot --skip=publish,sign
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
       -
