@@ -115,7 +115,7 @@ sudo curl -L "https://github.com/docker/compose/releases/download/v2.28.1/docker
     
     ## How it works?
     
-    Have a look at the `docker-compose.yml` file, here are the `docker-compose` built images:
+    Have a look at the `compose.yaml` file, here are the `docker-compose` built images:
  
     * `nginx`: Nginx is one of the most popular web servers in the world and responsible for hosting some of the largest and highest-traffic sites on the internet. It is more resource-friendly than Apache in most cases and can be used as a web server or reverse proxy.
     * `php`: PHP is a popular general-purpose scripting language that is especially suited to web development.

@@ -466,68 +466,68 @@ func doBuildMySQLConf() {
 }
 
 func doBuild() {
-	util.Copy("docker/compose.yml", "docker-compose.yml")
-	util.AppendFile("docker-compose.yml", util.FileGetContents("docker/php.yml"))
+	util.Copy("docker/compose.yml", "compose.yaml")
+	util.AppendFile("compose.yaml", util.FileGetContents("docker/php.yml"))
 
 	if os.Getenv("DOCKER_ENV_PHP") == "yes" {
-		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/env/php.yml"))
+		util.AppendFile("compose.yaml", util.FileGetContents("docker/env/php.yml"))
 	}
 
 	if os.Getenv("MYSQL") == "yes" {
 		if os.Getenv("MYSQL_INST") == "mysql" {
-			util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mysql.yml"))
+			util.AppendFile("compose.yaml", util.FileGetContents("docker/mysql.yml"))
 		} else {
 			if os.Getenv("MYSQL_INST") == "mariadb" {
-				util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mariadb.yml"))
+				util.AppendFile("compose.yaml", util.FileGetContents("docker/mariadb.yml"))
 			}
 		}
-		util.Sed("#php_depends_on", "depends_on:\r\n      - mysql", "docker-compose.yml")
+		util.Sed("#php_depends_on", "depends_on:\r\n      - mysql", "compose.yaml")
 	} else {
-		util.Sed("#php_depends_on", "", "docker-compose.yml")
+		util.Sed("#php_depends_on", "", "compose.yaml")
 	}
 
 	if os.Getenv("MAILHOG") == "yes" {
-		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mailhog.yml"))
+		util.AppendFile("compose.yaml", util.FileGetContents("docker/mailhog.yml"))
 	}
 
 	if os.Getenv("MAILPIT") == "yes" {
-		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mailpit.yml"))
+		util.AppendFile("compose.yaml", util.FileGetContents("docker/mailpit.yml"))
 	}
 
 	if os.Getenv("PMA") == "yes" && os.Getenv("MYSQL") == "yes" {
-		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/phpmyadmin.yml"))
+		util.AppendFile("compose.yaml", util.FileGetContents("docker/phpmyadmin.yml"))
 	}
 
 	if os.Getenv("REDIS") == "yes" {
-		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/redis.yml"))
+		util.AppendFile("compose.yaml", util.FileGetContents("docker/redis.yml"))
 	}
 
 	if os.Getenv("RABBITMQ") == "yes" {
-		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/rabbitmq.yml"))
+		util.AppendFile("compose.yaml", util.FileGetContents("docker/rabbitmq.yml"))
 	}
 
 	if os.Getenv("ELASTICSEARCH") == "yes" {
-		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/elasticsearch.yml"))
+		util.AppendFile("compose.yaml", util.FileGetContents("docker/elasticsearch.yml"))
 	}
 
 	if os.Getenv("NGROK") == "yes" {
-		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/ngrok.yml"))
+		util.AppendFile("compose.yaml", util.FileGetContents("docker/ngrok.yml"))
 	}
 
 	if os.Getenv("MONGODB") == "yes" {
-		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/mongodb.yml"))
+		util.AppendFile("compose.yaml", util.FileGetContents("docker/mongodb.yml"))
 	}
 
 	if os.Getenv("ELK") == "yes" {
-		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/elk.yml"))
+		util.AppendFile("compose.yaml", util.FileGetContents("docker/elk.yml"))
 	}
 
 	if os.Getenv("EXTERNAL_NETWORK") == "no" || os.Getenv("EXTERNAL_NETWORK") == "yes" {
-		util.Sed("__NGINX_NETWORKS__", fmt.Sprintf("networks:\n      default:\n        aliases:\n          - %s", os.Getenv("PROJECT_DOMAIN_1")), "docker-compose.yml")
+		util.Sed("__NGINX_NETWORKS__", fmt.Sprintf("networks:\n      default:\n        aliases:\n          - %s", os.Getenv("PROJECT_DOMAIN_1")), "compose.yaml")
 	}
 
 	if os.Getenv("EXTERNAL_NETWORK") == "yes" {
-		util.AppendFile("docker-compose.yml", util.FileGetContents("docker/network.yml"))
+		util.AppendFile("compose.yaml", util.FileGetContents("docker/network.yml"))
 	}
 }
 
