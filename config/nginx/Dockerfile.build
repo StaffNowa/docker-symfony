@@ -13,7 +13,7 @@ ARG PHP_UPLOAD_MAX_FILESIZE
 
 ARG PORT_PHP
 
-MAINTAINER Vasilij Dusko <support@d4d.lt>
+LABEL maintainer="Vasilij Dusko <support@d4d.lt>"
 
 RUN apt-get update \
     && apt-get install --no-install-recommends --no-install-suggests -y \

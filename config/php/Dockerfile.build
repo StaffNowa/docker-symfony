@@ -21,7 +21,7 @@ ARG XDEBUG_IDE_KEY
 
 ARG WKHTMLTOPDF_VERSION
 
-MAINTAINER Vasilij Dusko <support@d4d.lt>
+LABEL maintainer="Vasilij Dusko <support@d4d.lt>"
 
 RUN __SYMFONY_CLI__
     apt-get update && \

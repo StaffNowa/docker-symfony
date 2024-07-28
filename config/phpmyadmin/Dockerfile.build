@@ -1,6 +1,6 @@
 FROM __PHP_MY_ADMIN__
 
-MAINTAINER Vasilij Dusko <support@d4d.lt>
+LABEL maintainer="Vasilij Dusko <support@d4d.lt>"
 
 ARG PHP_MEMORY_LIMIT
 ARG PHP_UPLOAD_MAX_FILESIZE
