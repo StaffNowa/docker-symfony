@@ -215,7 +215,7 @@ func doPhpBuild() {
 		phpExtConfigure = append(phpExtConfigure, "docker-php-ext-configure zip --with-libzip")
 	}
 
-	if phpVersion >= "7.4" && phpVersion <= "8.3" {
+	if phpVersion >= "7.4" && phpVersion <= "8.4" {
 		phpExtConfigure = append(phpExtConfigure, "docker-php-ext-configure zip")
 	}
 
@@ -227,7 +227,7 @@ func doPhpBuild() {
 	}
 
 	if os.Getenv("PHP_GD") == "yes" {
-		supportedVersions := []string{"7.4", "8.0", "8.1", "8.2", "8.3"}
+		supportedVersions := []string{"7.4", "8.0", "8.1", "8.2", "8.3", "8.4"}
 		gdConfigure := "&& docker-php-ext-configure gd"
 		if !util.Contains(supportedVersions, phpVersion) {
 			gdConfigure += " --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/"
@@ -245,8 +245,8 @@ func doPhpBuild() {
 			peclInstall = append(peclInstall, "amqp-1.11.0")
 		}
 
-		if phpVersion >= "7.3" && phpVersion <= "8.3" {
-			peclInstall = append(peclInstall, "amqp-2.1.1")
+		if phpVersion >= "7.4" && phpVersion <= "8.4" {
+			peclInstall = append(peclInstall, "amqp-2.1.2")
 		}
 
 		util.Sed("__RABBIT_MQ__", "&& echo 'extension=amqp.so' >> $$PHP_INI_DIR/conf.d/docker-php-ext-amqp.ini"+" \\", "config/php/Dockerfile")
@@ -264,8 +264,8 @@ func doPhpBuild() {
 			peclInstall = append(peclInstall, "mongodb-1.16.2")
 		}
 
-		if phpVersion >= "7.4" && phpVersion <= "8.3" {
-			peclInstall = append(peclInstall, "mongodb-1.17.1")
+		if phpVersion >= "7.4" && phpVersion <= "8.4" {
+			peclInstall = append(peclInstall, "mongodb-1.20.1")
 		}
 
 		if phpVersion != "7.2" {
@@ -284,12 +284,12 @@ func doPhpBuild() {
 	}
 
 	if os.Getenv("REDIS") == "yes" {
-		if phpVersion == "7.1" {
+		if phpVersion >= "7.1" && phpVersion <= "7.3" {
 			peclInstall = append(peclInstall, "redis-5.3.7")
 		}
 
-		if phpVersion >= "7.2" && phpVersion <= "8.3" {
-			peclInstall = append(peclInstall, "redis-6.0.2")
+		if phpVersion >= "7.4" && phpVersion <= "8.4" {
+			peclInstall = append(peclInstall, "redis-6.1.0")
 		}
 
 		phpExtEnable = append(phpExtEnable, "redis")
@@ -308,8 +308,8 @@ func doPhpBuild() {
 			peclInstall = append(peclInstall, "xdebug-3.1.6")
 		}
 
-		if phpVersion >= "8.0" && phpVersion <= "8.3" {
-			peclInstall = append(peclInstall, "xdebug-3.3.1")
+		if phpVersion >= "8.0" && phpVersion <= "8.4" {
+			peclInstall = append(peclInstall, "xdebug-3.4.0")
 		}
 
 		util.Copy("config/php/conf.d/xdebug.d4d", "config/php/conf.d/xdebug.ini")
@@ -324,7 +324,7 @@ func doPhpBuild() {
 			util.AppendFile("config/php/conf.d/xdebug.ini", fmt.Sprintf("\nxdebug.remote_connect_back = %s", os.Getenv("XDEBUG_REMOTE_CONNECT_BACK")))
 		}
 
-		if phpVersion >= "7.1" && phpVersion <= "8.3" {
+		if phpVersion >= "7.1" && phpVersion <= "8.4" {
 			util.Sed("__XDEBUG__", "&& echo 'zend_extension=xdebug.so' >> $$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"+" \\", "config/php/Dockerfile")
 		} else {
 			util.Sed("__XDEBUG__", "&& echo 'extension=xdebug.so' >> $$PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini"+" \\", "config/php/Dockerfile")
