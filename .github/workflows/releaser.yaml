@@ -50,10 +50,20 @@ jobs:
       -
         name: Run GoReleaser for snapshot
         uses: goreleaser/goreleaser-action@v3
+        # only for PRs and push on branches
         if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
         with:
           version: latest
           args: release --rm-dist --snapshot --skip-publish --skip-sign
+      -
+        name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v3
+        # only for tags
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          version: latest
+          args: release --rm-dist
+
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
       -
